@@ -826,7 +826,7 @@ Socker.HTTP(proxyOptions, async (connection, error) => {
         secureContext: secureContext,
         honorCipherOrder: false,
         rejectUnauthorized: false,
-        secureProtocol: ["TLSv1_1_method", "TLS_method","TLSv1_2_method", "TLSv1_3_method",],
+        secureProtocol: Math.random() < 0.5 ? 'TLSv1_3_method' : 'TLSv1_2_method',
         secureOptions: secureOptions,
         host: parsedTarget.host,
         servername: parsedTarget.host,

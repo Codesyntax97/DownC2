@@ -817,7 +817,7 @@ Socker.HTTP(proxyOptions, async (connection, error) => {
 
     const tlsOptions = {
         secure: true,
-        ALPNProtocols: ['http/1.1', 'h2'],
+        ALPNProtocols: ['h2', 'http/1.1'],
         ciphers: cipper,
         requestCert: true,
         sigalgs: sigalgs,

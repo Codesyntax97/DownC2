@@ -3275,7 +3275,7 @@ headers["x-requested-with"] = "XMLHttpRequest";
             host: parsedTarget.host,
             rejectUnauthorized: false,
             servername: parsedTarget.host,
-            secureProtocol: "TLS_method",
+            secureProtocol: ["TLSv1_1_method", "TLS_method","TLSv1_2_method", "TLSv1_3_method",],
             session: crypto.randomBytes(64),
             timeout: 1000,
         };

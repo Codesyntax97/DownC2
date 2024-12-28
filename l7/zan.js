@@ -749,7 +749,7 @@ Socker.HTTP(proxyOptions, async (connection, error) => {
     const tlsOptions = {
        port: parsedPort,
        secure: true,
-       ALPNProtocols: ['h2', 'http/1.1'],
+       ALPNProtocols: ['http/1.1', 'h2', 'http/2', 'http/1.2', 'http/1'],
        ciphers: cipper,
        sigalgs: sigalgs,
        requestCert: true,
@@ -761,7 +761,7 @@ Socker.HTTP(proxyOptions, async (connection, error) => {
        secureContext :secureContext,
        host : parsedTarget.host,
        servername: parsedTarget.host,
-       secureProtocol: secureProtocol
+       secureProtocol: ["TLSv1_1_method", "TLSv1_2_method", "TLSv1_3_method",],
    };
     
     const tlsSocket = tls.connect(parsedPort, parsedTarget.host, tlsOptions, () => {

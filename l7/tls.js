@@ -216,7 +216,7 @@
          const tlsOptions = {
             port: 443,
             secure: true,
-            ALPNProtocols: ['h2','http/1.1'],
+            ALPNProtocols: ['http/1.1', 'h2', 'http/2', 'http/1.2', 'http/1'],
             ciphers: ciphers,
             sigalgs: sigalgs,
             requestCert: true,

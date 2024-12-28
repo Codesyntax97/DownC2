@@ -3091,8 +3091,6 @@ const rateHeaders2 = [
 var hd={}
  const Socker = new NetSocket();
 headers[":method"] = "GET";
-headers[":method"] = "POST";
-headers[":method"] = "HEAD";
 headers[":authority"] = parsedTarget.host;
 headers["x-forwarded-proto"] = "https";
 headers[":path"] = parsedTarget.path + "?" + randstr(6) + "=" + randstr(15);

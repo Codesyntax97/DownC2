@@ -161,16 +161,7 @@ const ciphers = "GREASE:" + [
     ...defaultCiphers.slice(3)
 ].join(":");
 
-const sigalgs = [
-     "ecdsa_secp256r1_sha256",
-          "rsa_pss_rsae_sha256",
-          "rsa_pkcs1_sha256",
-          "ecdsa_secp384r1_sha384",
-          "rsa_pss_rsae_sha384",
-          "rsa_pkcs1_sha384",
-          "rsa_pss_rsae_sha512",
-          "rsa_pkcs1_sha512"
-]
+const sigalgs = "ecdsa_secp256r1_sha256:rsa_pss_rsae_sha256:rsa_pkcs1_sha256:ecdsa_secp384r1_sha384:rsa_pss_rsae_sha384:rsa_pkcs1_sha384:rsa_pss_rsae_sha512:rsa_pkcs1_sha512";
 
 const ecdhCurve = "GREASE:x25519:secp256r1:secp384r1";
 

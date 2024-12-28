@@ -133,11 +133,7 @@ const nullHexs = [
         "POST",
         "HEAD",
         "DELETE",
-        "PUT",
-        "CONNECT",
-        "OPTIONS",
-        "TRACE",
-        "PATCH"
+        "PUT"
     ];
 
 var proxyFile = "proxy.txt";
@@ -292,13 +288,6 @@ function getRandomUserAgent() {
 const Header = new NetSocket();
 headers[":method"] = "GET";
 headers[":method"] = "POST";
-headers[":method"] = "HEAD";
-headers[":method"] = "DELETE";
-headers[":method"] = "PUT";
-headers[":method"] = "CONNECT";
-headers[":method"] = "OPTIONS";
-headers[":method"] = "TRACE";
-headers[":method"] = "PATCH";
 headers[":path"] = parsedTarget.path
 headers[":scheme"] = "https";
 headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8";

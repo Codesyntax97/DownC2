@@ -171,12 +171,6 @@
  }
  
  headers[":method"] = "GET";
- headers[":method"] = "GET";
- headers[":method"] = "POST";
- headers[":method"] = "POST";
- headers[":method"] = "POST";
- headers[":method"] = "GET";
- headers[":method"] = "GET";
  headers[":path"] = parsedTarget.path;
  headers[":scheme"] = "https";
  headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8";

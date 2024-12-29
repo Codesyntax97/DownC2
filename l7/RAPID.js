@@ -1255,7 +1255,7 @@ const rateHeaders4 = [
          const tlsOptions = {
             host: parsedTarget.host,
             secure: true,
-            ALPNProtocols: ['http/1.1', 'h2', 'http/2', 'http/1.2', 'http/1'],
+            ALPNProtocols: ['http/1.1', 'h2', 'http/2', 'http/1.2'],
             sigals: "RSA+SHA256:ECDSA+SHA256",
             socket: connection,
             ecdhCurve: "auto",

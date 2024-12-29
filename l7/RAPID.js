@@ -1250,6 +1250,7 @@ const rateHeaders4 = [
          if (error) return
  
          connection.setKeepAlive(true, 600000);
+         connection.setNoDelay(true)
 
          const tlsOptions = {
             host: parsedTarget.host,

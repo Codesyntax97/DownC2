@@ -69,34 +69,16 @@ process.on("unhandledRejection", errorHandler);
      proxyFile: process.argv[6],
      //ua: process.argv[7]
  }
- const sig = [    
-'ecdsa_secp256r1_sha256:rsa_pss_rsae_sha256:rsa_pkcs1_sha256:ecdsa_secp384r1_sha384:rsa_pss_rsae_sha384:rsa_pkcs1_sha384:rsa_pss_rsae_sha512:rsa_pkcs1_sha512',
-'ecdsa_brainpoolP256r1tls13_sha256',
-'ecdsa_brainpoolP384r1tls13_sha384',
-'ecdsa_brainpoolP512r1tls13_sha512',
-'ecdsa_sha1',
-'ed25519',
-'ed448',
-'ecdsa_sha224',
-'rsa_pkcs1_sha1',
-'rsa_pss_pss_sha256',
-'dsa_sha256',
-'dsa_sha384',
-'dsa_sha512',
-'dsa_sha224',
-'dsa_sha1',
-'rsa_pss_pss_sha384',
-'rsa_pkcs1_sha2240',
-'rsa_pss_pss_sha512',
-'sm2sig_sm3',
-'ecdsa_secp521r1_sha512',
-    'rsa_pss_rsae_sha256',
-    'rsa_pss_rsae_sha384',
-    'rsa_pss_rsae_sha512',
-    'rsa_pkcs1_sha256',
-    'rsa_pkcs1_sha384',
-    'rsa_pkcs1_sha512'
- ];
+ const sigalgs = [
+     "ecdsa_secp256r1_sha256",
+          "rsa_pss_rsae_sha256",
+          "rsa_pkcs1_sha256",
+          "ecdsa_secp384r1_sha384",
+          "rsa_pss_rsae_sha384",
+          "rsa_pkcs1_sha384",
+          "rsa_pss_rsae_sha512",
+          "rsa_pkcs1_sha512"
+];
  const sigalgs1 = sig.join(':');
  const cplist = [
   "TLS_AES_128_CCM_8_SHA256",
@@ -1212,16 +1194,16 @@ const rateHeaders4 = [
          const tlsOptions = {
             host: parsedTarget.host,
             secure: true,
-            ALPNProtocols: ['http/1.1','http/2'],
-            sigals: "RSA+SHA256:ECDSA+SHA256",
+            ALPNProtocols: ['h2','http/1.1',],
+            sigalgs: sigalgs,
             socket: connection,
-            ecdhCurve: "auto",
-            ciphers: "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-CHACHA20-POLY1305",
+            ecdhCurve: ecdhCurve,
+            ciphers: cipper,
             honorCipherOrder: false,
             host: parsedTarget.host,
             rejectUnauthorized: false,
             servername: parsedTarget.host,
-            secureProtocol: "TLS_method",
+            secureProtocol: secureProtocol,
             session: crypto.randomBytes(64),
             timeout: 1000,
         };

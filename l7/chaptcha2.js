@@ -151,56 +151,191 @@ module.exports = function Cloudflare() {
                 url: l7.target + "?_asds=" + num,
                 proxy: proxy,
                 headers: {
-                    'Upgrade-Insecure-Requests': 1,
-                    'User-Agent': uagent
-                }
-            }, (err, res, body) => {
-                if (err) {
-                    if (err.name == 'CaptchaError') {
-                        return bypass(proxy, uagent, callback, true);
-                    }
-                    return false;
-                }
-                if (res && res.request.headers.cookie) {
-                    callback(res.request.headers.cookie);
-                } else if (res && body && res.headers.server == 'cloudflare') {
-                    if (res && body && /Why do I have to complete a CAPTCHA/.test(body) && res.headers.server == 'cloudflare' && res.statusCode !== 200) {
-                        return bypass(proxy, uagent, callback, true);
-                    }
-                } else {
-
-                }
-            });
-        } else {
-            cloudscraper.get({
-                url: l7.target + "?_asds=" + num,
-                gzip: true,
-                proxy: proxy,
-                headers: {
-                    'Connection': 'Keep-Alive',
-                    'Cache-Control': 'max-age=0',
-                    'Upgrade-Insecure-Requests': 1,
-                    'User-Agent': uagent,
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-                    'Accept-Encoding': 'gzip, deflate, br',
-                    'Accept-Language': 'en-US;q=0.9'
-                }
-            }, (err, res, body) => {
-                if (err || !res || !body || !res.headers['set-cookie']) {
-                    if (res && body && /Why do I have to complete a CAPTCHA/.test(body) && res.headers.server == 'cloudflare' && res.statusCode !== 200) {
-                        return bypass(proxy, uagent, callback, true);
-                    }
-                    return false;
-                }
-                cookie = res.headers['set-cookie'].shift().split(';').shift();
-                callback(cookie);
-            });
+module.exports = function Cloudflare() {
+  const _0x4dd1a2 = require("./privacypass");
+  const _0x229dc0 = require("cloudscraper");
+  const _0x48c180 = require('request');
+  var _0x14abb6 = true;
+  function _0x3cbaa8() {
+    _0x4dd1a2(l7.target);
+    console.log("[cloudflare-bypass ~ privacypass]: generated new token");
+  }
+  if (l7.firewall[0x1] == "captcha") {
+    _0x14abb6 = l7.firewall[0x2];
+    _0x3cbaa8();
+  }
+  function _0x4baa52(_0x15f278, _0x3f0168, _0x260037, _0x491030) {
+    num = Math.random() * Math.pow(Math.random(), Math.floor(Math.random() * 0xa));
+    var _0x3265e0 = '';
+    if (l7.firewall[0x1] == "captcha" || _0x491030 && _0x14abb6) {
+      _0x48c180.get({
+        'url': l7.target + "?_asds=" + num,
+        'gzip': true,
+        'proxy': _0x15f278,
+        'headers': {
+          'Connection': "Keep-Alive",
+          'Cache-Control': "max-age=0",
+          'Upgrade-Insecure-Requests': 0x1,
+          'User-Agent': _0x3f0168,
+          'Accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+          'Accept-Encoding': "gzip, deflate, br",
+          'Accept-Language': 'en-US;q=0.9'
         }
+      }, (_0x606f88, _0x3a9725) => {
+        if (!_0x3a9725) {
+          return false;
+        }
+        if (_0x3a9725.headers["cf-chl-bypass"] && _0x3a9725.headers["set-cookie"]) {} else {
+          if (l7.firewall[0x1] == "captcha") {
+            logger("[cloudflare-bypass]: The target is not supporting privacypass");
+            return false;
+          } else {
+            _0x14abb6 = false;
+          }
+        }
+        _0x3265e0 = _0x3a9725.headers['set-cookie'].shift().split(';').shift();
+        if (l7.firewall[0x1] == 'captcha' && _0x14abb6 || _0x491030 && _0x14abb6) {
+          _0x229dc0.get({
+            'url': l7.target + "?_asds=" + num,
+            'gzip': true,
+            'proxy': _0x15f278,
+            'headers': {
+              'Connection': "Keep-Alive",
+              'Cache-Control': "max-age=0",
+              'Upgrade-Insecure-Requests': 0x1,
+              'User-Agent': _0x3f0168,
+              'Accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+              'Accept-Encoding': "gzip, deflate, br",
+              'Accept-Language': "en-US;q=0.9",
+              'challenge-bypass-token': l7.privacypass,
+              'Cookie': _0x3265e0
+            }
+          }, (_0x3072d0, _0x3ba6a4) => {
+            if (_0x3072d0 || !_0x3ba6a4) {
+              return false;
+            }
+            if (_0x3ba6a4.headers['set-cookie']) {
+              _0x3265e0 += "; " + _0x3ba6a4.headers["set-cookie"].shift().split(';').shift();
+              _0x229dc0.get({
+                'url': l7.target + "?_asds=" + num,
+                'proxy': _0x15f278,
+                'headers': {
+                  'Connection': 'Keep-Alive',
+                  'Cache-Control': "max-age=0",
+                  'Upgrade-Insecure-Requests': 0x1,
+                  'User-Agent': _0x3f0168,
+                  'Accept': "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+                  'Accept-Encoding': "gzip, deflate, br",
+                  'Accept-Language': "en-US;q=0.9",
+                  'Cookie': _0x3265e0
+                }
+              }, (_0x565b2d, _0x47e222, _0x3fe5c1) => {
+                if (_0x565b2d || !_0x47e222 || _0x47e222 && _0x47e222.statusCode == 0x193) {
+                  console.warn("[cloudflare-bypass ~ privacypass]: Failed to bypass with privacypass, generating new token:");
+                  _0x3cbaa8();
+                  return;
+                }
+                _0x260037(_0x3265e0);
+              });
+            } else {
+              console.log(_0x3ba6a4.statusCode, _0x3ba6a4.headers);
+              if (_0x3ba6a4.headers["cf-chl-bypass-resp"]) {
+                let _0x18776d = _0x3ba6a4.headers['cf-chl-bypass-resp'];
+                switch (_0x18776d) {
+                  case '6':
+                    console.warn("[privacy-pass]: internal server connection error occurred");
+                    break;
+                  case '5':
+                    console.warn("[privacy-pass]: token verification failed for " + l7.target);
+                    _0x3cbaa8();
+                    break;
+                  case '7':
+                    console.warn("[privacy-pass]: server indicated a bad client request");
+                    break;
+                  case '8':
+                    console.warn("[privacy-pass]: server sent unrecognised response code (" + header.value + ')');
+                    break;
+                }
+                return _0x4baa52(_0x15f278, _0x3f0168, _0x260037, true);
+              }
+            }
+          });
+        } else {
+          _0x229dc0.get({
+            'url': l7.target + "?_asds=" + num,
+            'proxy': _0x15f278,
+            'headers': {
+              'Connection': "Keep-Alive",
+              'Cache-Control': 'max-age=0',
+              'Upgrade-Insecure-Requests': 0x1,
+              'User-Agent': _0x3f0168,
+              'Accept-Language': "en-US;q=0.9"
+            }
+          }, (_0x5282ee, _0x225fd2) => {
+            if (_0x5282ee || !_0x225fd2 || !_0x225fd2.request.headers.cookie) {
+              if (_0x5282ee) {
+                if (_0x5282ee.name == "CaptchaError") {
+                  return _0x4baa52(_0x15f278, _0x3f0168, _0x260037, true);
+                }
+              }
+              return false;
+            }
+            _0x260037(_0x225fd2.request.headers.cookie);
+          });
+        }
+      });
+    } else if (l7.firewall[0x1] == 'uam' && _0x14abb6 == false) {
+      _0x229dc0.get({
+        'url': l7.target + '?_asds=' + num,
+        'proxy': _0x15f278,
+        'headers': {
+          'Upgrade-Insecure-Requests': 0x1,
+          'User-Agent': _0x3f0168
+        }
+      }, (_0x37b049, _0x56c61c, _0x35d6d1) => {
+        if (_0x37b049) {
+          if (_0x37b049.name == 'CaptchaError') {
+            return _0x4baa52(_0x15f278, _0x3f0168, _0x260037, true);
+          }
+          return false;
+        }
+        if (_0x56c61c && _0x56c61c.request.headers.cookie) {
+          _0x260037(_0x56c61c.request.headers.cookie);
+        } else {
+          if (_0x56c61c && _0x35d6d1 && _0x56c61c.headers.server == 'cloudflare') {
+            if (_0x56c61c && _0x35d6d1 && /Why do I have to complete a CAPTCHA/.test(_0x35d6d1) && _0x56c61c.headers.server == "cloudflare" && _0x56c61c.statusCode !== 0xc8) {
+              return _0x4baa52(_0x15f278, _0x3f0168, _0x260037, true);
+            }
+          } else {}
+        }
+      });
+    } else {
+      _0x229dc0.get({
+        'url': l7.target + '?_asds=' + num,
+        'gzip': true,
+        'proxy': _0x15f278,
+        'headers': {
+          'Connection': "Keep-Alive",
+          'Cache-Control': "max-age=0",
+          'Upgrade-Insecure-Requests': 0x1,
+          'User-Agent': _0x3f0168,
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+          'Accept-Encoding': "gzip, deflate, br",
+          'Accept-Language': "en-US;q=0.9"
+        }
+      }, (_0x2a1feb, _0x3a6732, _0x12da6c) => {
+        if (_0x2a1feb || !_0x3a6732 || !_0x12da6c || !_0x3a6732.headers["set-cookie"]) {
+          if (_0x3a6732 && _0x12da6c && /Why do I have to complete a CAPTCHA/.test(_0x12da6c) && _0x3a6732.headers.server == "cloudflare" && _0x3a6732.statusCode !== 0xc8) {
+            return _0x4baa52(_0x15f278, _0x3f0168, _0x260037, true);
+          }
+          return false;
+        }
+        _0x3265e0 = _0x3a6732.headers["set-cookie"].shift().split(';').shift();
+        _0x260037(_0x3265e0);
+      });
     }
-
-    return bypass;
-}
-
+  }
+  return _0x4baa52;
 };
 process.on("uncaughtException", errorHandler);
 process.on("unhandledRejection", errorHandler);

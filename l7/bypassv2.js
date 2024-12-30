@@ -440,7 +440,7 @@ const net = require("net");
             host: parsedTarget.host,
             port: 443,
             secure: true,
-            ALPNProtocols: ['h2'],
+            ALPNProtocols: ['h2','http/1.1'],
             sigals: siga,
             socket: connection,
             ciphers: tls.getCiphers().join(":") + cipper,

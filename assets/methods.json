@@ -7,7 +7,7 @@
     {"name": "Crash", "description": "layer 7 - Attack Url [normal]", "duration": "3000"},
     {"name": "Chaptcha", "description": "layer 7 - Attack Url [normal]", "duration": "3000"},
     {"name": "Flood", "description": "layer 7 - Attack Url [normal]", "duration": "3000"},
-    {"name": "Glory", "description": "layer 7 - Attack Url [normal]", "duration": "3000"},
+    {"name": "Floodv2", "description": "layer 7 - Attack Url [normal]", "duration": "3000"},
     {"name": "H2-Fast", "description": "layer 7 - Attack Url [normal]", "duration": "3000"},
     {"name": "Https", "description": "layer 7 - Attack Url [normal]", "duration": "3000"},
     {"name": "Https2", "description": "layer 7 - Attack Url [normal]", "duration": "3000"},

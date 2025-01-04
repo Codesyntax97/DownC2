@@ -4332,12 +4332,7 @@ const Methods = [
 	'frame'
   ];
  const CookieCf = cookie[Math.floor(Math.random() * cookie.length)];
- const ip_spoof = () => {
-   const ip_segment = () => {
-     return Math.floor(Math.random() * 255);
-   };
-   return `${""}${ip_segment()}${"."}${ip_segment()}${"."}${ip_segment()}${"."}${ip_segment()}${""}`;
- };
+ 
  var cipper = cplist[Math.floor(Math.floor(Math.random() * cplist.length))];
  var jar = jalist[Math.floor(Math.floor(Math.random() * jalist.length))];
  var siga = sig[Math.floor(Math.floor(Math.random() * sig.length))];

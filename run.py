@@ -62,7 +62,7 @@ def login(login_data):
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⢠⣼⡮⠀⢀⢀⣼⠂⠄⠀⠀⠀⡃⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⠛⠉⢉⠉⠓⣄⡼⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⢸⣇⣠⣧⠾⢿⡀⠀⠀⠀⠀⡀⠀⡇⠀⠀⠀⠀⠀⠀⠀⣠⣤⣴⣷⡤⣤⣾⢶⣴⠏⢀⣄
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠈⠛⠉⠉⠉⠀⠈⠉⠀⠀⠀⠃⠀⡇⠀⠀⠀⠀⠀⠀⠀⠉⢉⡿⠉⠉⠛⠛⡿⠃⠁⠉⠀
-""")
+\033[31m""")
         username = input("Username » ")
         password = input("Password » ")
         if username in login_data and login_data[username] == password:

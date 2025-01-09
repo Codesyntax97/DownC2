@@ -654,7 +654,7 @@ def main():
 ⠀⠀⠀⠀\033[31m⢹⢁⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠙⢧⡀⠀⠀⠀⠀⠀\033[34m⢹⠙⣷⣧ \033[37mPlease After Attack Type \033[34m'CLS'\033[37m For Back To Home
 ⠀⠀⠀⠀\033[31m⠘⠸⠿⠦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\033[34m⠈⢀⣿⠛ 
 """)
-                    os.system(f'cd l7 && screen -dm node Medusa.js {url} {duration} 64 3 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node https2.js {url} {duration} 64 3 proxy.txt')
                     
             except ValueError:
                 main()

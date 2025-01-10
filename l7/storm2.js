@@ -970,7 +970,7 @@ const rateHeaders = [
   { "accept-language": lang },
   { "upgrade-insecure-requests": "1" },
   { "Access-Control-Request-Method": "GET" },
-  { "Cache-Control": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0" },
+  { "Cache-Control": control },
   { "Content-Encoding": "gzip, deflate, br" },
   { "content-type": "text/html" },
   { "cookie": randstr(15) },
@@ -1095,7 +1095,7 @@ headers["x-cache"] = randomHeaders['x-cache'];
 headers["Content-Security-Policy"] = randomHeaders['Content-Security-Policy'];
 headers["accept-encoding"] = randomHeaders['accept-encoding'];
 headers["accept-encoding"] = encoding;
-headers["cache-control"] = randomHeaders['cache-control'];
+headers["cache-control"] = control;
 headers["x-frame-options"] = randomHeaders['x-frame-options'];
 headers["x-xss-protection"] = randomHeaders['x-xss-protection'];
 headers["x-content-type-options"] = "nosniff";
@@ -1151,7 +1151,6 @@ headers[":authority"] = parsedTarget.host;
 //headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
 headers[":scheme"] = "https";
 headers["x-forwarded-proto"] = "https";
-headers["cache-control"] = "no-cache, private, s-maxage=0";
 headers["cache-control"] = control;
 headers["X-Forwarded-For"] = spoofed;
 headers["sec-ch-ua"] = '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"';

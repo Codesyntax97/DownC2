@@ -211,8 +211,8 @@ editedline();
 
   site = [
     'cross-site',
-	'same-origin',
-	'same-site',
+        'same-origin',
+        'same-site',
 	'httponly'.
 	'none'
   ];

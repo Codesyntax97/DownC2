@@ -1120,7 +1120,8 @@ headers["vary"] = randomHeaders['vary'];
 headers["x-requested-with"] = "XMLHttpRequest";
 headers["TE"] = trailers;
 headers["set-cookie"] = randomHeaders['set-cookie'];
-headers["cookie"] = "AWSALBTG=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15)
+headers["set-cookie"] = randomHeaders['set-cookie'];
+headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15)
 headers["Server"] = randomHeaders['Server'];
 headers["strict-transport-security"] = randomHeaders['strict-transport-security'];
 headers["access-control-allow-headers"] = randomHeaders['access-control-allow-headers'];
@@ -1166,7 +1167,8 @@ headers["sec-fetch-mode"] = mode1;
 headers["sec-fetch-dest"] = dest1;
 headers["sec-fetch-user"] = "?1";
 headers["TE"] = "trailers";
-headers["cookie"] = "AWSALBTG=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15);
+headers["set-cookie"] = randomHeaders['set-cookie'];
+headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15)
 headers["sec-fetch-site"] = site1;
 headers["x-requested-with"] = "XMLHttpRequest";
 headers["cf-cache-status"] = "BYPASS";

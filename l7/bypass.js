@@ -213,7 +213,6 @@ editedline();
     'cross-site',
         'same-origin',
         'same-site',
-	'httponly'.
 	'none'
   ];
 

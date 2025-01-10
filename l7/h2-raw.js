@@ -49,6 +49,8 @@ const hys = [
   "host",
   "pragma",
   "cache-control",
+  "cf-ray",
+  "cf-cache-status",
   "sec-ch-ua",
   "sec-ch-ua-mobile",
   "sec-ch-ua-platform",
@@ -59,9 +61,13 @@ const hys = [
   "sec-fetch-mode",
   "sec-fetch-user",
   "sec-fetch-dest",
+  "Set-Cookie",
   "referer",
+  "vary",
   "accept-encoding",
   "accept-language",
+  "X-Frame-Options",
+  "X-XSS-Protection",  
 ];
 
 const xys = Object.fromEntries(

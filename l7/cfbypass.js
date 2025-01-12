@@ -482,7 +482,7 @@ headers["TE"] = trailers;
 headers["set-cookie"] = CookieCf;
 headers["cookie"] = cookieString(scp.parse(response["set-cookie"]));
 headers["cf-cache-status"] = "BYPASS, DYNAMIC";
-headers["cache-control"] = "no-cache, must-revalidate, max-age=604800, max-age=86400, private, max-age=0, s-maxage=604800";
+headers["cache-control"] = "no-cache";
 headers["X-Forwarded-For"] = fakeIP;
 headers["X-Forwarded-Host"] = fakeIP;
 headers["Client-IP"] = fakeIP;

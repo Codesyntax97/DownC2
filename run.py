@@ -206,7 +206,7 @@ def myinfo():
 concurrents=3
 timelimit=86000
 cooldown=0
-expiry=999.99 Millenium(s) left
+expiry=30384948.99 Millenium(s) left
 Myip={ip}:48970
 Myclient=SSH-2.0-OpenSSH_9.9""")
 

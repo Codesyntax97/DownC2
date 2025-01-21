@@ -15,11 +15,13 @@
     {"name": "H2-Blast", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "H2-Kill", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "H2-Raw", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
+    {"name": "H2-Glo", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
+    {"name": "H2-Rapid", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
+    {"name": "H2-Trust", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Https", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Https2", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Mix", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Storm", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Strike", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Uam", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
-    {"name": "xyn", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"}
 ]

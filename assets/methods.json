@@ -21,6 +21,7 @@
     {"name": "Https", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Https2", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Mix", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
+    {"name": "MixBill", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Storm", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Strike", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Uam", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"}

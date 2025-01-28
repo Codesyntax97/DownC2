@@ -7,6 +7,7 @@
  const axios = require("axios");
  const fs = require("fs");
  const UserAgent = require("user-agents");
+ const http = require('http');
 
 
 //const errorHandler = error => {
@@ -388,6 +389,66 @@ function parseStatusCode(response) {
     return match ? parseInt(match[1], 10) : null;
 }
 
+// Simulating a parsed target object
+const parserTarget = {
+  protocol: 'https:',  // Protocol (http or https)
+  host: 'example.com', // Host (domain)
+  path: '/',           // Path (like '/home')
+};
+
+// Function to get the URL from the parserTarget object
+function getTargetUrl() {
+  const { protocol, host, path } = parserTarget;
+  if (!protocol || !host) {
+    console.error('Invalid target: missing protocol or host');
+    process.exit(1); // Exit the process if protocol or host is missing
+  }
+  return `${protocol}//${host}${path}`;
+}
+
+function bypassRequest(callback) {
+  const url = getTargetUrl(); // Get the URL from the parserTarget object
+  console.log(`Requesting target URL: ${url}`);
+
+  // Parse the URL to get the hostname and path
+  const { hostname, pathname, protocol, port } = new URL(url);
+  
+  const options = {
+    hostname,
+    port: port || (protocol === 'https:' ? 443 : 80),
+    path: pathname,
+    method: 'GET', // You can change this to POST, PUT, etc. depending on the request type
+  };
+
+  const req = http.request(options, (res) => {
+    let data = '';
+
+    // Collect the response data
+    res.on('data', (chunk) => {
+      data += chunk;
+    });
+
+    // When response ends, call the callback with the data
+    res.on('end', () => {
+      callback(null, data);
+    });
+  });
+
+  req.on('error', (error) => {
+    callback(error, null);
+  });
+
+  req.end();
+}
+
+// Example usage:
+bypassRequest((err, data) => {
+  if (err) {
+    console.error('Error:', err);
+  } else {
+    console.log('Response:', data);
+  }
+});
 function runFlooder() {
     const proxyAddr = randomElement(proxies);
     const parsedProxy = proxyAddr.split(":");

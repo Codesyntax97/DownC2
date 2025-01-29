@@ -7,7 +7,6 @@
     {"name": "Bypass", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Cfbypass", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Crash", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
-    {"name": "Chaptcha", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Flood", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Floodv2", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "H2-Fast", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},

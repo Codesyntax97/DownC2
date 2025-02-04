@@ -17,6 +17,7 @@
     {"name": "H2-God", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "H2-Gecko", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "H2-Rapid", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
+    {"name": "H2-Rate", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "H2-Trust", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Https", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Https2", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},

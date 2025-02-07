@@ -188,7 +188,7 @@ if (isNaN(ratelimit) || ratelimit <= 0) {
                 timeout: 10000,
             });
         } catch (error) {
-            console.error(`Request failed: ${error.message}`);  // Fixed here
+            //console.error(`Request failed: ${error.message}`);  // Fixed here
         }
     };
     const startFlood = async () => {

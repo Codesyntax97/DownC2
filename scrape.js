@@ -399,7 +399,8 @@ const downloadAndSaveProxies = async (url, outputFile) => {
         const response = await axios.get(url);
         if (response.status === 200) {
             fs.appendFileSync(outputFile, response.data);
-            console.log(`Success Gets In ${url}`);
+            const proxyCount = response.data.split('\n').filter(line => line.trim() !== '').length;
+            console.log(`Success Gets In ${url} - Retrieved: ${proxyCount} proxies`);
         } else {
             console.log(`Failed In ${url}`);
         }
@@ -414,9 +415,9 @@ const downloadAndSaveProxies = async (url, outputFile) => {
     }
 
     const fileContent = fs.readFileSync(outputFile, 'utf8');
-    const lines = fileContent.split('\n');
+    const lines = fileContent.split('\n').filter(line => line.trim() !== '');
     const uniqueProxies = [...new Set(lines)].join('\n');
     
     fs.writeFileSync(outputFile, uniqueProxies);
-    console.log('Successfully cleaned and saved proxies.');
+    console.log(`Successfully cleaned and saved proxies. Total unique proxies: ${lines.length}`);
 })();

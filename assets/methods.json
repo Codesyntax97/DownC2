@@ -1,7 +1,6 @@
 [
     {"name": "Tcp", "description": "layer 4 - Attack IP  [Best Method]", "status": "ON"},
     {"name": "Tls", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
-    {"name": "Tlsv2", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Browser", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Bomb", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},
     {"name": "Bypass", "description": "layer 7 - Attack Url [Best Method]", "status": "ON"},

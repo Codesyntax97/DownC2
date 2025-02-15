@@ -1,17 +1,59 @@
 const axios = require('axios');
 const fs = require('fs');
-const path = require('path');
 
-const outputFile = 'proxy.txt';
+const QuantixProxies = [];
+const QuantixOutputFile = 'proxy.txt';
 
-if (fs.existsSync(outputFile)) {
-    fs.unlinkSync(outputFile);
-    console.log('SCRAPPING FUCK PROXY');
+if (fs.existsSync(QuantixOutputFile)) {
+  fs.unlinkSync(QuantixOutputFile);
+  console.log('\x1b[33m%s\x1b[0m', `'${QuantixOutputFile}' telah dihapus.`); // Warna kuning
 }
 
-const proxyUrls = [
-    // Daftar sebelumnya
-    'https://api.ngocphong.space/get-proxy?key=Lintar21&type=http',
+const QuantixProxySites = [
+  'https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/http.txt',
+  'https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/socks4.txt',
+  'https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/socks5.txt',
+  'https://raw.githubusercontent.com/theSpeedX/PROXY-List/master/http.txt',
+  'https://raw.githubusercontent.com/theSpeedX/PROXY-List/master/socks4.txt',
+  'https://raw.githubusercontent.com/theSpeedX/PROXY-List/master/socks5.txt',
+  'https://raw.githubusercontent.com/proxylist-to/proxy-list/main/http.txt',
+  'https://raw.githubusercontent.com/proxylist-to/proxy-list/main/https.txt',
+  'https://raw.githubusercontent.com/Zaeem20/FREE_PROXIES_LIST/master/http.txt',
+  'https://raw.githubusercontent.com/Zaeem20/FREE_PROXIES_LIST/master/https.txt',
+  'https://raw.githubusercontent.com/Zaeem20/FREE_PROXIES_LIST/master/socks5.txt',
+  'https://raw.githubusercontent.com/prxchk/proxy-list/main/http.txt',
+  'https://raw.githubusercontent.com/prxchk/proxy-list/main/socks5.txt',
+  'https://raw.githubusercontent.com/MuRongPIG/Proxy-Master/main/http.txt',
+  'https://raw.githubusercontent.com/MuRongPIG/Proxy-Master/main/socks5.txt',
+  'https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-http.txt',
+  'https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks4.txt',
+  'https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks5.txt',
+  'https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/http.txt',
+  'https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/socks5.txt',
+  'https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt',
+  'https://raw.githubusercontent.com/sunny9577/proxy-scraper/master/proxies.txt',
+  'https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt',
+  'https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/proxy.txt',
+  'https://www.proxy-list.download/api/v1/get?type=http',
+  'https://www.proxy-list.download/api/v1/get?type=https',
+  'https://www.proxy-list.download/api/v1/get?type=socks4',
+  'https://www.proxy-list.download/api/v1/get?type=socks5',
+  'https://www.proxyscan.io/download?type=http',
+  'https://www.proxyscan.io/download?type=https',
+  'https://www.proxyscan.io/download?type=socks4',
+  'https://www.proxyscan.io/download?type=socks5',
+  'https://api.openproxylist.xyz/http.txt',
+  'https://api.openproxylist.xyz/https.txt',
+  'https://api.openproxylist.xyz/socks4.txt',
+  'https://api.openproxylist.xyz/socks5.txt',
+  // Sumber tambahan
+  'https://www.proxy-list.download/api/v1/get?type=socks4',
+  'https://www.proxy-list.download/api/v1/get?type=socks5',
+  'https://www.proxyscan.io/download?type=socks4',
+  'https://www.proxyscan.io/download?type=socks5',
+  'https://api.openproxylist.xyz/socks4.txt',
+  'https://api.openproxylist.xyz/socks5.txt',
+  'https://api.ngocphong.space/get-proxy?key=Lintar21&type=http',
     'https://api.ngocphong.space/get-proxy?key=Lintar21&type=https',
     'https://api.ngocphong.space/get-proxy?key=Lintar21&type=socks4',
     'https://api.ngocphong.space/get-proxy?key=Lintar21&type=socks5',
@@ -394,30 +436,51 @@ const proxyUrls = [
     'https://api.good-proxies.ru/getfree.php?count=1000&key=freeproxy'
 ];
 
-const downloadAndSaveProxies = async (url, outputFile) => {
-    try {
-        const response = await axios.get(url);
-        if (response.status === 200) {
-            fs.appendFileSync(outputFile, response.data);
-            const proxyCount = response.data.split('\n').filter(line => line.trim() !== '').length;
-            console.log(`Success Gets In ${url} - Retrieved: ${proxyCount} proxies`);
-        } else {
-            console.log(`Failed In ${url}`);
-        }
-    } catch (error) {
-        console.error(`Something Broken in ${url}`);
-    }
-};
+async function QuantixFetchProxiesFromSite(site) {
+  try {
+    const response = await axios.get(site);
+    const lines = response.data.split('\n');
+    lines.forEach(line => {
+      if (line.includes(':')) {
+        const [ip, port] = line.split(':', 2);
+        QuantixProxies.push(`${ip}:${port}`);
+      }
+    });
+  } catch (error) {
+    console.log('\x1b[31m%s\x1b[0m', `Gagal mengambil proxy dari ${site}: ${error.message}`); // Warna merah
+  }
+}
 
-(async () => {
-    for (let url of proxyUrls) {
-        await downloadAndSaveProxies(url, outputFile);
-    }
+function drawProgressBar(progress) {
+  const barLength = 50;
+  const filledLength = Math.round(barLength * progress);
+  const filledBar = '█'.repeat(filledLength);
+  const emptyBar = '░'.repeat(barLength - filledLength);
+  return `[${filledBar}${emptyBar}] ${(progress * 100).toFixed(2)}%`;
+}
 
-    const fileContent = fs.readFileSync(outputFile, 'utf8');
-    const lines = fileContent.split('\n').filter(line => line.trim() !== '');
-    const uniqueProxies = [...new Set(lines)].join('\n');
-    
-    fs.writeFileSync(outputFile, uniqueProxies);
-    console.log(`Successfully cleaned and saved proxies. Total unique proxies: ${lines.length}`);
-})();
+async function QuantixFetchAllProxies() {
+  console.log('\x1b[36m%s\x1b[0m', 'Memulai proses pengambilan proxy...'); // Warna cyan
+
+  const QuantixStartTime = Date.now();
+
+  for (let i = 0; i < QuantixProxySites.length; i++) {
+    await QuantixFetchProxiesFromSite(QuantixProxySites[i]);
+    const progress = (i + 1) / QuantixProxySites.length;
+    process.stdout.write(`\r${drawProgressBar(progress)}`);
+  }
+
+  console.log('\n\x1b[32m%s\x1b[0m', 'Proses pengambilan proxy selesai.'); // Warna hijau
+
+  fs.writeFileSync(QuantixOutputFile, QuantixProxies.join('\n'));
+  console.log('\x1b[32m%s\x1b[0m', `Proxies berhasil diambil dan disimpan dalam ${QuantixOutputFile}`); // Warna hijau
+  console.log('\x1b[34m%s\x1b[0m', `Total proxy valid: ${QuantixProxies.length}`); // Warna biru
+
+  const QuantixEndTime = Date.now();
+  const QuantixExecutionTime = (QuantixEndTime - QuantixStartTime) / 1000;
+  console.log('\x1b[33m%s\x1b[0m', `Waktu eksekusi: ${QuantixExecutionTime.toFixed(2)} detik`); // Warna kuning
+
+  console.log('\x1b[35m%s\x1b[0m', 'Kredit oleh: t.me/Raptor_code'); // Warna magenta
+}
+
+QuantixFetchAllProxies();

